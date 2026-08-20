@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "github-permissive-pilot-v1",
+  "sources": [
+    {
+      "source_id": "oanc-github-mirror",
+      "repository": "https://github.com/jly02/ngram.git",
+      "checkout": "oanc",
+      "revision": "0e93b4f9a19a9931fe00799c404269259068c848",
+      "importer": "oanc",
+      "sample_parts_per_million": 1000000
+    },
+    {
+      "source_id": "ruslit-pd-github",
+      "repository": "https://github.com/d0rj/RusLit.git",
+      "checkout": "ruslit",
+      "revision": "4509680428729da225a73a22008133660f92bb7e",
+      "importer": "ruslit",
+      "sample_parts_per_million": 1000000,
+      "allowed_authors": [
+        "Blok",
+        "Bryusov",
+        "Chekhov",
+        "Dostoevsky",
+        "Gogol",
+        "Gorky",
+        "Herzen",
+        "Lermontov",
+        "Nekrasov",
+        "Pushkin",
+        "Tolstoy",
+        "Turgenev"
+      ]
+    },
+    {
+      "source_id": "rusdracor-github",
+      "repository": "https://github.com/dracor-org/rusdracor.git",
+      "checkout": "rusdracor",
+      "revision": "b178c0401ffcf58b209104e90e38ff718f188fd8",
+      "importer": "rusdracor",
+      "sample_parts_per_million": 1000000
+    }
+  ]
+}

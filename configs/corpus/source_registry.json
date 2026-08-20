@@ -21,6 +21,70 @@
       "notes": "Deterministically generated project-owned traces; prompts and generators must be versioned."
     },
     {
+      "id": "oanc-github-mirror",
+      "status": "approved",
+      "licenses": [
+        "OANC-Unrestricted"
+      ],
+      "languages": [
+        "en"
+      ],
+      "domains": [
+        "general"
+      ],
+      "provenance_required": true,
+      "url": "https://github.com/jly02/ngram",
+      "notes": "Pinned GitHub mirror of the Open American National Corpus. OANC states unrestricted use and redistribution; mirror revision and per-file URL are required."
+    },
+    {
+      "id": "ruslit-pd-github",
+      "status": "approved",
+      "licenses": [
+        "Public-Domain"
+      ],
+      "languages": [
+        "ru"
+      ],
+      "domains": [
+        "literature"
+      ],
+      "provenance_required": true,
+      "url": "https://github.com/d0rj/RusLit",
+      "notes": "Pinned snapshot restricted by importer to reviewed author directories; all listed authors died no later than 1936 and repository asserts public-domain status."
+    },
+    {
+      "id": "rusdracor-github",
+      "status": "approved",
+      "licenses": [
+        "CC0-1.0"
+      ],
+      "languages": [
+        "ru"
+      ],
+      "domains": [
+        "drama"
+      ],
+      "provenance_required": true,
+      "url": "https://github.com/dracor-org/rusdracor",
+      "notes": "Pinned TEI snapshot whose corpus.xml declares CC0. Preserve play-level GitHub provenance and DraCor attribution metadata."
+    },
+    {
+      "id": "rub-government-github",
+      "status": "conditional",
+      "licenses": [
+        "Public-Domain"
+      ],
+      "languages": [
+        "ru"
+      ],
+      "domains": [
+        "government"
+      ],
+      "provenance_required": true,
+      "url": "https://github.com/pjbraga/rub_corpus_and_code",
+      "notes": "Modern official-site speeches/interviews. Repository claims public domain, but production use requires item/source-rights review beyond that blanket statement."
+    },
+    {
       "id": "common-corpus-permissive",
       "status": "approved",
       "licenses": [

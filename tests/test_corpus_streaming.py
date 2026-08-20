@@ -99,6 +99,18 @@ def test_production_policy_rejects_status_license_and_missing_provenance() -> No
         policy,
     )
     assert wikinews.accepted and wikinews.canonical_license == "CC-BY-2.5"
+    oanc = registry.decide(
+        document(
+            "oanc",
+            "A modern unrestricted corpus document with provenance.",
+            source="oanc-github-mirror",
+            license_name="OANC-Unrestricted",
+            domain="general",
+            url="https://github.com/jly02/ngram/blob/revision/oanc/file.txt",
+        ),
+        policy,
+    )
+    assert oanc.accepted
 
 
 def test_split_group_keeps_chunks_together() -> None:
@@ -179,6 +191,8 @@ def test_streaming_build_is_deterministic_and_auditable(tmp_path: Path) -> None:
     assert first["documents"] == 2
     assert first["languages"] == {"en": 1, "ru": 1}
     assert first["source_statuses"] == {"approved": 2}
+    assert set(first["utf8_bytes_by_language"]) == {"en", "ru"}
+    assert sum(first["utf8_bytes_by_language"].values()) == first["utf8_document_bytes"]
     assert first["rejections"] == {
         "evaluation_contamination": 1,
         "exact_duplicate": 1,

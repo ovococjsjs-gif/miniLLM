@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "tokenizer_sha256": "44387ead2087e61cdb3ec371a0bc5d63dd9a8b01e2e0d85ad33444b4fa9f1508",
+  "actual_vocab_size": 8000,
+  "requested_vocab_size": 8000,
+  "special_token_ids": {
+    "<pad>": 0,
+    "<bos>": 1,
+    "<eos>": 2,
+    "<unk>": 3,
+    "<system>": 4,
+    "<user>": 5,
+    "<assistant>": 6,
+    "<tool>": 7
+  },
+  "corpus_manifest_sha256": "40f1191398b9ece1301f43279eec98c0c6d550ba305a721eb0ac78bd62ae3e4e",
+  "corpus_policy": "production-permissive-v1",
+  "training_sample": {
+    "documents": 7744,
+    "bytes_by_language": {
+      "en": 61635107,
+      "ru": 66810856
+    },
+    "sample_sha256": "67b5b010455f9c28d0b3173858ab8491f016beccf6e91702ada2582ddf4aa761"
+  },
+  "candidate_report": {
+    "vocab_size": 8000,
+    "embedding_parameters_tied": 4096000,
+    "lm_head_flops_per_token": 8192000,
+    "overall": {
+      "documents": 390,
+      "utf8_bytes": 4446971,
+      "characters": 3783752,
+      "words": 653034,
+      "tokens": 1177629,
+      "unknown_tokens": 0,
+      "bytes_per_token": 3.776207107671431,
+      "characters_per_token": 3.213025494446893,
+      "tokens_per_word": 1.8033195821350803,
+      "unknown_rate": 0.0
+    },
+    "by_language": {
+      "en": {
+        "documents": 369,
+        "utf8_bytes": 2954598,
+        "characters": 2951128,
+        "words": 521783,
+        "tokens": 880055,
+        "unknown_tokens": 0,
+        "bytes_per_token": 3.3572878967791784,
+        "characters_per_token": 3.353344961394458,
+        "tokens_per_word": 1.6866302658384809,
+        "unknown_rate": 0.0
+      },
+      "ru": {
+        "documents": 21,
+        "utf8_bytes": 1492373,
+        "characters": 832624,
+        "words": 131251,
+        "tokens": 297574,
+        "unknown_tokens": 0,
+        "bytes_per_token": 5.015132370435589,
+        "characters_per_token": 2.7980401513573097,
+        "tokens_per_word": 2.2672132021851263,
+        "unknown_rate": 0.0
+      }
+    }
+  },
+  "normalization": "NFKC",
+  "pre_tokenizer": "ByteLevel(add_prefix_space=False)",
+  "decoder": "ByteLevel"
+}

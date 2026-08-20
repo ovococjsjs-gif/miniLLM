@@ -16,7 +16,7 @@ checkpoint, не перепутав дорогой training run с ещё одн
 - distillation losses и fake-quantization/QAT primitives;
 - reference generation, exact GQA/conv/GDN2 cache и bilingual completion smoke suite;
 - память, permissioned tools, retrieval trust boundary и bounded assistant loop;
-- 46 unit/integration tests и воспроизводимые малые результаты.
+- 49 unit/integration tests и воспроизводимые малые результаты.
 
 ### Что на самом деле доказано
 
@@ -179,22 +179,28 @@ Engram пока использует корректный full-prefix fallback. 
 
 **Результат:** любой будущий checkpoint можно сразу прочитать, сравнить и показать.
 
-### Блок 2 — corpus v1 и tokenizer freeze — инфраструктура выполнена
+### Блок 2 — corpus v1 и tokenizer freeze — первый real pilot выполнен
 
 Готовы machine-enforced source/license registry, conservative production policy,
-disk-backed dedup, deterministic shards, protected-eval filtering, Common Corpus importer,
-tokenizer candidate/freeze scripts и synthetic end-to-end test.
+disk-backed dedup, deterministic shards, protected-eval filtering, GitHub/Common Corpus
+importers, tokenizer candidate/freeze scripts и hashed token packing.
 
-Осталось выполнить на реальных данных:
+Pinned GitHub pilot собран из OANC mirror, reviewed Russian public-domain literature и
+RusDraCor: 8,560 документов / 142.7 MB, 47.6% EN и 52.4% RU по bytes. Выбран отдельный
+8K L1-tokenizer; упаковано 31.09M train tokens с долями 59.3% EN / 40.7% RU. Tokenizer
+сохранён в `artifacts/tokenizer-github-pilot-v1`, полный отчёт —
+`results/github_pilot_data.json`.
 
-- закрепить доступную ревизию Common Corpus и сделать RU/EN permissive snapshot;
-- вручную проверить выборки accepted/rejected документов и attribution;
-- измерить фактические language/domain token shares;
-- провести 16K/32K/48K test и выбрать tokenizer;
-- упаковать pilot token stream.
+Осталось до corpus v1, достаточного для длинного L1:
 
-**Результат после real snapshot:** данные, на которых уже не стыдно обучить первый
-переносимый checkpoint.
+- увеличить train budget минимум до 0.1B без простого повторения эпох;
+- добавить современный permissive Russian, science, code и dialogue/tools;
+- расширить ручной accepted/rejected audit;
+- повторить vocabulary decision после расширения смеси;
+- закрепить окончательный attribution/release review.
+
+**Текущий результат:** реальный переносимый pipeline/scaling checkpoint уже можно
+обучать; полезную base model на 31M tokens обещать нельзя.
 
 ### Блок 3 — L1 training package
 

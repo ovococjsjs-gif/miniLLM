@@ -1,8 +1,8 @@
 # Corpus v1: permissive-first data path
 
-Статус: pipeline реализован; реальный RU/EN snapshot ещё не скачан и не объявлен готовым
-для обучения. Этот документ — инженерная политика происхождения, а не юридическое
-заключение.
+Статус: pipeline реализован и первый pinned GitHub RU/EN pilot собран. Он готов для
+короткого L1 scaling checkpoint, но слишком мал и доменно узок для полезной base model.
+Этот документ — инженерная политика происхождения, а не юридическое заключение.
 
 ## 1. Главный принцип
 
@@ -147,15 +147,77 @@ PYTHONPATH=src python scripts/pack_corpus_tokens.py data/corpus-v1 \
 
 Каждый uint32 stream получает SHA-256 и связан одновременно с corpus и tokenizer hash.
 
-## 6. Что проверено сейчас
+## 6. Pinned GitHub real-data pilot
 
-Полный synthetic vertical test прошёл путь:
+GitHub оказался стабильным источником первого реального snapshot. Конфигурация
+`configs/corpus/github_pilot_sources.json` закрепляет три commit SHA:
 
-`JSONL → production policy → SQLite dedup → deterministic shards → 512/1024 BPE candidates → frozen tokenizer → hashed uint32 streams`.
+| источник | revision | статус |
+|---|---|---|
+| OANC mirror, modern English | `0e93b4f` | OANC unrestricted use/redistribution |
+| RusLit reviewed author folders | `4509680` | Public Domain |
+| RusDraCor TEI | `b178c04` | CC0 |
 
-В тесте: 240 документов, равные RU/EN доли, документные splits, три shards и только
-`approved` source status. Этот smoke проверяет механику, но не заменяет аудит и статистику
-реального Common Corpus snapshot.
+```bash
+PYTHONPATH=src python scripts/fetch_github_corpora.py \
+  --output data/github-pilot-checkouts
+PYTHONPATH=src python scripts/import_github_corpora.py \
+  --checkouts data/github-pilot-checkouts \
+  --output data/imported/github-pilot.jsonl \
+  --acquisition-date 2026-08-20
+```
+
+Importer проверяет exact checkout SHA и clean worktree. RusLit ограничен двенадцатью
+проверенными author directories; chunks одной книги получают общий split group.
+RusDraCor извлекается из TEI с play-level provenance. Движущийся branch не используется.
+
+После production policy, quality, PII, contamination и dedup gates:
+
+| метрика | значение |
+|---|---:|
+| accepted documents | 8,560 |
+| document text | 142.70 MB |
+| English bytes | 67.99 MB (47.6%) |
+| Russian bytes | 74.71 MB (52.4%) |
+| OANC documents | 7,801 |
+| RusLit chunks | 678 |
+| RusDraCor chunks | 81 |
+| corpus SHA-256 | `40f1191398b9ece1301f43279eec98c0c6d550ba305a721eb0ac78bd62ae3e4e` |
+
+Главные отбраковки: 967 PII patterns, 298 repeated-line documents, 8 short, 4 near
+duplicates, 2 encoding-damaged и 1 exact duplicate. Детерминированные accepted samples
+вручную просмотрены: OANC содержит современную публицистику/travel/technical prose,
+RusLit — чистую литературу, RusDraCor — корректно извлечённый диалог.
+
+Tokenizer candidates на 128.4 MB balanced training sample:
+
+| vocab | bytes/token | EN tokens/word | RU tokens/word | tied params @ d=512 |
+|---:|---:|---:|---:|---:|
+| 8K | 3.776 | 1.687 | 2.267 | 4.10M |
+| 16K | 4.181 | 1.525 | 2.042 | 8.19M |
+| 32K | 4.529 | 1.414 | 1.860 | 16.38M |
+
+Для 10–30M L1-модели выбран **8K**: удвоение vocabulary до 16K съедает ещё 4.1M
+параметров и удваивает LM-head cost ради умеренного сокращения последовательности.
+Это решение только для scaling pilot; product tokenizer 32K остаётся открытым.
+
+Packed result:
+
+- train: **31,094,503 tokens**, 59.3% EN / 40.7% RU;
+- validation: 1,178,019 tokens;
+- test: 2,213,356 tokens.
+
+Frozen tokenizer находится в `artifacts/tokenizer-github-pilot-v1`, полный manifest,
+source revisions, shard hashes, candidates и token mixture — в
+`results/github_pilot_data.json`.
+
+Перед этим реальным прогоном synthetic vertical test также прошёл весь путь на 240
+документах. Ограничение pilot: Russian часть преимущественно литературная/драматическая,
+нет достаточных science, code, modern dialogue и tool данных. 31M train tokens годятся
+для первого честного scaling checkpoint, но ещё не для полезного ассистента.
+
+RUB GitHub corpus с 71,515 современными правительственными текстами найден и описан в
+registry как `conditional`; в этот production-permissive snapshot он не включён.
 
 ## 7. Gate перед L1
 

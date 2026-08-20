@@ -178,3 +178,21 @@
 39. **OpenStax licensing** — текущие книги CC BY-NC-SA и требуют отдельного разрешения на
     LLM training; источник исключён из production policy.
     <https://help.openstax.org/s/article/Licensing-information-of-OpenStax-textbooks>
+
+40. **Open American National Corpus** — около 15M слов современного American English,
+    официально доступен без ограничений для research и commercial development; pilot
+    использует pinned GitHub mirror.
+    <https://anc.org/data/oanc/download/>
+    <https://github.com/jly02/ngram>
+
+41. **RusDraCor** — 212 русских пьес в TEI; corpus-level `corpus.xml` объявляет CC0.
+    <https://github.com/dracor-org/rusdracor>
+
+42. **RusLit** — компактная GitHub-коллекция русской public-domain литературы. Pilot
+    ограничен явно перечисленными авторами, умершими не позже 1936 года.
+    <https://github.com/d0rj/RusLit>
+
+43. **RUB Corpus and Code** — 71,515 современных русскоязычных правительственных текстов;
+    репозиторий заявляет public-domain происхождение, но источник оставлен conditional до
+    item/source-rights review.
+    <https://github.com/pjbraga/rub_corpus_and_code>

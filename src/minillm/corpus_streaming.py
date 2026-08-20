@@ -281,6 +281,9 @@ class StreamingCorpusBuilder:
         self.license_counts: Counter[str] = Counter()
         self.source_counts: Counter[str] = Counter()
         self.source_status_counts: Counter[str] = Counter()
+        self.language_bytes: Counter[str] = Counter()
+        self.domain_bytes: Counter[str] = Counter()
+        self.source_bytes: Counter[str] = Counter()
         self.total_document_bytes = 0
         self.corpus_digest = hashlib.sha256()
         self.finished = False
@@ -340,6 +343,9 @@ class StreamingCorpusBuilder:
                 assert decision.source is not None
                 self.source_status_counts[decision.source.status] += 1
                 byte_count = len(document.text.encode("utf-8"))
+                self.language_bytes[document.language] += byte_count
+                self.domain_bytes[document.domain] += byte_count
+                self.source_bytes[document.source] += byte_count
                 self.total_document_bytes += byte_count
                 self.corpus_digest.update(split.encode())
                 self.corpus_digest.update(document.id.encode())
@@ -362,6 +368,9 @@ class StreamingCorpusBuilder:
             "licenses": dict(sorted(self.license_counts.items())),
             "sources": dict(sorted(self.source_counts.items())),
             "source_statuses": dict(sorted(self.source_status_counts.items())),
+            "utf8_bytes_by_language": dict(sorted(self.language_bytes.items())),
+            "utf8_bytes_by_domain": dict(sorted(self.domain_bytes.items())),
+            "utf8_bytes_by_source": dict(sorted(self.source_bytes.items())),
             "rejections": dict(sorted(self.rejection_counts.items())),
             "corpus_sha256": self.corpus_digest.hexdigest(),
             "shards": [asdict(shard) for shard in shards],

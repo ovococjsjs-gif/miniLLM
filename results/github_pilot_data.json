@@ -1,0 +1,503 @@
+{
+  "schema_version": 1,
+  "id": "github-permissive-pilot-v1",
+  "source_config": {
+    "schema_version": 1,
+    "id": "github-permissive-pilot-v1",
+    "sources": [
+      {
+        "source_id": "oanc-github-mirror",
+        "repository": "https://github.com/jly02/ngram.git",
+        "checkout": "oanc",
+        "revision": "0e93b4f9a19a9931fe00799c404269259068c848",
+        "importer": "oanc",
+        "sample_parts_per_million": 1000000
+      },
+      {
+        "source_id": "ruslit-pd-github",
+        "repository": "https://github.com/d0rj/RusLit.git",
+        "checkout": "ruslit",
+        "revision": "4509680428729da225a73a22008133660f92bb7e",
+        "importer": "ruslit",
+        "sample_parts_per_million": 1000000,
+        "allowed_authors": [
+          "Blok",
+          "Bryusov",
+          "Chekhov",
+          "Dostoevsky",
+          "Gogol",
+          "Gorky",
+          "Herzen",
+          "Lermontov",
+          "Nekrasov",
+          "Pushkin",
+          "Tolstoy",
+          "Turgenev"
+        ]
+      },
+      {
+        "source_id": "rusdracor-github",
+        "repository": "https://github.com/dracor-org/rusdracor.git",
+        "checkout": "rusdracor",
+        "revision": "b178c0401ffcf58b209104e90e38ff718f188fd8",
+        "importer": "rusdracor",
+        "sample_parts_per_million": 1000000
+      }
+    ]
+  },
+  "corpus": {
+    "schema_version": 1,
+    "policy": {
+      "id": "production-permissive-v1",
+      "allowed_source_statuses": [
+        "approved"
+      ],
+      "allowed_licenses": [
+        "0BSD",
+        "Apache-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "CC-BY-2.5",
+        "CC-BY-4.0",
+        "CC0-1.0",
+        "ISC",
+        "MIT",
+        "OANC-Unrestricted",
+        "Public-Domain",
+        "Unlicense"
+      ],
+      "require_provenance_for_attribution": true,
+      "notes": "Conservative build: excludes NC, ND, ShareAlike, unknown and generic-open labels. This policy is an engineering guard, not legal advice."
+    },
+    "source_registry_sha256": "cf9efb2f3042d6494b41f48f9d356368f254d1116b161c64ffc4c62b88cad96d",
+    "documents": 8560,
+    "utf8_document_bytes": 142702106,
+    "splits": {
+      "test": 426,
+      "train": 7744,
+      "validation": 390
+    },
+    "languages": {
+      "en": 7801,
+      "ru": 759
+    },
+    "domains": {
+      "drama": 81,
+      "general": 7801,
+      "literature": 678
+    },
+    "licenses": {
+      "CC0-1.0": 81,
+      "OANC-Unrestricted": 7801,
+      "Public-Domain": 678
+    },
+    "sources": {
+      "oanc-github-mirror": 7801,
+      "rusdracor-github": 81,
+      "ruslit-pd-github": 678
+    },
+    "source_statuses": {
+      "approved": 8560
+    },
+    "utf8_bytes_by_language": {
+      "en": 67993709,
+      "ru": 74708397
+    },
+    "utf8_bytes_by_domain": {
+      "drama": 6231453,
+      "general": 67993709,
+      "literature": 68476944
+    },
+    "utf8_bytes_by_source": {
+      "oanc-github-mirror": 67993709,
+      "rusdracor-github": 6231453,
+      "ruslit-pd-github": 68476944
+    },
+    "rejections": {
+      "encoding_damage": 2,
+      "exact_duplicate": 1,
+      "near_duplicate": 4,
+      "pii_pattern": 967,
+      "repeated_lines": 298,
+      "too_short": 8
+    },
+    "corpus_sha256": "40f1191398b9ece1301f43279eec98c0c6d550ba305a721eb0ac78bd62ae3e4e",
+    "shards": [
+      {
+        "split": "test",
+        "path": "test/part-00000.jsonl.gz",
+        "documents": 426,
+        "utf8_bytes": 10188361,
+        "compressed_bytes": 3144866,
+        "sha256": "e58cce47373e6df1d57adb685f6739912db18b2c780168703b9809e0a9a4da78"
+      },
+      {
+        "split": "train",
+        "path": "train/part-00000.jsonl.gz",
+        "documents": 2123,
+        "utf8_bytes": 16774023,
+        "compressed_bytes": 5868077,
+        "sha256": "5568e157ad38000f5f62a707fe44d9851080cdb3557255a4310a87ec566c3e15"
+      },
+      {
+        "split": "train",
+        "path": "train/part-00001.jsonl.gz",
+        "documents": 2077,
+        "utf8_bytes": 16736209,
+        "compressed_bytes": 6486599,
+        "sha256": "478984189a4c037200d28e4adce4c1626bdd80572d8197bfb9ad75b467f54f73"
+      },
+      {
+        "split": "train",
+        "path": "train/part-00002.jsonl.gz",
+        "documents": 621,
+        "utf8_bytes": 16771885,
+        "compressed_bytes": 6011631,
+        "sha256": "387b7ddb6e54a3cce6dac4fb6c0005dd906e8d23925ecad13a4a999bcf979bb1"
+      },
+      {
+        "split": "train",
+        "path": "train/part-00003.jsonl.gz",
+        "documents": 2164,
+        "utf8_bytes": 16773892,
+        "compressed_bytes": 5208808,
+        "sha256": "ac7a17a516c7f5f4dd8383ef2d4f596c83346b5532e76580f9d7b1e04551f50c"
+      },
+      {
+        "split": "train",
+        "path": "train/part-00004.jsonl.gz",
+        "documents": 319,
+        "utf8_bytes": 16674256,
+        "compressed_bytes": 4703832,
+        "sha256": "5d5ad35952b1d3348703189e9837e0b1f6a6ce1bd100e34ec9ef1fad15abb39f"
+      },
+      {
+        "split": "train",
+        "path": "train/part-00005.jsonl.gz",
+        "documents": 127,
+        "utf8_bytes": 16651105,
+        "compressed_bytes": 4582797,
+        "sha256": "0e6f05088f0ea942aabd881f08c643c92a31b20c08804eafb09933c2c2fca609"
+      },
+      {
+        "split": "train",
+        "path": "train/part-00006.jsonl.gz",
+        "documents": 125,
+        "utf8_bytes": 16703775,
+        "compressed_bytes": 4660327,
+        "sha256": "0a89724c23ba9f3e4c6df00decd501a40758be2e7d5521223582aae3a2930531"
+      },
+      {
+        "split": "train",
+        "path": "train/part-00007.jsonl.gz",
+        "documents": 170,
+        "utf8_bytes": 16733205,
+        "compressed_bytes": 4604599,
+        "sha256": "c377f5d1235f9c0009a5c20b5315fcb4fc3b0ca6da06c2a98e980aa681d53213"
+      },
+      {
+        "split": "train",
+        "path": "train/part-00008.jsonl.gz",
+        "documents": 18,
+        "utf8_bytes": 1505566,
+        "compressed_bytes": 427673,
+        "sha256": "0194dc5e103eb450ee957bd5b93bfd596ae7c150ec2ef51c1d6311cc9de942e1"
+      },
+      {
+        "split": "validation",
+        "path": "validation/part-00000.jsonl.gz",
+        "documents": 390,
+        "utf8_bytes": 4780452,
+        "compressed_bytes": 1617057,
+        "sha256": "41b2b4550905360bbcc681a0ee09c659a8f6934a8d534df4f2714d54bb4971a6"
+      }
+    ],
+    "settings": {
+      "min_characters": 200,
+      "max_repeated_line_ratio": 0.3,
+      "reject_pii": true,
+      "near_duplicate_hamming": 3,
+      "contamination_threshold": 0.2,
+      "max_shard_bytes": 16777216
+    }
+  },
+  "tokenizer_candidates": {
+    "schema_version": 1,
+    "corpus_manifest_sha256": "40f1191398b9ece1301f43279eec98c0c6d550ba305a721eb0ac78bd62ae3e4e",
+    "corpus_policy": "production-permissive-v1",
+    "languages": [
+      "en",
+      "ru"
+    ],
+    "training_sample": {
+      "documents": 7744,
+      "bytes_by_language": {
+        "en": 61635107,
+        "ru": 66810856
+      },
+      "sample_sha256": "67b5b010455f9c28d0b3173858ab8491f016beccf6e91702ada2582ddf4aa761"
+    },
+    "validation_documents": 390,
+    "validation_bytes_by_language": {
+      "en": 2954598,
+      "ru": 1492373
+    },
+    "candidates": [
+      {
+        "requested_vocab_size": 8000,
+        "tokenizer_sha256": "44387ead2087e61cdb3ec371a0bc5d63dd9a8b01e2e0d85ad33444b4fa9f1508",
+        "path": "byte-bpe-8000.json",
+        "report": {
+          "vocab_size": 8000,
+          "embedding_parameters_tied": 4096000,
+          "lm_head_flops_per_token": 8192000,
+          "overall": {
+            "documents": 390,
+            "utf8_bytes": 4446971,
+            "characters": 3783752,
+            "words": 653034,
+            "tokens": 1177629,
+            "unknown_tokens": 0,
+            "bytes_per_token": 3.776207107671431,
+            "characters_per_token": 3.213025494446893,
+            "tokens_per_word": 1.8033195821350803,
+            "unknown_rate": 0.0
+          },
+          "by_language": {
+            "en": {
+              "documents": 369,
+              "utf8_bytes": 2954598,
+              "characters": 2951128,
+              "words": 521783,
+              "tokens": 880055,
+              "unknown_tokens": 0,
+              "bytes_per_token": 3.3572878967791784,
+              "characters_per_token": 3.353344961394458,
+              "tokens_per_word": 1.6866302658384809,
+              "unknown_rate": 0.0
+            },
+            "ru": {
+              "documents": 21,
+              "utf8_bytes": 1492373,
+              "characters": 832624,
+              "words": 131251,
+              "tokens": 297574,
+              "unknown_tokens": 0,
+              "bytes_per_token": 5.015132370435589,
+              "characters_per_token": 2.7980401513573097,
+              "tokens_per_word": 2.2672132021851263,
+              "unknown_rate": 0.0
+            }
+          }
+        }
+      },
+      {
+        "requested_vocab_size": 16000,
+        "tokenizer_sha256": "5d709b9d905b8670a64eb804d8f000508e9da41b2c8e0c5a3e2974b51663f151",
+        "path": "byte-bpe-16000.json",
+        "report": {
+          "vocab_size": 16000,
+          "embedding_parameters_tied": 8192000,
+          "lm_head_flops_per_token": 16384000,
+          "overall": {
+            "documents": 390,
+            "utf8_bytes": 4446971,
+            "characters": 3783752,
+            "words": 653034,
+            "tokens": 1063725,
+            "unknown_tokens": 0,
+            "bytes_per_token": 4.180564525605772,
+            "characters_per_token": 3.5570772521093326,
+            "tokens_per_word": 1.6288968108858037,
+            "unknown_rate": 0.0
+          },
+          "by_language": {
+            "en": {
+              "documents": 369,
+              "utf8_bytes": 2954598,
+              "characters": 2951128,
+              "words": 521783,
+              "tokens": 795665,
+              "unknown_tokens": 0,
+              "bytes_per_token": 3.713369320002765,
+              "characters_per_token": 3.709008188119372,
+              "tokens_per_word": 1.5248963649639793,
+              "unknown_rate": 0.0
+            },
+            "ru": {
+              "documents": 21,
+              "utf8_bytes": 1492373,
+              "characters": 832624,
+              "words": 131251,
+              "tokens": 268060,
+              "unknown_tokens": 0,
+              "bytes_per_token": 5.56730955756174,
+              "characters_per_token": 3.106110572259942,
+              "tokens_per_word": 2.042346344027855,
+              "unknown_rate": 0.0
+            }
+          }
+        }
+      },
+      {
+        "requested_vocab_size": 32000,
+        "tokenizer_sha256": "23651fade46b4d5d53ee7d0b8b753351a4dc55f15bf3411b48acd3258f685fa8",
+        "path": "byte-bpe-32000.json",
+        "report": {
+          "vocab_size": 32000,
+          "embedding_parameters_tied": 16384000,
+          "lm_head_flops_per_token": 32768000,
+          "overall": {
+            "documents": 390,
+            "utf8_bytes": 4446971,
+            "characters": 3783752,
+            "words": 653034,
+            "tokens": 981874,
+            "unknown_tokens": 0,
+            "bytes_per_token": 4.529064829092124,
+            "characters_per_token": 3.8536023970489084,
+            "tokens_per_word": 1.5035572420425276,
+            "unknown_rate": 0.0
+          },
+          "by_language": {
+            "en": {
+              "documents": 369,
+              "utf8_bytes": 2954598,
+              "characters": 2951128,
+              "words": 521783,
+              "tokens": 737802,
+              "unknown_tokens": 0,
+              "bytes_per_token": 4.0045947286670405,
+              "characters_per_token": 3.9998915698249666,
+              "tokens_per_word": 1.4140016060316263,
+              "unknown_rate": 0.0
+            },
+            "ru": {
+              "documents": 21,
+              "utf8_bytes": 1492373,
+              "characters": 832624,
+              "words": 131251,
+              "tokens": 244072,
+              "unknown_tokens": 0,
+              "bytes_per_token": 6.114478514536694,
+              "characters_per_token": 3.411386803893933,
+              "tokens_per_word": 1.8595820222322115,
+              "unknown_rate": 0.0
+            }
+          }
+        }
+      }
+    ],
+    "selection_rule": "Choose Pareto point using bytes/token, per-language tokens/word, embedding bytes, LM-head FLOPs, and downstream iso-byte runs."
+  },
+  "selected_tokenizer": {
+    "requested_vocab_size": 8000,
+    "actual_vocab_size": 8000,
+    "tokenizer_sha256": "44387ead2087e61cdb3ec371a0bc5d63dd9a8b01e2e0d85ad33444b4fa9f1508",
+    "artifact": "artifacts/tokenizer-github-pilot-v1/tokenizer.json",
+    "reason": "L1 pilot: 8K preserves non-embedding capacity; 16K doubles embedding/head cost for a modest tokenization gain. Final product vocabulary remains open."
+  },
+  "packed_tokens": {
+    "schema_version": 1,
+    "corpus_sha256": "40f1191398b9ece1301f43279eec98c0c6d550ba305a721eb0ac78bd62ae3e4e",
+    "corpus_policy": "production-permissive-v1",
+    "tokenizer_sha256": "44387ead2087e61cdb3ec371a0bc5d63dd9a8b01e2e0d85ad33444b4fa9f1508",
+    "tokenizer_vocab_size": 8000,
+    "dtype": "uint32",
+    "splits": {
+      "train": {
+        "documents": 7744,
+        "tokens": 31094503,
+        "tokenizer_vocab_size": 8000,
+        "tokenizer_path": "artifacts/tokenizer-github-pilot-v1/tokenizer.json",
+        "sha256": "e0d3d10c9d6e452a0f41f337572962e0545f312ec0fee510c80695819d961a3a",
+        "dtype": "uint32"
+      },
+      "validation": {
+        "documents": 390,
+        "tokens": 1178019,
+        "tokenizer_vocab_size": 8000,
+        "tokenizer_path": "artifacts/tokenizer-github-pilot-v1/tokenizer.json",
+        "sha256": "74cdbc2981532f61d4207bfde3b4420bd44d9140dfc8d1c4fd6964fd7e4b194e",
+        "dtype": "uint32"
+      },
+      "test": {
+        "documents": 426,
+        "tokens": 2213356,
+        "tokenizer_vocab_size": 8000,
+        "tokenizer_path": "artifacts/tokenizer-github-pilot-v1/tokenizer.json",
+        "sha256": "2f8a31fbb3709b0850d573cee10087b7725cb8f93269da223dda09da000de993",
+        "dtype": "uint32"
+      }
+    }
+  },
+  "token_mixture": {
+    "train": {
+      "language": {
+        "en": 18449330,
+        "ru": 12645173
+      },
+      "domain": {
+        "drama": 1280823,
+        "general": 18449330,
+        "literature": 11364350
+      },
+      "source": {
+        "oanc-github-mirror": 18449330,
+        "rusdracor-github": 1280823,
+        "ruslit-pd-github": 11364350
+      }
+    },
+    "validation": {
+      "language": {
+        "en": 880424,
+        "ru": 297595
+      },
+      "domain": {
+        "drama": 65646,
+        "general": 880424,
+        "literature": 231949
+      },
+      "source": {
+        "oanc-github-mirror": 880424,
+        "rusdracor-github": 65646,
+        "ruslit-pd-github": 231949
+      }
+    },
+    "test": {
+      "language": {
+        "en": 1031568,
+        "ru": 1181788
+      },
+      "domain": {
+        "drama": 41767,
+        "general": 1031568,
+        "literature": 1140021
+      },
+      "source": {
+        "oanc-github-mirror": 1031568,
+        "rusdracor-github": 41767,
+        "ruslit-pd-github": 1140021
+      }
+    }
+  },
+  "attribution": {
+    "schema_version": 1,
+    "corpus_sha256": "40f1191398b9ece1301f43279eec98c0c6d550ba305a721eb0ac78bd62ae3e4e",
+    "corpus_policy": "production-permissive-v1",
+    "documents": 8560,
+    "licenses": {
+      "CC0-1.0": 81,
+      "OANC-Unrestricted": 7801,
+      "Public-Domain": 678
+    },
+    "bundle": "github-pilot-attribution.jsonl.gz",
+    "bundle_sha256": "1513b9e126e7f65b28971121575d667595b14280cf6b9a36a91915c1ea1e961d"
+  },
+  "limitations": [
+    "31.1M train tokens are sufficient for a real pipeline/scaling checkpoint, not a useful final assistant.",
+    "Russian data is dominated by public-domain literature and drama; modern conversational, scientific, and code coverage remains missing.",
+    "OANC mirror provenance is pinned, but the mirror is not the canonical OANC host.",
+    "A small deterministic accepted sample was inspected; broader sample and rights audit is still required before public model release."
+  ]
+}

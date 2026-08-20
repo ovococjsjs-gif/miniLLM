@@ -28,6 +28,7 @@
 - machine-enforced source/license policy, deterministic shards и SQLite-backed dedup;
 - corpus manifests, quality/PII filters и protected-eval decontamination;
 - multilingual byte-BPE candidates и corpus-bound tokenizer freeze;
+- pinned GitHub RU/EN pilot: 142.7 MB, 31.1M train tokens, frozen 8K tokenizer;
 - uint32 token packing и resume-safe proxy trainer с восстановлением всех RNG;
 - калькулятор параметров, INT4-памяти, KV-cache, recurrent state и FLOP/token;
 - Fermi-разложение decode energy по активным весам, KV/state traffic и MAC;
