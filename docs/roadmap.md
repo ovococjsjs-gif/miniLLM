@@ -16,7 +16,7 @@ checkpoint, не перепутав дорогой training run с ещё одн
 - distillation losses и fake-quantization/QAT primitives;
 - reference generation, exact GQA/conv/GDN2 cache и bilingual completion smoke suite;
 - память, permissioned tools, retrieval trust boundary и bounded assistant loop;
-- 56 unit/integration tests и воспроизводимые малые результаты.
+- 57 unit/integration tests и воспроизводимые малые результаты.
 
 ### Что на самом деле доказано
 
@@ -29,11 +29,14 @@ checkpoint, не перепутав дорогой training run с ещё одн
 - На реальном 31M-token stream шестирукий 5M screen прошёл gate: attention loss 7.0017,
   edge 7.1244 (ratio 1.0175), edge быстрее в CPU training на 14.2%. Это 76.8K tokens/run,
   а не достаточное обучение или device benchmark.
+- Полный 20M Attention-pass на P100 завершил 949 steps без FP16 skips: validation loss
+  4.7329, 22.0K tokens/s, 1.013 GiB peak allocation. Генерация стала словоподобной, но
+  fixed suite осталась 0/8 — pipeline масштабируется, полезная модель ещё не получена.
 - Статический energy proxy полезен для постановки эксперимента, но не заменяет телефон.
 
 ### Чего пока нет
 
-- полезных pretrained/SFT весов: 5M screen checkpoints намеренно недообучены;
+- полезных pretrained/SFT весов: 20M Attention checkpoint стабилен, но всё ещё даёт 0/8;
 - production-legal русско-английского training corpus нужного масштаба;
 - финального product tokenizer, повторно проверенного на расширенной смеси;
 - систематического downstream evaluation шире диагностического smoke suite;
@@ -202,21 +205,21 @@ RusDraCor: 8,560 документов / 142.7 MB, 47.6% EN и 52.4% RU по byte
 **Текущий результат:** реальный переносимый pipeline/scaling checkpoint уже можно
 обучать; полезную base model на 31M tokens обещать нельзя.
 
-### Блок 3 — L1 training package — package/screen выполнены, GPU run ожидается
+### Блок 3 — L1 training package — Attention GPU pass выполнен
 
-Готовы matched 4.86M/19.60M quality/edge controls, mixed-precision single-GPU path,
-checkpoint v3 и preregistered three-seed screen. Все шесть runs по 300 шагов прошли gate.
-Attention пока лидирует по loss; edge остаётся в 1.75% и быстрее в CPU training на 14.2%.
-Обе completion-диагностики дали 0/8, как и должно быть после всего 76.8K tokens/run.
+Matched 4.86M/19.60M controls, mixed-precision path, checkpoint v3 и three-seed screen
+готовы. Attention обработал 31.10M tokens на Tesla P100 за 23.55 минуты: loss 4.7329,
+22.0K tokens/s, 1.013 GiB peak allocation, ноль skipped FP16 steps. Fixed completions
+остались 0/8, но вместо newline collapse появились словоподобные RU/EN fragments.
 
 Осталось:
 
-- GPU memory/throughput smoke для 20M пары;
-- один проход по 31.09M stream сначала attention, затем matched edge control;
-- расширение unique corpus до 0.1B+ и продолжение только при хорошем scaling;
-- генерация и downstream evaluation по промежуточным checkpoints.
+- выполнить `kaggle_l1_edge_training.ipynb` на такой же P100;
+- сравнить loss, throughput, peak VRAM и generation при matched recipe;
+- расширить unique corpus до 0.1B+ без повторения той же узкой эпохи;
+- после data expansion перейти к 50–100M scaling checkpoint.
 
-**Следующий результат:** первая содержательно обученная miniLLM и измеренная scaling point.
+**Следующий результат:** измеренная Attention/Edge GPU Pareto-точка.
 
 ### Блок 4 — L2 и выбор backbone
 
@@ -254,9 +257,8 @@ Attention пока лидирует по loss; edge остаётся в 1.75% и
 
 ## 10. Ближайшее решение
 
-Следующее критическое решение — **запустить 20M attention и edge controls на GPU**, не
-меняя preregistered recipe после просмотра одного результата. Сначала нужен короткий
-memory/throughput smoke, затем один проход по текущим 31.09M tokens с validation и
-completion checkpoints. Параллельно corpus расширяется до 0.1B+ unique tokens. Attention
-— provisional quality leader, но edge не удаляется до GPU/device Pareto: текущий CPU
-screen недостаточен для выбора product backbone.
+Следующее критическое решение — **завершить matched 20M Edge-control на Tesla P100** без
+изменения recipe после просмотра Attention. Затем loss/throughput/VRAM сравниваются одной
+таблицей. Независимо от победителя corpus расширяется до 0.1B+ unique tokens: ещё одна
+эпоха по тем же 31M узких tokens даст худшее evidence, чем новые данные. Attention пока
+остаётся quality leader, но product backbone не выбирается до Edge GPU result.

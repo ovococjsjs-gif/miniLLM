@@ -1,15 +1,17 @@
 # Kaggle L1
 
-В этой папке находятся оба файла для запуска:
+В этой папке находятся готовые файлы для запуска:
 
-- [`kaggle_l1_training.ipynb`](kaggle_l1_training.ipynb) — notebook;
+- [`kaggle_l1_training.ipynb`](kaggle_l1_training.ipynb) — первый Attention-run;
+- [`kaggle_l1_edge_training.ipynb`](kaggle_l1_edge_training.ipynb) — следующий matched
+  Edge-контроль на той же Tesla P100;
 - [`l1-github-pilot-data-v1.tar.gz`](l1-github-pilot-data-v1.tar.gz) — готовые packed
   RU/EN tokens, tokenizer и provenance manifests.
 
-Для обычного запуска достаточно скачать/import только notebook и включить Kaggle
-**Internet + GPU**. Notebook клонирует закреплённый commit этого репозитория, поэтому архив
-окажется рядом с кодом автоматически. На стадии 3 он распакуется без клонирования трёх
-исходных corpus repositories.
+Attention-run уже выполнен. Для следующего эксперимента нужно импортировать Edge notebook
+и включить Kaggle **Internet + GPU**. Notebook требует P100 для честного сравнения,
+клонирует закреплённый commit и распаковывает архив на стадии 3 без скачивания исходных
+corpus repositories.
 
 Data bundle:
 

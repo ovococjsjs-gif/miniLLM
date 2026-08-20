@@ -2,10 +2,13 @@
 
 Готовые файлы лежат вместе в [`kaggle/`](../kaggle/):
 
-- `kaggle_l1_training.ipynb` — запускаемый notebook;
+- `kaggle_l1_training.ipynb` — завершённый Attention recipe;
+- `kaggle_l1_edge_training.ipynb` — следующий matched Edge-контроль;
 - `l1-github-pilot-data-v1.tar.gz` — проверенный 48 MB data bundle.
 
-Notebook предназначен для Kaggle GPU и по умолчанию обучает 19.60M attention-control
+Attention уже успешно обучен на P100. Edge notebook использует тот же commit/data/seed и
+останавливается на другой GPU, чтобы throughput-сравнение не смешивало устройства.
+Основной notebook предназначен для Kaggle GPU и обучает 19.60M attention-control
 на полном 31.09M-token pilot stream.
 
 ## Быстрый запуск
@@ -13,7 +16,8 @@ Notebook предназначен для Kaggle GPU и по умолчанию �
 1. Импортировать `.ipynb` в Kaggle.
 2. Открыть **Settings → Accelerator → GPU**.
 3. Включить **Internet**: один clone получает код и готовый data bundle из GitHub.
-4. Оставить `VARIANTS = ["attention"]` для первого запуска.
+4. Для первого run использовать `kaggle_l1_training.ipynb`; после него — готовый
+   `kaggle_l1_edge_training.ipynb`.
 5. Выполнить **Run All**.
 6. После завершения нажать **Save Version**: только так содержимое `/kaggle/working`
    станет постоянным output этой версии.
@@ -26,7 +30,7 @@ Notebook автоматически:
   `torch==2.7.1` с CUDA 12.6;
 - выбирает BF16 только на Ampere+, а на T4/P100 — FP16;
 - до обучения выполняет настоящую CUDA-операцию и fused AdamW smoke-test;
-- воспроизводит corpus из трёх GitHub-источников на exact SHA;
+- распаковывает committed data bundle вместо повторного скачивания трёх corpora;
 - полностью проверяет SHA-256 всех token streams;
 - делает dry-run с ожидаемыми 949 optimizer steps;
 - обучает модель и сохраняет resume checkpoints;
@@ -49,20 +53,10 @@ notebook указать каталог в `DATA_INPUT`.
 
 ## Attention и edge
 
-Первым запускается:
-
-```python
-VARIANTS = ["attention"]
-```
-
-Для последовательного matched-сравнения:
-
-```python
-VARIANTS = ["attention", "edge"]
-```
-
-Две руки нельзя обучать одновременно на одном GPU: это портит throughput/memory
-измерения и увеличивает вероятность OOM.
+Attention version 1 завершена публично: 949 steps, loss 4.7329, 22.0K tokens/s и 1.013
+GiB peak allocation. Теперь запускается отдельный `kaggle_l1_edge_training.ipynb`; в нём
+уже выставлено `VARIANTS = ["edge"]` и проверка той же P100. Раздельные sessions не
+смешивают память и позволяют сохранить два независимых output bundles.
 
 ## Resume между сессиями
 

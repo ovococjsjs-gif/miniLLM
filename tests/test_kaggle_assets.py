@@ -10,6 +10,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK = ROOT / "kaggle" / "kaggle_l1_training.ipynb"
+EDGE_NOTEBOOK = ROOT / "kaggle" / "kaggle_l1_edge_training.ipynb"
 BUNDLE = ROOT / "kaggle" / "l1-github-pilot-data-v1.tar.gz"
 PREPARE_SCRIPT = ROOT / "scripts" / "prepare_l1_data.py"
 BUNDLE_SHA256 = "5ccfc6aaf8b5cf1c4a6201a5dc0a92fdc24d16c80efcfddbd1ea3ac106412889"
@@ -25,8 +26,8 @@ def load_prepare_module():
     return module
 
 
-def test_kaggle_notebook_is_clean_and_code_cells_compile() -> None:
-    notebook = json.loads(NOTEBOOK.read_text(encoding="utf-8"))
+def compile_notebook(path: Path) -> str:
+    notebook = json.loads(path.read_text(encoding="utf-8"))
     assert notebook["nbformat"] == 4
     assert len(notebook["cells"]) >= 15
     sources = []
@@ -36,7 +37,7 @@ def test_kaggle_notebook_is_clean_and_code_cells_compile() -> None:
         if cell["cell_type"] == "code":
             assert cell["execution_count"] is None
             assert cell["outputs"] == []
-            compile(source, f"notebook-cell-{index}", "exec")
+            compile(source, f"{path.name}-cell-{index}", "exec")
             for node in ast.walk(ast.parse(source)):
                 if isinstance(node, ast.Assign) and any(
                     isinstance(target, ast.Name) and target.id == "probe_source"
@@ -44,10 +45,14 @@ def test_kaggle_notebook_is_clean_and_code_cells_compile() -> None:
                 ):
                     compile(
                         ast.literal_eval(node.value),
-                        f"notebook-cell-{index}-cuda-probe",
+                        f"{path.name}-cell-{index}-cuda-probe",
                         "exec",
                     )
-    combined = "\n".join(sources)
+    return "\n".join(sources)
+
+
+def test_kaggle_notebook_is_clean_and_code_cells_compile() -> None:
+    combined = compile_notebook(NOTEBOOK)
     assert "prepare_l1_data.py" in combined
     assert "scripts/train_l1.py" in combined
     assert "configs/l1_attention_20m.json" in combined
@@ -62,6 +67,14 @@ def test_kaggle_notebook_is_clean_and_code_cells_compile() -> None:
     assert 'BUNDLE_NAME = "l1-github-pilot-data-v1.tar.gz"' in combined
     assert 'archive.extractall(destination, filter="data")' in combined
     assert 'REPO_DIR / "kaggle"' in combined
+
+
+def test_edge_notebook_is_p100_matched_control() -> None:
+    combined = compile_notebook(EDGE_NOTEBOOK)
+    assert 'VARIANTS = ["edge"]' in combined
+    assert 'REQUIRED_GPU_NAME = "Tesla P100-PCIE-16GB"' in combined
+    assert 'GPU_INFO["name"] != REQUIRED_GPU_NAME' in combined
+    assert 'REVISION = "fb8a3f19a22ec017838256a093a4aa47e0dfb846"' in combined
 
 
 def test_committed_kaggle_bundle_has_expected_identity() -> None:

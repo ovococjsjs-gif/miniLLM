@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "id": "l1-attention-20m-kaggle-p100-v1",
+  "status": "completed",
+  "source": {
+    "kaggle_notebook": "https://www.kaggle.com/code/riyozaki/notebook73869daa98",
+    "kaggle_version": 1,
+    "kaggle_session_id": 343729886,
+    "published_runtime_seconds": 1629.5
+  },
+  "provenance": {
+    "git_commit": "fb8a3f19a22ec017838256a093a4aa47e0dfb846",
+    "git_dirty": false,
+    "model_config": "configs/l1_attention_20m.json",
+    "corpus_sha256": "40f1191398b9ece1301f43279eec98c0c6d550ba305a721eb0ac78bd62ae3e4e",
+    "train_token_sha256": "e0d3d10c9d6e452a0f41f337572962e0545f312ec0fee510c80695819d961a3a",
+    "validation_token_sha256": "74cdbc2981532f61d4207bfde3b4420bd44d9140dfc8d1c4fd6964fd7e4b194e",
+    "tokenizer_sha256": "44387ead2087e61cdb3ec371a0bc5d63dd9a8b01e2e0d85ad33444b4fa9f1508"
+  },
+  "environment": {
+    "gpu": "Tesla P100-PCIE-16GB",
+    "compute_capability": [6, 0],
+    "gpu_memory_gib": 15.89,
+    "torch": "2.7.1+cu126",
+    "torch_cuda": "12.6",
+    "python": "3.12.13",
+    "precision": "fp16",
+    "fused_adamw": true,
+    "gradient_checkpointing": true
+  },
+  "training": {
+    "parameters": 19596800,
+    "trainable_parameters": 19596800,
+    "steps": 949,
+    "tokens_seen": 31096832,
+    "target_tokens": 31094503,
+    "tokens_per_second": 22004.869374508948,
+    "wall_seconds": 1413.1795772449998,
+    "peak_device_memory_bytes": 1087387648,
+    "skipped_optimizer_steps": 0,
+    "best_validation_main_loss": 4.732862830162048,
+    "last_validation_main_loss": 4.732862830162048,
+    "best_checkpoint_step": 900,
+    "derived_validation_perplexity": 113.62037301882944
+  },
+  "completion_diagnostic": {
+    "checkpoint_step": 900,
+    "passed": 0,
+    "total": 8,
+    "cases": [
+      {
+        "id": "en-capital",
+        "completion": " the\nSubject of the Furthermore, the CIA's C"
+      },
+      {
+        "id": "ru-capital",
+        "completion": " не могу, а я не могу, а я не могу, а я не"
+      },
+      {
+        "id": "en-arithmetic",
+        "completion": "\n\nThe\nDezer's\n\nD"
+      },
+      {
+        "id": "ru-arithmetic",
+        "completion": " «ПОсон Гуан.\nВЛ"
+      },
+      {
+        "id": "en-to-ru-translation",
+        "completion": " The New York Times , the Burd, the CIA's\nschool of the New York Times , the"
+      },
+      {
+        "id": "ru-to-en-translation",
+        "completion": "\n\n(вой)\n(войдет в пахаре)\n(войдет в с"
+      },
+      {
+        "id": "python-add",
+        "completion": "ed by the CIA's\nDeconomic, the F.\n"
+      },
+      {
+        "id": "ru-honest-unknown",
+        "completion": ", что он не мог бы не мог бы не мог бы не мог бы не мог бы не мог бы не мог бы"
+      }
+    ],
+    "interpretation": "The full pass removed the near-total newline collapse seen at 76.8K tokens and produced locally word-like RU/EN fragments, but all fixed task checks still fail and repetition remains severe. This is a healthy scaling checkpoint, not a useful language model."
+  },
+  "verdict": {
+    "training_completed": true,
+    "finite_and_stable": true,
+    "validation_still_improving_at_last_evaluation": true,
+    "useful_generation_established": false,
+    "proceed_to_matched_edge_control": true,
+    "repeat_same_data_epoch": false
+  },
+  "limitations": [
+    "The published summary evaluates validation through step 900; steps 901-949 have no later validation point.",
+    "The fixed completion suite is diagnostic and not an aggregate quality benchmark.",
+    "One pass over 31.09M tokens is only 1.59 target tokens per parameter.",
+    "P100 throughput and peak allocated memory are not phone latency or deployment memory."
+  ]
+}

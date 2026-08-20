@@ -86,6 +86,32 @@ throughput/VRAM and may be stopped early if validation does not improve. The cur
 unique-token corpus provides only about 1.6 tokens per model parameter; this is a scaling
 checkpoint, not enough training for useful language generation.
 
+### Completed Attention pass on Kaggle P100
+
+The public [Kaggle version](https://www.kaggle.com/code/riyozaki/notebook73869daa98)
+completed successfully at source commit `fb8a3f1`:
+
+| metric | result |
+|---|---:|
+| optimizer steps / tokens | 949 / 31,096,832 |
+| precision / skipped steps | FP16 / 0 |
+| training throughput | 22,004.9 tokens/s |
+| training wall time | 1,413.2 s (23.55 min) |
+| peak allocated CUDA memory | 1.013 GiB |
+| best/last validation main loss | 4.73286 / 4.73286 |
+| best evaluated checkpoint | step 900 |
+| fixed completion suite | 0/8 |
+
+The run is finite, stable and still improving at its last validation point, so it passes the
+engineering/scaling gate. Completion changed from almost pure newline collapse at 76.8K
+tokens to word-like RU/EN fragments, but factual, arithmetic, translation, code and
+abstention checks all still fail and repetition remains severe. This confirms that the
+pipeline learns real text while also confirming that 31M tokens cannot produce a useful
+20M language model. Do not repeat another epoch over the same narrow corpus.
+
+The extracted machine-readable result is `results/l1_attention_20m_kaggle.json`. The next
+controlled experiment is `kaggle/kaggle_l1_edge_training.ipynb` on the same P100.
+
 ## Trainer guarantees
 
 Checkpoint format v3 adds:
