@@ -7,7 +7,7 @@ import math
 import os
 import random
 import time
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -27,6 +27,7 @@ class PackedTokenManifest:
     tokens: int
     tokenizer_vocab_size: int
     tokenizer_path: str
+    sha256: str
     dtype: str = "uint32"
 
 
@@ -97,6 +98,54 @@ class BinaryTokenDataset:
         return torch.from_numpy(array).to(device=device, dtype=torch.long)
 
 
+def pack_document_stream(
+    documents: Iterable[CorpusDocument],
+    tokenizer: Tokenizer,
+    *,
+    tokenizer_path: str | Path,
+    output_path: str | Path,
+) -> PackedTokenManifest:
+    """Atomically pack an iterable without materializing the corpus in memory."""
+
+    import hashlib
+
+    output = Path(output_path)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output.with_suffix(output.suffix + ".tmp")
+    manifest_path = output.with_suffix(output.suffix + ".json")
+    if output.exists() or temporary.exists() or manifest_path.exists():
+        raise FileExistsError(f"refusing to overwrite token stream {output}")
+    eos_id = tokenizer.token_to_id("<eos>")
+    if eos_id is None:
+        raise ValueError("tokenizer has no <eos> token")
+    tokens = document_count = 0
+    digest = hashlib.sha256()
+    try:
+        with temporary.open("wb") as handle:
+            for document in documents:
+                ids = tokenizer.encode(document.text).ids + [eos_id]
+                encoded = np.asarray(ids, dtype=np.uint32).tobytes()
+                handle.write(encoded)
+                digest.update(encoded)
+                tokens += len(ids)
+                document_count += 1
+        os.replace(temporary, output)
+    except BaseException:
+        temporary.unlink(missing_ok=True)
+        raise
+    manifest = PackedTokenManifest(
+        documents=document_count,
+        tokens=tokens,
+        tokenizer_vocab_size=tokenizer.get_vocab_size(),
+        tokenizer_path=str(tokenizer_path),
+        sha256=digest.hexdigest(),
+    )
+    manifest_path.write_text(
+        json.dumps(asdict(manifest), indent=2) + "\n", encoding="utf-8"
+    )
+    return manifest
+
+
 def pack_documents(
     documents: Sequence[CorpusDocument],
     tokenizer: Tokenizer,
@@ -104,27 +153,12 @@ def pack_documents(
     tokenizer_path: str | Path,
     output_path: str | Path,
 ) -> PackedTokenManifest:
-    output = Path(output_path)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    eos_id = tokenizer.token_to_id("<eos>")
-    if eos_id is None:
-        raise ValueError("tokenizer has no <eos> token")
-    tokens = 0
-    with output.open("wb") as handle:
-        for document in documents:
-            ids = tokenizer.encode(document.text).ids + [eos_id]
-            np.asarray(ids, dtype=np.uint32).tofile(handle)
-            tokens += len(ids)
-    manifest = PackedTokenManifest(
-        documents=len(documents),
-        tokens=tokens,
-        tokenizer_vocab_size=tokenizer.get_vocab_size(),
-        tokenizer_path=str(tokenizer_path),
+    return pack_document_stream(
+        documents,
+        tokenizer,
+        tokenizer_path=tokenizer_path,
+        output_path=output_path,
     )
-    output.with_suffix(output.suffix + ".json").write_text(
-        json.dumps(asdict(manifest), indent=2) + "\n", encoding="utf-8"
-    )
-    return manifest
 
 
 def learning_rate(step: int, config: TrainConfig) -> float:

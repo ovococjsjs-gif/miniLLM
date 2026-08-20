@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "minillm-generated",
+      "status": "approved",
+      "licenses": [
+        "CC0-1.0"
+      ],
+      "languages": [
+        "en",
+        "ru"
+      ],
+      "domains": [
+        "dialogue",
+        "tools",
+        "structured"
+      ],
+      "provenance_required": false,
+      "url": "https://github.com/ovococjsjs-gif/miniLLM",
+      "notes": "Deterministically generated project-owned traces; prompts and generators must be versioned."
+    },
+    {
+      "id": "common-corpus-permissive",
+      "status": "approved",
+      "licenses": [
+        "Public-Domain",
+        "CC0-1.0",
+        "CC-BY-4.0",
+        "MIT",
+        "Apache-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "ISC",
+        "0BSD",
+        "Unlicense"
+      ],
+      "languages": [
+        "en",
+        "ru"
+      ],
+      "domains": [
+        "culture",
+        "government",
+        "science",
+        "code",
+        "web",
+        "semantic"
+      ],
+      "provenance_required": true,
+      "url": "https://huggingface.co/datasets/PleIAs/common_corpus",
+      "notes": "Accept only rows with a canonical per-document license and source identifier; do not accept generic 'open license' or ShareAlike through this entry."
+    },
+    {
+      "id": "wikidata-main",
+      "status": "approved",
+      "licenses": [
+        "CC0-1.0"
+      ],
+      "languages": [
+        "en",
+        "ru"
+      ],
+      "domains": [
+        "semantic"
+      ],
+      "provenance_required": true,
+      "url": "https://dumps.wikimedia.org/",
+      "notes": "Only structured data in main, Property, Lexeme and EntitySchema namespaces covered by Wikimedia's CC0 statement."
+    },
+    {
+      "id": "arxiv-explicit-open",
+      "status": "approved",
+      "licenses": [
+        "CC0-1.0",
+        "CC-BY-4.0"
+      ],
+      "languages": [
+        "en",
+        "ru"
+      ],
+      "domains": [
+        "science"
+      ],
+      "provenance_required": true,
+      "url": "https://info.arxiv.org/help/policies/submission_agreement.html",
+      "notes": "Full text only when the individual item has CC0 or CC-BY. The default arXiv distribution license is not accepted. Metadata is CC0."
+    },
+    {
+      "id": "youtube-commons",
+      "status": "conditional",
+      "licenses": [
+        "CC-BY-4.0"
+      ],
+      "languages": [
+        "en",
+        "ru"
+      ],
+      "domains": [
+        "dialogue",
+        "transcript"
+      ],
+      "provenance_required": true,
+      "url": "https://huggingface.co/datasets/PleIAs/YouTube-Commons",
+      "notes": "Potentially valuable conversational data, but transcription/translation quality, attribution export and uploader rights require a sample audit."
+    },
+    {
+      "id": "wikinews-text",
+      "status": "approved",
+      "licenses": [
+        "CC-BY-2.5"
+      ],
+      "languages": [
+        "en",
+        "ru"
+      ],
+      "domains": [
+        "news"
+      ],
+      "provenance_required": true,
+      "url": "https://dumps.wikimedia.org/legal.html",
+      "notes": "Wikimedia states that Wikinews text published since 2005-09-25 is CC BY 2.5; preserve article URL and attribution."
+    },
+    {
+      "id": "wikimedia-text",
+      "status": "conditional",
+      "licenses": [
+        "CC-BY-SA-4.0"
+      ],
+      "languages": [
+        "en",
+        "ru"
+      ],
+      "domains": [
+        "encyclopedic",
+        "culture"
+      ],
+      "provenance_required": true,
+      "url": "https://dumps.wikimedia.org/legal.html",
+      "notes": "Commercial reuse is allowed, but conservative AI guidance raises ShareAlike obligations for publicly shared models/outputs. Requires a release-policy decision."
+    },
+    {
+      "id": "russian-public-domain",
+      "status": "conditional",
+      "licenses": [
+        "Public-Domain"
+      ],
+      "languages": [
+        "ru"
+      ],
+      "domains": [
+        "books",
+        "culture"
+      ],
+      "provenance_required": true,
+      "url": "https://huggingface.co/datasets/PleIAs/Russian-PD",
+      "notes": "Rights and publication dates are curated for Russia, but OCR quality, archaic-language share and item-level jurisdiction evidence require auditing."
+    },
+    {
+      "id": "russian-law-text",
+      "status": "conditional",
+      "licenses": [
+        "Public-Domain"
+      ],
+      "languages": [
+        "ru"
+      ],
+      "domains": [
+        "law",
+        "government"
+      ],
+      "provenance_required": true,
+      "url": "https://huggingface.co/datasets/irlspbru/RusLawOD",
+      "notes": "Only primary legal-act text asserted outside copyright is eligible. Project annotations and other materials are CC-BY-NC and must be excluded."
+    },
+    {
+      "id": "project-gutenberg",
+      "status": "conditional",
+      "licenses": [
+        "Public-Domain"
+      ],
+      "languages": [
+        "en",
+        "ru"
+      ],
+      "domains": [
+        "books"
+      ],
+      "provenance_required": true,
+      "url": "https://www.gutenberg.org/policy/permission.html",
+      "notes": "Public-domain determination is US-specific and some items remain copyrighted. Strip Gutenberg trademark/license boilerplate only under applicable terms and verify target jurisdictions."
+    },
+    {
+      "id": "the-stack",
+      "status": "conditional",
+      "licenses": [
+        "MIT",
+        "Apache-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "ISC",
+        "0BSD",
+        "Unlicense"
+      ],
+      "languages": [
+        "code"
+      ],
+      "domains": [
+        "code"
+      ],
+      "provenance_required": true,
+      "url": "https://huggingface.co/datasets/bigcode/the-stack",
+      "notes": "Use only a current opt-out-respecting release with per-file provenance and attribution retention; do not inherit a dataset-level license."
+    },
+    {
+      "id": "openstax",
+      "status": "research-only",
+      "licenses": [
+        "CC-BY-NC-SA-4.0"
+      ],
+      "languages": [
+        "en"
+      ],
+      "domains": [
+        "education"
+      ],
+      "provenance_required": true,
+      "url": "https://help.openstax.org/s/article/Licensing-information-of-OpenStax-textbooks",
+      "notes": "Current material is NonCommercial and explicitly prohibits LLM training without permission. Never include in production weights without written permission."
+    },
+    {
+      "id": "ud-research-proxy",
+      "status": "research-only",
+      "licenses": [
+        "CC-BY-NC-SA-4.0"
+      ],
+      "languages": [
+        "ru",
+        "uk"
+      ],
+      "domains": [
+        "linguistic"
+      ],
+      "provenance_required": true,
+      "url": "https://universaldependencies.org/",
+      "notes": "Existing Russian/Ukrainian proxy inputs are NC and remain isolated from production corpus builds."
+    }
+  ]
+}

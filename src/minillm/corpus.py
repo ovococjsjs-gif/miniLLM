@@ -240,8 +240,9 @@ def stable_split(
 ) -> str:
     if train < 1 or validation < 1 or train + validation >= 100:
         raise ValueError("invalid split percentages")
+    split_group = str(document.metadata.get("split_group", document.id))
     bucket = (
-        int(hashlib.blake2s(document.id.encode(), digest_size=4).hexdigest(), 16) % 100
+        int(hashlib.blake2s(split_group.encode(), digest_size=4).hexdigest(), 16) % 100
     )
     if bucket < train:
         return "train"

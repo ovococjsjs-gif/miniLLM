@@ -16,7 +16,7 @@ checkpoint, не перепутав дорогой training run с ещё одн
 - distillation losses и fake-quantization/QAT primitives;
 - reference generation, exact GQA/conv/GDN2 cache и bilingual completion smoke suite;
 - память, permissioned tools, retrieval trust boundary и bounded assistant loop;
-- 41 unit/integration tests и воспроизводимые малые результаты.
+- 46 unit/integration tests и воспроизводимые малые результаты.
 
 ### Что на самом деле доказано
 
@@ -179,15 +179,22 @@ Engram пока использует корректный full-prefix fallback. 
 
 **Результат:** любой будущий checkpoint можно сразу прочитать, сравнить и показать.
 
-### Блок 2 — corpus v1 и tokenizer freeze
+### Блок 2 — corpus v1 и tokenizer freeze — инфраструктура выполнена
 
-- выбрать разрешённые источники;
-- сделать streaming shards и полный manifest;
-- собрать первую сбалансированную RU/EN смесь;
-- провести 16K/32K/48K tokenizer test;
-- упаковать pilot token stream и заморозить eval split.
+Готовы machine-enforced source/license registry, conservative production policy,
+disk-backed dedup, deterministic shards, protected-eval filtering, Common Corpus importer,
+tokenizer candidate/freeze scripts и synthetic end-to-end test.
 
-**Результат:** данные, на которых уже не стыдно обучить первый переносимый checkpoint.
+Осталось выполнить на реальных данных:
+
+- закрепить доступную ревизию Common Corpus и сделать RU/EN permissive snapshot;
+- вручную проверить выборки accepted/rejected документов и attribution;
+- измерить фактические language/domain token shares;
+- провести 16K/32K/48K test и выбрать tokenizer;
+- упаковать pilot token stream.
+
+**Результат после real snapshot:** данные, на которых уже не стыдно обучить первый
+переносимый checkpoint.
 
 ### Блок 3 — L1 training package
 

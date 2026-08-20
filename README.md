@@ -25,8 +25,9 @@
 - temporal SQLite memory и FTS document retrieval с provenance/privacy;
 - permissioned agent loop, строгий JSON protocol, calculator/calendar tools;
 - prompt-injection marking и проверка реальных citations;
-- corpus manifests, quality/PII/license filters, SimHash dedup и decontamination;
-- multilingual byte-BPE training и tokenizer economics;
+- machine-enforced source/license policy, deterministic shards и SQLite-backed dedup;
+- corpus manifests, quality/PII filters и protected-eval decontamination;
+- multilingual byte-BPE candidates и corpus-bound tokenizer freeze;
 - uint32 token packing и resume-safe proxy trainer с восстановлением всех RNG;
 - калькулятор параметров, INT4-памяти, KV-cache, recurrent state и FLOP/token;
 - Fermi-разложение decode energy по активным весам, KV/state traffic и MAC;
@@ -89,6 +90,7 @@ MoE и GDN2/KDA остаются важными ветками, но не наз
 
 - [Ускоренная карта до реально обученной модели](docs/roadmap.md)
 - [Reference generation, cache и checkpoint evaluation](docs/inference.md)
+- [Corpus v1: источники, policy, shards и tokenizer freeze](docs/data-v1.md)
 - [Карта исследований и проверенные факты](docs/research-landscape.md)
 - [Предлагаемая архитектура и система памяти](docs/architecture.md)
 - [План экспериментов и критерии остановки](docs/experiments.md)

@@ -155,3 +155,26 @@
 34. **BeyondBench** — динамически генерируемые алгоритмические задачи с детерминированной
     проверкой, снижающие риск benchmark memorization.
     <https://arxiv.org/abs/2509.24210>
+
+## Open-data policy
+
+35. **Common Corpus** — multilingual open-licensed corpus с document-level license,
+    provenance, language и domain metadata; используется только после локального
+    per-document allowlist.
+    <https://huggingface.co/datasets/PleIAs/common_corpus>
+
+36. **Wikimedia dump licensing** — основной текст CC BY-SA 4.0/GFDL, Wikidata main
+    namespaces CC0, Wikifunctions code Apache-2.0; содержит предупреждения об исключениях.
+    <https://dumps.wikimedia.org/legal.html>
+
+37. **Creative Commons: Using CC-Licensed Works for AI Training** — conservative
+    рекомендации по attribution, ShareAlike, NC и ND для model training/release.
+    <https://creativecommons.org/using-cc-licensed-works-for-ai-training-2/>
+
+38. **arXiv submission agreement** — full text имеет item-selected license; default
+    distribution license не даёт общего разрешения на переиспользование, metadata — CC0.
+    <https://info.arxiv.org/help/policies/submission_agreement.html>
+
+39. **OpenStax licensing** — текущие книги CC BY-NC-SA и требуют отдельного разрешения на
+    LLM training; источник исключён из production policy.
+    <https://help.openstax.org/s/article/Licensing-information-of-OpenStax-textbooks>

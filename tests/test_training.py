@@ -1,3 +1,4 @@
+import hashlib
 import json
 from pathlib import Path
 
@@ -5,7 +6,15 @@ import numpy as np
 import torch
 
 from minillm.config import MiniLLMConfig
-from minillm.training import BinaryTokenDataset, TrainConfig, learning_rate, train_proxy
+from minillm.corpus import CorpusDocument
+from minillm.tokenization import train_byte_bpe
+from minillm.training import (
+    BinaryTokenDataset,
+    TrainConfig,
+    learning_rate,
+    pack_document_stream,
+    train_proxy,
+)
 
 
 def test_binary_dataset_batch_is_seeded(tmp_path: Path) -> None:
@@ -35,6 +44,35 @@ def test_learning_rate_warmup_and_decay() -> None:
     assert learning_rate(0, config) < learning_rate(9, config)
     assert learning_rate(10, config) > learning_rate(99, config)
     assert learning_rate(99, config) >= 1e-4
+
+
+def test_pack_document_stream_is_atomic_and_hashed(tmp_path: Path) -> None:
+    texts = ["English tokenizer sample." * 20, "Русский пример токенизатора." * 20]
+    tokenizer = train_byte_bpe(texts, vocab_size=512)
+
+    def documents():
+        for index, text in enumerate(texts):
+            yield CorpusDocument(
+                id=f"doc-{index}",
+                text=text,
+                source="test",
+                license="CC0-1.0",
+                language="en" if index == 0 else "ru",
+                domain="test",
+                acquisition_date="2026-08-20",
+            )
+
+    output = tmp_path / "tokens.bin"
+    manifest = pack_document_stream(
+        documents(),
+        tokenizer,
+        tokenizer_path="tokenizer.json",
+        output_path=output,
+    )
+    assert manifest.documents == 2
+    assert manifest.tokens > 2
+    assert manifest.sha256 == hashlib.sha256(output.read_bytes()).hexdigest()
+    assert not output.with_suffix(".bin.tmp").exists()
 
 
 def test_resume_matches_uninterrupted_training(tmp_path: Path) -> None:
