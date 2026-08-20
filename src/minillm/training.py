@@ -176,6 +176,49 @@ def evaluate_metrics(
     return {name: sum(items) / len(items) for name, items in values.items()}
 
 
+def _data_signature(path: str | Path) -> dict[str, Any]:
+    """Return a cheap identity check without hashing an entire large token stream."""
+
+    import hashlib
+
+    token_path = Path(path)
+    size = token_path.stat().st_size
+    sample_size = 4096
+    with token_path.open("rb") as handle:
+        first = handle.read(sample_size)
+        if size > sample_size:
+            handle.seek(max(0, size - sample_size))
+            last = handle.read(sample_size)
+        else:
+            last = b""
+    digest = hashlib.blake2b(first + last, digest_size=16).hexdigest()
+    return {
+        "size_bytes": size,
+        "modified_ns": token_path.stat().st_mtime_ns,
+        "edge_blake2b": digest,
+    }
+
+
+def _truncate_metrics_after(metrics_path: Path, step: int) -> None:
+    """Drop stale or partial records after the resumed checkpoint."""
+
+    if not metrics_path.exists():
+        return
+    retained: list[str] = []
+    for line in metrics_path.read_text(encoding="utf-8").splitlines():
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError:
+            break
+        if int(record.get("step", -1)) <= step:
+            retained.append(json.dumps(record, sort_keys=True))
+    temporary = metrics_path.with_suffix(metrics_path.suffix + ".tmp")
+    temporary.write_text(
+        "\n".join(retained) + ("\n" if retained else ""), encoding="utf-8"
+    )
+    os.replace(temporary, metrics_path)
+
+
 def _save_checkpoint(
     path: Path,
     *,
@@ -184,19 +227,31 @@ def _save_checkpoint(
     step: int,
     model_config: MiniLLMConfig,
     train_config: TrainConfig,
+    data_generator: np.random.Generator,
+    data_signatures: dict[str, dict[str, Any]],
+    best_validation: float,
+    last_validation: float,
 ) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
     torch.save(
         {
+            "format_version": 2,
             "step": step,
             "model": model.state_dict(),
             "optimizer": optimizer.state_dict(),
             "model_config": model_config.to_dict(),
             "train_config": asdict(train_config),
+            "data_signatures": data_signatures,
+            "best_validation": best_validation,
+            "last_validation": last_validation,
             "torch_rng": torch.get_rng_state(),
+            "torch_cuda_rng": torch.cuda.get_rng_state_all()
+            if torch.cuda.is_available()
+            else None,
             "python_rng": random.getstate(),
             "numpy_rng": np.random.get_state(),
+            "data_generator_state": data_generator.bit_generator.state,
         },
         temporary,
     )
@@ -210,6 +265,7 @@ def train_proxy(
     train_tokens: str | Path,
     validation_tokens: str | Path,
     output_directory: str | Path,
+    resume_from: str | Path | None = None,
 ) -> dict[str, Any]:
     model_config.validate()
     train_config.validate(model_config)
@@ -219,6 +275,10 @@ def train_proxy(
     generator = np.random.default_rng(train_config.seed)
     train_data = BinaryTokenDataset(train_tokens)
     validation_data = BinaryTokenDataset(validation_tokens)
+    data_signatures = {
+        "train": _data_signature(train_tokens),
+        "validation": _data_signature(validation_tokens),
+    }
     model = MiniLLM(model_config).to(train_config.device)
     optimizer = torch.optim.AdamW(
         model.parameters(),
@@ -233,9 +293,39 @@ def train_proxy(
     started = time.perf_counter()
     best_validation = float("inf")
     last_validation = float("nan")
+    start_step = 0
+    if resume_from is not None:
+        checkpoint = torch.load(
+            Path(resume_from), map_location=train_config.device, weights_only=False
+        )
+        if checkpoint.get("format_version") != 2:
+            raise ValueError("checkpoint predates resume-safe format version 2")
+        if checkpoint["model_config"] != model_config.to_dict():
+            raise ValueError("checkpoint model configuration does not match")
+        if checkpoint["train_config"] != asdict(train_config):
+            raise ValueError("checkpoint training configuration does not match")
+        if checkpoint["data_signatures"] != data_signatures:
+            raise ValueError("checkpoint token data does not match")
+        start_step = int(checkpoint["step"])
+        if not 0 <= start_step <= train_config.steps:
+            raise ValueError("checkpoint step is outside the requested training run")
+        model.load_state_dict(checkpoint["model"])
+        optimizer.load_state_dict(checkpoint["optimizer"])
+        torch.set_rng_state(checkpoint["torch_rng"].cpu())
+        if torch.cuda.is_available() and checkpoint["torch_cuda_rng"] is not None:
+            torch.cuda.set_rng_state_all(
+                [state.cpu() for state in checkpoint["torch_cuda_rng"]]
+            )
+        random.setstate(checkpoint["python_rng"])
+        np.random.set_state(checkpoint["numpy_rng"])
+        generator.bit_generator.state = checkpoint["data_generator_state"]
+        best_validation = float(checkpoint["best_validation"])
+        last_validation = float(checkpoint["last_validation"])
+        _truncate_metrics_after(metrics_path, start_step)
 
-    with metrics_path.open("w", encoding="utf-8") as metrics:
-        for step in range(train_config.steps):
+    metrics_mode = "a" if resume_from is not None else "w"
+    with metrics_path.open(metrics_mode, encoding="utf-8") as metrics:
+        for step in range(start_step, train_config.steps):
             optimizer.zero_grad(set_to_none=True)
             accumulated = {
                 "loss": 0.0,
@@ -316,6 +406,10 @@ def train_proxy(
                         step=step + 1,
                         model_config=model_config,
                         train_config=train_config,
+                        data_generator=generator,
+                        data_signatures=data_signatures,
+                        best_validation=best_validation,
+                        last_validation=last_validation,
                     )
             metrics.write(json.dumps(record, sort_keys=True) + "\n")
             metrics.flush()
@@ -329,6 +423,10 @@ def train_proxy(
                     step=step + 1,
                     model_config=model_config,
                     train_config=train_config,
+                    data_generator=generator,
+                    data_signatures=data_signatures,
+                    best_validation=best_validation,
+                    last_validation=last_validation,
                 )
 
     summary = {

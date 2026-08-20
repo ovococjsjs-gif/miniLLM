@@ -1,0 +1,30 @@
+{
+  "id": "ngram-draft-proxy-v1",
+  "status": "preregistered-before-run",
+  "hypothesis": "A support-aware subword n-gram shelf can produce high-precision draft tokens on held-out real text without replacing the neural policy.",
+  "data": {
+    "train": "data/tokens-4096/train.bin",
+    "validation": "data/tokens-4096/validation.bin",
+    "orders": [2, 4, 8]
+  },
+  "primary_gate": {
+    "confidence_method": "Wilson lower bound",
+    "confidence_z": 1.96,
+    "confidence_threshold": 0.9,
+    "minimum_support": 4,
+    "pass": {
+      "coverage_min": 0.005,
+      "accuracy_min": 0.95
+    }
+  },
+  "death_criteria": [
+    "Primary-gate coverage below 0.5%.",
+    "Primary-gate held-out accuracy below 95%.",
+    "Material hash-collision or memory-growth failures at this proxy scale."
+  ],
+  "non_claims": [
+    "Passing does not demonstrate wall-clock speedup.",
+    "Candidates do not bypass neural verification.",
+    "Results do not transfer automatically to a final tokenizer or chat distribution."
+  ]
+}

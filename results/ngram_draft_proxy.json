@@ -1,0 +1,122 @@
+{
+  "method": "64-bit FNV-like hashed contexts; exact continuation counts per hash",
+  "train_tokens": 3695319,
+  "validation_tokens": 428752,
+  "orders": [
+    2,
+    4,
+    8
+  ],
+  "statistics": [
+    {
+      "order": 2,
+      "contexts": 468604,
+      "contexts_with_minimum_support": 137901,
+      "maximum_support": 80042
+    },
+    {
+      "order": 4,
+      "contexts": 2725665,
+      "contexts_with_minimum_support": 84029,
+      "maximum_support": 455
+    },
+    {
+      "order": 8,
+      "contexts": 3636377,
+      "contexts_with_minimum_support": 3169,
+      "maximum_support": 80
+    }
+  ],
+  "gates": [
+    {
+      "confidence_z": 0.0,
+      "confidence_threshold": 0.9,
+      "minimum_support": 4,
+      "covered_tokens": 28654,
+      "evaluated_tokens": 428752,
+      "coverage": 0.06683117513154457,
+      "accuracy": 0.9378446290221261
+    },
+    {
+      "confidence_z": 0.0,
+      "confidence_threshold": 0.9,
+      "minimum_support": 8,
+      "covered_tokens": 23562,
+      "evaluated_tokens": 428752,
+      "coverage": 0.0549548456916819,
+      "accuracy": 0.9503013326542739
+    },
+    {
+      "confidence_z": 0.0,
+      "confidence_threshold": 0.95,
+      "minimum_support": 4,
+      "covered_tokens": 24334,
+      "evaluated_tokens": 428752,
+      "coverage": 0.05675542038287868,
+      "accuracy": 0.9513848935645599
+    },
+    {
+      "confidence_z": 0.0,
+      "confidence_threshold": 0.95,
+      "minimum_support": 8,
+      "covered_tokens": 19070,
+      "evaluated_tokens": 428752,
+      "coverage": 0.044477926633578385,
+      "accuracy": 0.9702149973780807
+    },
+    {
+      "confidence_z": 1.96,
+      "confidence_threshold": 0.9,
+      "minimum_support": 4,
+      "covered_tokens": 10818,
+      "evaluated_tokens": 428752,
+      "coverage": 0.025231369183117514,
+      "accuracy": 0.9818820484377889
+    },
+    {
+      "confidence_z": 1.96,
+      "confidence_threshold": 0.9,
+      "minimum_support": 8,
+      "covered_tokens": 10818,
+      "evaluated_tokens": 428752,
+      "coverage": 0.025231369183117514,
+      "accuracy": 0.9818820484377889
+    },
+    {
+      "confidence_z": 1.96,
+      "confidence_threshold": 0.95,
+      "minimum_support": 4,
+      "covered_tokens": 6083,
+      "evaluated_tokens": 428752,
+      "coverage": 0.014187688920401537,
+      "accuracy": 0.987012987012987
+    },
+    {
+      "confidence_z": 1.96,
+      "confidence_threshold": 0.95,
+      "minimum_support": 8,
+      "covered_tokens": 6083,
+      "evaluated_tokens": 428752,
+      "coverage": 0.014187688920401537,
+      "accuracy": 0.987012987012987
+    }
+  ],
+  "preregistered_contract": {
+    "path": "configs/experiments/ngram_draft_proxy.json",
+    "id": "ngram-draft-proxy-v1",
+    "status": "preregistered-before-run"
+  },
+  "primary_verdict": {
+    "passed": true,
+    "coverage": 0.025231369183117514,
+    "accuracy": 0.9818820484377889,
+    "required_coverage": 0.005,
+    "required_accuracy": 0.95
+  },
+  "wall_seconds": 15.632738848999907,
+  "notes": [
+    "This measures draft predictability, not end-to-end speculative speedup.",
+    "A candidate must still be verified by the neural model to preserve exact greedy output.",
+    "Confidence z=0 is empirical frequency; z=1.96 is the Wilson 95% lower bound."
+  ]
+}

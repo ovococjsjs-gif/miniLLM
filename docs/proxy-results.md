@@ -60,7 +60,31 @@ Reference PyTorch CPU forward, batch 4 × sequence 128:
 - [`results/lm_hybrid_followup.json`](../results/lm_hybrid_followup.json);
 - [`results/proxy_forward_benchmark.json`](../results/proxy_forward_benchmark.json).
 
-## 3. Вывод для следующего цикла
+## 3. Support-aware n-gram draft shelf
+
+На полном 4K byte-BPE train split (3.70M tokens) построены continuation counts порядков
+2/4/8; проверка — отдельный validation split (428.8K tokens). Заранее заданный primary
+gate с нижней границей Wilson ≥0.90 получил **2.523% coverage при 98.188% accuracy** и
+прошёл контракт. Агрессивный empirical probability ≥0.90 при support 4 получил больше
+coverage (6.683%), но лишь 93.784% accuracy и непригоден для bypass.
+
+Результат поддерживает только opt-in speculative draft с neural verification. Он не
+доказывает ускорение: требуется multi-token verifier и end-to-end device benchmark.
+
+- [`configs/experiments/ngram_draft_proxy.json`](../configs/experiments/ngram_draft_proxy.json);
+- [`results/ngram_draft_proxy.json`](../results/ngram_draft_proxy.json).
+
+## 4. Active-byte decode-energy proxy
+
+При placeholder LPDDR 60 pJ/byte, MAC 0.5 pJ и контексте 8K Fermi estimate составляет
+13.562 mJ/token для dense 350M, 13.776 для recursive 200M, 8.079 для MoE-кандидата и
+10.924 для hybrid GDN2 (включая read+write 6.75 MiB state). Это прозрачная статическая
+оценка, не measured watts: irregular dispatch, cache residency и kernels могут изменить
+ранжирование.
+
+Полные компоненты: [`results/decode_energy_proxy.json`](../results/decode_energy_proxy.json).
+
+## 5. Вывод для следующего цикла
 
 - Не увеличивать steps, а расширять eval axes.
 - Сравнить layer ratios на generated retrieval/state tracking и short real-text loss.

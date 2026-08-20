@@ -130,3 +130,22 @@ QAT checkpoint и BF16 checkpoint оцениваются вместе на ка�
 
 Native ternary — отдельный backbone, а не PTQ-флаг. Он проходит собственный scaling и только
 потом сравнивается с INT4 по реальному joule/token.
+
+## 9. Воспроизводимое продолжение runs
+
+Checkpoint format v2 хранит model/optimizer, все RNG, генератор batch sampling, step и
+validation state. Resume допускается только при точном совпадении model/train configs и
+сигнатур token streams; это защищает от тихого продолжения на другой смеси данных или с
+другим schedule. CLI-пример:
+
+```bash
+PYTHONPATH=src python scripts/train_proxy_lm.py \
+  --steps 300 --checkpoint-interval 50 --output runs/proxy
+
+PYTHONPATH=src python scripts/train_proxy_lm.py \
+  --steps 300 --checkpoint-interval 50 --output runs/proxy \
+  --resume runs/proxy/step-150.pt
+```
+
+`steps` здесь остаётся исходной конечной целью schedule, а не числом дополнительных шагов.
+Старые checkpoints без полного stochastic state намеренно не объявляются exact-resume.

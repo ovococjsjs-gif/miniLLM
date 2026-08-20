@@ -27,8 +27,10 @@
 - prompt-injection marking и проверка реальных citations;
 - corpus manifests, quality/PII/license filters, SimHash dedup и decontamination;
 - multilingual byte-BPE training и tokenizer economics;
-- uint32 token packing и checkpointed proxy trainer;
+- uint32 token packing и resume-safe proxy trainer с восстановлением всех RNG;
 - калькулятор параметров, INT4-памяти, KV-cache, recurrent state и FLOP/token;
+- Fermi-разложение decode energy по активным весам, KV/state traffic и MAC;
+- support/confidence-gated n-gram draft shelf без неявной замены neural policy;
 - generated и real-text proxy experiments;
 - тесты causal-инвариантности, памяти, tools, distillation, QAT и учёта параметров.
 
@@ -52,6 +54,9 @@ minillm compare \
 
 # Подробный расчёт одной конфигурации
 minillm analyze configs/edge_recursive_200m.json --context 8192 --recurrences 3
+
+# Разложить Fermi energy proxy по active weights, KV/state traffic и MAC
+minillm energy configs/edge_recursive_200m.json --context 8192 --recurrences 3
 
 # Проверить полный forward/backward без загрузки датасета
 minillm smoke-train configs/toy.json --steps 8
@@ -86,6 +91,7 @@ MoE и GDN2/KDA остаются важными ветками, но не наз
 - [План экспериментов и критерии остановки](docs/experiments.md)
 - [Данные, distillation и post-training](docs/training.md)
 - [Результат первого MQAR-скрининга](docs/toy-mqar-result.md)
+- [Разбор AIra и безопасно принятые идеи](docs/aira-review.md)
 - [Аннотированные первоисточники](docs/sources.md)
 
 > Название репозитория задано заранее. Проект не связан с одноимённой работой

@@ -22,6 +22,8 @@ def main() -> None:
     parser.add_argument("--batch-size", type=int, default=4)
     parser.add_argument("--sequence-length", type=int, default=128)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--checkpoint-interval", type=int)
+    parser.add_argument("--resume", help="resume from a format-v2 checkpoint")
     args = parser.parse_args()
     model = MiniLLMConfig.load(args.model)
     training = TrainConfig(
@@ -32,7 +34,7 @@ def main() -> None:
         warmup_steps=min(20, args.steps // 10),
         eval_interval=max(1, args.steps // 10),
         eval_batches=10,
-        checkpoint_interval=args.steps,
+        checkpoint_interval=args.checkpoint_interval or args.steps,
         seed=args.seed,
     )
     summary = train_proxy(
@@ -41,6 +43,7 @@ def main() -> None:
         train_tokens=Path(args.tokens) / "train.bin",
         validation_tokens=Path(args.tokens) / "validation.bin",
         output_directory=args.output,
+        resume_from=args.resume,
     )
     print(json.dumps(summary, indent=2))
 

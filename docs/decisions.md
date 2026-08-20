@@ -61,3 +61,14 @@ experiments. Для научной честности KDA kernel всё равн
 на 0.14, тогда как 2-attention/4-conv быстрее примерно на 15% в чистом forward и намного
 лучше на generated MQAR. Inductive bias зависит от задачи, поэтому ни один вариант пока
 не является универсальным победителем.
+
+## D-009 — Trigger shelf не имеет права незаметно заменить policy
+
+**Решение:** n-gram shelf используется только как opt-in draft source; exact greedy path
+обязан проверить его основной моделью. Разрешение hard bypass требует отдельного явно
+помеченного quality/calibration эксперимента и не является default.
+
+**Причина:** сырая частота продолжения на real-text proxy дала недостаточную точность,
+тогда как support-aware Wilson gate получил 98.19% accuracy лишь при 2.52% coverage.
+Heuristic bypass может менять распределение, calibration и safety behavior. Для реального
+ускорения ещё нужен multi-token verifier и target-runtime benchmark.
