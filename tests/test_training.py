@@ -195,6 +195,9 @@ def test_resume_matches_uninterrupted_training(tmp_path: Path) -> None:
         validation_tokens=tokens,
         output_directory=original,
     )
+    legacy_checkpoint = torch.load(original / "step-2.pt", weights_only=False)
+    legacy_checkpoint["model_config"].pop("recurrent_step_conditioning")
+    torch.save(legacy_checkpoint, original / "step-2.pt")
     train_proxy(
         model_config,
         train_config,

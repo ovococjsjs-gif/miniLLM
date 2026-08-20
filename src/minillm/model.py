@@ -169,6 +169,11 @@ class MiniLLM(nn.Module):
         else:
             self.register_parameter("initial_state", None)
             self.recurrent_adapter = None
+        self.recurrent_step_embedding = (
+            nn.Embedding(config.max_core_repetitions, config.d_model)
+            if config.recurrent_step_conditioning
+            else None
+        )
         self.final_norm = RMSNorm(config.d_model, config.norm_eps)
         self.lm_head = nn.Linear(config.d_model, config.vocab_size, bias=False)
         if config.tie_embeddings:
@@ -219,6 +224,14 @@ class MiniLLM(nn.Module):
             if stats is not None:
                 router_stats.append(stats)
         return hidden
+
+    def _condition_recurrent_step(
+        self, state: torch.Tensor, repetition: int
+    ) -> torch.Tensor:
+        if self.recurrent_step_embedding is None:
+            return state
+        step = self.recurrent_step_embedding.weight[repetition]
+        return state + step[None, None, :]
 
     @property
     def supports_cached_decode(self) -> bool:
@@ -292,9 +305,10 @@ class MiniLLM(nn.Module):
             state = self.initial_state[None, None, :].expand_as(hidden)
         else:
             state = hidden
-        for _ in range(repetitions):
+        for repetition in range(repetitions):
             if self.recurrent_adapter is not None:
                 state = self.recurrent_adapter(torch.cat((state, injected), dim=-1))
+            state = self._condition_recurrent_step(state, repetition)
             state = run(self.core, state)
         hidden = run(self.coda, state)
         logits = self.lm_head(self.final_norm(hidden))
@@ -337,9 +351,10 @@ class MiniLLM(nn.Module):
             state = self.initial_state[None, None, :].expand_as(hidden)
         else:
             state = hidden
-        for _ in range(repetitions):
+        for repetition in range(repetitions):
             if self.recurrent_adapter is not None:
                 state = self.recurrent_adapter(torch.cat((state, injected), dim=-1))
+            state = self._condition_recurrent_step(state, repetition)
             state = self._run_blocks(self.core, state, router_losses, router_stats)
         hidden = self._run_blocks(self.coda, state, router_losses, router_stats)
         hidden = self.final_norm(hidden)

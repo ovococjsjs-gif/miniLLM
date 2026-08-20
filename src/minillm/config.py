@@ -105,6 +105,7 @@ class MiniLLMConfig:
     core_repetitions: int = 2
     max_core_repetitions: int = 4
     recurrent_input_injection: bool = True
+    recurrent_step_conditioning: bool = False
 
     # Auxiliary next-next-token modules used only in training or as draft heads.
     mtp_depth: int = 1

@@ -90,11 +90,21 @@ def profile_model(
     untied_head = 0 if config.tie_embeddings else embedding
     unique_blocks = sum(_block_params(config, kind, active=False) for kind in unique)
     adapter = (2 * d * d + d + d) if config.recurrent_input_injection else 0
+    step_conditioning = (
+        config.max_core_repetitions * d if config.recurrent_step_conditioning else 0
+    )
     final_norm = d
     mtp = config.mtp_depth * (2 * d * d + d)
     engram = _engram_params(config)
     total = (
-        embedding + untied_head + unique_blocks + adapter + final_norm + mtp + engram
+        embedding
+        + untied_head
+        + unique_blocks
+        + adapter
+        + step_conditioning
+        + final_norm
+        + mtp
+        + engram
     )
 
     # Matrix/vector weights touched for one generated token across effective depth.
@@ -103,11 +113,12 @@ def profile_model(
     active_adapter = (
         repeats * (2 * d * d + d) if config.recurrent_input_injection else 0
     )
+    active_step_conditioning = repeats * d if config.recurrent_step_conditioning else 0
     active_engram = 0
     if config.engram.enabled:
         e = config.engram
         active_engram = 2 * e.retrieved_dim * d + d * e.conv_kernel + d
-    active = active_blocks + active_adapter + active_engram
+    active = active_blocks + active_adapter + active_step_conditioning + active_engram
 
     counts = layer_type_counts(effective)
     kv_cache = (

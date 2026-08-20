@@ -16,7 +16,7 @@ checkpoint, не перепутав дорогой training run с ещё одн
 - distillation losses и fake-quantization/QAT primitives;
 - reference generation, exact GQA/conv/GDN2 cache и bilingual completion smoke suite;
 - память, permissioned tools, retrieval trust boundary и bounded assistant loop;
-- 57 unit/integration tests и воспроизводимые малые результаты.
+- 61 unit/integration tests и воспроизводимые малые результаты.
 
 ### Что на самом деле доказано
 
@@ -32,6 +32,11 @@ checkpoint, не перепутав дорогой training run с ещё одн
 - Полный 20M Attention-pass на P100 завершил 949 steps без FP16 skips: validation loss
   4.7329, 22.0K tokens/s, 1.013 GiB peak allocation. Генерация стала словоподобной, но
   fixed suite осталась 0/8 — pipeline масштабируется, полезная модель ещё не получена.
+- На d=64/T=256 parameter-matched convolution быстрее CPU attention в 2.52× и имеет
+  128× меньший fixed decode state; sequential GDN2 reference медленнее attention в 21.8×.
+- Naive R=1/2/4 shared depth не даёт monotonic quality: step conditioning улучшает
+  one-hop pointer retrieval, но 2–4 hop composition остаётся около chance. Нужен явный
+  intermediate-state objective, а не простое повторение блока.
 - Статический energy proxy полезен для постановки эксперимента, но не заменяет телефон.
 
 ### Чего пока нет

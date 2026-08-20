@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "experiment": "sequence-mixer-scaling-v1",
+  "warning": "CPU microbenchmark; relative algorithm/runtime diagnostic, not phone latency.",
+  "batch_size": 4,
+  "d_model": 64,
+  "lengths": [
+    16,
+    32,
+    64,
+    128,
+    256
+  ],
+  "threads": 2,
+  "torch": "2.13.0+cu130",
+  "platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+  "results": [
+    {
+      "mixer": "attention",
+      "parameters": 12320,
+      "theoretical_sequence_complexity": "O(T^2 * H * D)",
+      "empirical_time_scaling_exponent": 0.500151436519854,
+      "measurements": [
+        {
+          "sequence_length": 16,
+          "median_forward_backward_seconds": 0.001998456000023907,
+          "tokens_per_second": 32024.723085839458,
+          "decode_state_bytes_fp32": 16384,
+          "operator_work_units": 262144
+        },
+        {
+          "sequence_length": 32,
+          "median_forward_backward_seconds": 0.0020963770000435034,
+          "tokens_per_second": 61057.72005576468,
+          "decode_state_bytes_fp32": 32768,
+          "operator_work_units": 1048576
+        },
+        {
+          "sequence_length": 64,
+          "median_forward_backward_seconds": 0.002697174999980234,
+          "tokens_per_second": 94914.12311098688,
+          "decode_state_bytes_fp32": 65536,
+          "operator_work_units": 4194304
+        },
+        {
+          "sequence_length": 128,
+          "median_forward_backward_seconds": 0.004078671000002032,
+          "tokens_per_second": 125531.08598358263,
+          "decode_state_bytes_fp32": 131072,
+          "operator_work_units": 16777216
+        },
+        {
+          "sequence_length": 256,
+          "median_forward_backward_seconds": 0.0081091040000274,
+          "tokens_per_second": 126277.82304882757,
+          "decode_state_bytes_fp32": 262144,
+          "operator_work_units": 67108864
+        }
+      ],
+      "implementation_note": "PyTorch reference primitives",
+      "parameter_ratio_vs_attention": 1.0
+    },
+    {
+      "mixer": "conv",
+      "parameters": 12544,
+      "theoretical_sequence_complexity": "O(T * D * K)",
+      "empirical_time_scaling_exponent": 0.3217106829449816,
+      "measurements": [
+        {
+          "sequence_length": 16,
+          "median_forward_backward_seconds": 0.0014282999999295498,
+          "tokens_per_second": 44808.5136197975,
+          "decode_state_bytes_fp32": 2048,
+          "operator_work_units": 12288
+        },
+        {
+          "sequence_length": 32,
+          "median_forward_backward_seconds": 0.0015944250000075044,
+          "tokens_per_second": 80279.72466525396,
+          "decode_state_bytes_fp32": 2048,
+          "operator_work_units": 24576
+        },
+        {
+          "sequence_length": 64,
+          "median_forward_backward_seconds": 0.0017877899999803049,
+          "tokens_per_second": 143193.5518169473,
+          "decode_state_bytes_fp32": 2048,
+          "operator_work_units": 49152
+        },
+        {
+          "sequence_length": 128,
+          "median_forward_backward_seconds": 0.0029121559999794044,
+          "tokens_per_second": 175814.75717771336,
+          "decode_state_bytes_fp32": 2048,
+          "operator_work_units": 98304
+        },
+        {
+          "sequence_length": 256,
+          "median_forward_backward_seconds": 0.0032228270000587145,
+          "tokens_per_second": 317733.468157411,
+          "decode_state_bytes_fp32": 2048,
+          "operator_work_units": 196608
+        }
+      ],
+      "implementation_note": "PyTorch reference primitives",
+      "parameter_ratio_vs_attention": 1.018181818181818
+    },
+    {
+      "mixer": "gdn2-reference",
+      "parameters": 32912,
+      "theoretical_sequence_complexity": "O(T * H * D_head^2)",
+      "empirical_time_scaling_exponent": 1.0217913644396597,
+      "measurements": [
+        {
+          "sequence_length": 16,
+          "median_forward_backward_seconds": 0.01084175599999071,
+          "tokens_per_second": 5903.102781510194,
+          "decode_state_bytes_fp32": 16384,
+          "operator_work_units": 393216
+        },
+        {
+          "sequence_length": 32,
+          "median_forward_backward_seconds": 0.019684033999965322,
+          "tokens_per_second": 6502.732112748104,
+          "decode_state_bytes_fp32": 16384,
+          "operator_work_units": 786432
+        },
+        {
+          "sequence_length": 64,
+          "median_forward_backward_seconds": 0.039008969999940746,
+          "tokens_per_second": 6562.593167683967,
+          "decode_state_bytes_fp32": 16384,
+          "operator_work_units": 1572864
+        },
+        {
+          "sequence_length": 128,
+          "median_forward_backward_seconds": 0.08782492300008471,
+          "tokens_per_second": 5829.780232195662,
+          "decode_state_bytes_fp32": 16384,
+          "operator_work_units": 3145728
+        },
+        {
+          "sequence_length": 256,
+          "median_forward_backward_seconds": 0.17713200700006837,
+          "tokens_per_second": 5780.999252154382,
+          "decode_state_bytes_fp32": 16384,
+          "operator_work_units": 6291456
+        }
+      ],
+      "implementation_note": "sequential correctness reference; requires chunkwise fused kernel",
+      "parameter_ratio_vs_attention": 2.6714285714285713
+    }
+  ]
+}

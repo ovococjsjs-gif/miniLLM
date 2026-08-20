@@ -420,7 +420,9 @@ def train_proxy(
         checkpoint_version = int(checkpoint.get("format_version", 0))
         if checkpoint_version not in {2, 3}:
             raise ValueError("checkpoint predates resume-safe format version 2")
-        if checkpoint["model_config"] != model_config.to_dict():
+        saved_model_config = dict(checkpoint["model_config"])
+        saved_model_config.setdefault("recurrent_step_conditioning", False)
+        if saved_model_config != model_config.to_dict():
             raise ValueError("checkpoint model configuration does not match")
         saved_train_config = dict(checkpoint["train_config"])
         defaults = asdict(TrainConfig())

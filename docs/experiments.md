@@ -68,6 +68,11 @@ Ablations:
 если улучшает aggregate quality при ≤5% regression latency либо улучшает latency при
 ≤0.3 point aggregate regression.
 
+Текущий adaptive-depth v1 gate не пройден: при 300 steps R=4 не улучшает R=1 ни на MQAR,
+ни на unbiased multi-hop pointer chase. Step embeddings и sandwich KL сохраняются как
+примитивы, но следующий тест обязан supervised intermediate state и monotonic R=1/2/4
+accuracy. GDN2 real-data gate также закрыт до chunkwise kernel.
+
 ## Фаза 2 — tokenizer и data mixture
 
 Tokenizers: byte-BPE 32K/48K/65K, SentencePiece unigram и небольшой BLT proxy.
