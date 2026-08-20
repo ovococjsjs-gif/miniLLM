@@ -2,14 +2,17 @@ import ast
 import hashlib
 import importlib.util
 import json
+import tarfile
 from pathlib import Path
 
 import numpy as np
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-NOTEBOOK = ROOT / "notebooks" / "kaggle_l1_training.ipynb"
+NOTEBOOK = ROOT / "kaggle" / "kaggle_l1_training.ipynb"
+BUNDLE = ROOT / "kaggle" / "l1-github-pilot-data-v1.tar.gz"
 PREPARE_SCRIPT = ROOT / "scripts" / "prepare_l1_data.py"
+BUNDLE_SHA256 = "5ccfc6aaf8b5cf1c4a6201a5dc0a92fdc24d16c80efcfddbd1ea3ac106412889"
 
 
 def load_prepare_module():
@@ -58,6 +61,20 @@ def test_kaggle_notebook_is_clean_and_code_cells_compile() -> None:
     assert "precision = 'bf16' if capability[0] >= 8 else 'fp16'" in combined
     assert 'BUNDLE_NAME = "l1-github-pilot-data-v1.tar.gz"' in combined
     assert 'archive.extractall(destination, filter="data")' in combined
+    assert 'REPO_DIR / "kaggle"' in combined
+
+
+def test_committed_kaggle_bundle_has_expected_identity() -> None:
+    with BUNDLE.open("rb") as handle:
+        assert hashlib.file_digest(handle, "sha256").hexdigest() == BUNDLE_SHA256
+    with tarfile.open(BUNDLE, "r:gz") as archive:
+        names = set(archive.getnames())
+    root = "l1-github-pilot-data-v1"
+    assert f"{root}/tokens/train.bin" in names
+    assert f"{root}/tokens/validation.bin" in names
+    assert f"{root}/tokens/test.bin" in names
+    assert f"{root}/tokenizer/tokenizer.json" in names
+    assert f"{root}/github_pilot_data.json" in names
 
 
 def test_prepare_script_fully_validates_packed_hashes(

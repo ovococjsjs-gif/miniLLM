@@ -77,7 +77,7 @@ PYTHONPATH=src python scripts/train_l1.py \
   --output runs/l1-attention-20m
 ```
 
-For a managed Kaggle GPU, `notebooks/kaggle_l1_training.ipynb` automates pinned data
+For a managed Kaggle GPU, `kaggle/kaggle_l1_training.ipynb` automates pinned data
 reconstruction, GPU precision selection, resume, evaluation and export; see
 [`docs/kaggle-l1.md`](kaggle-l1.md).
 

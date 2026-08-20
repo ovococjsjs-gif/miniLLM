@@ -16,7 +16,7 @@ checkpoint, не перепутав дорогой training run с ещё одн
 - distillation losses и fake-quantization/QAT primitives;
 - reference generation, exact GQA/conv/GDN2 cache и bilingual completion smoke suite;
 - память, permissioned tools, retrieval trust boundary и bounded assistant loop;
-- 55 unit/integration tests и воспроизводимые малые результаты.
+- 56 unit/integration tests и воспроизводимые малые результаты.
 
 ### Что на самом деле доказано
 

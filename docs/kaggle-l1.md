@@ -1,14 +1,18 @@
 # Запуск L1 на Kaggle
 
-Готовый notebook: [`notebooks/kaggle_l1_training.ipynb`](../notebooks/kaggle_l1_training.ipynb).
-Он предназначен для Kaggle GPU Notebook и по умолчанию обучает 19.60M attention-control
+Готовые файлы лежат вместе в [`kaggle/`](../kaggle/):
+
+- `kaggle_l1_training.ipynb` — запускаемый notebook;
+- `l1-github-pilot-data-v1.tar.gz` — проверенный 48 MB data bundle.
+
+Notebook предназначен для Kaggle GPU и по умолчанию обучает 19.60M attention-control
 на полном 31.09M-token pilot stream.
 
 ## Быстрый запуск
 
 1. Импортировать `.ipynb` в Kaggle.
 2. Открыть **Settings → Accelerator → GPU**.
-3. Включить **Internet** для клонирования репозитория и pinned corpus sources.
+3. Включить **Internet**: один clone получает код и готовый data bundle из GitHub.
 4. Оставить `VARIANTS = ["attention"]` для первого запуска.
 5. Выполнить **Run All**.
 6. После завершения нажать **Save Version**: только так содержимое `/kaggle/working`
@@ -31,10 +35,10 @@ Notebook автоматически:
 
 ## Как не перестраивать данные
 
-Предпочтительный путь — готовый архив `l1-github-pilot-data-v1.tar.gz` размером около
-48 MB. Его нужно загрузить как Kaggle Dataset и подключить через **Add Input**. Notebook
-находит архив автоматически, распаковывает и полностью проверяет SHA-256 каждого stream;
-`DATA_INPUT` обычно менять не требуется.
+Предпочтительный путь уже настроен: архив `kaggle/l1-github-pilot-data-v1.tar.gz`
+размером около 48 MB находится в том же GitHub checkout. Notebook автоматически находит
+его, распаковывает и полностью проверяет SHA-256 каждого stream. Ничего загружать через
+**Add Input** и менять в `DATA_INPUT` не нужно.
 
 Без bundle первое воспроизведение клонирует три GitHub repositories и временно занимает
 примерно 0.5 GB сверх packed streams. Эта стадия зависит от Kaggle Internet и долго не
