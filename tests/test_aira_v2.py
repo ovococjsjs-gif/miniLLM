@@ -4,6 +4,7 @@ import torch
 
 from minillm.aira import (
     BoundedAssociativeMemory,
+    EpisodicFactStore,
     build_compact_shelf,
     evaluate_hierarchical_shelf,
     load_compact_shelf,
@@ -36,11 +37,22 @@ def test_compact_shelf_archive_round_trip(tmp_path) -> None:
     levels = [build_compact_shelf(train, order) for order in (2, 3)]
     archive = tmp_path / "shelf.npz"
 
-    save_compact_shelf(archive, levels, tokenizer_sha256="a" * 64)
-    restored = load_compact_shelf(archive, expected_tokenizer_sha256="a" * 64)
+    save_compact_shelf(
+        archive,
+        levels,
+        tokenizer_sha256="a" * 64,
+        representation="utf8-byte",
+    )
+    restored = load_compact_shelf(
+        archive,
+        expected_tokenizer_sha256="a" * 64,
+        expected_representation="utf8-byte",
+    )
 
     with pytest.raises(ValueError, match="tokenizers differ"):
         load_compact_shelf(archive, expected_tokenizer_sha256="b" * 64)
+    with pytest.raises(ValueError, match="wrong representation"):
+        load_compact_shelf(archive, expected_representation="token-ids")
     assert [level.order for level in restored] == [2, 3]
     for expected, actual in zip(levels, restored):
         np.testing.assert_array_equal(actual.context_hashes, expected.context_hashes)
@@ -99,6 +111,23 @@ def test_bounded_associative_memory_one_shot_gate_and_overwrite() -> None:
     assert memory.size == 2
     assert memory.query(third).payload == "third"
     assert not memory.query(np.ones(16)).accepted
+
+
+def test_structured_fact_store_normalizes_keys_and_preserves_provenance() -> None:
+    store = EpisodicFactStore(capacity=4, dimension=64)
+    slot = store.remember(
+        "User.Favorite-Color",
+        "green",
+        provenance={"turn": 7, "editable": True},
+    )
+
+    hit = store.recall("USER favorite color")
+
+    assert hit.accepted and hit.payload == "green"
+    assert hit.provenance == {"turn": 7, "editable": True}
+    assert not store.recall("user.favorite.food").accepted
+    assert store.delete(slot)
+    assert not store.recall("user.favorite.color").accepted
 
 
 def test_associative_memory_rejects_conflicting_duplicate_cues() -> None:

@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import hashlib
+import re
+import unicodedata
 from dataclasses import dataclass
 from typing import Any
 
@@ -16,6 +19,39 @@ class MemoryHit:
     margin: float
     slot: int | None
     provenance: dict[str, Any] | None
+
+
+_KEY_SEPARATOR = re.compile(r"[^\w]+", re.UNICODE)
+
+
+class StructuredKeyEncoder:
+    """Stable bipolar codes for explicit, user-visible fact keys.
+
+    This encoder deliberately canonicalizes identifiers rather than claiming semantic
+    paraphrase understanding. For example, ``user.favorite-color`` and
+    ``USER favorite color`` address the same key; unrelated natural-language questions do
+    not. Semantic retrieval remains a separate learned-encoder experiment.
+    """
+
+    def __init__(self, dimension: int = 512, *, namespace: str = "aira-v2") -> None:
+        if dimension < 8:
+            raise ValueError("key-code dimension must be at least eight")
+        self.dimension = dimension
+        self.namespace = namespace
+
+    @staticmethod
+    def canonicalize(key: str) -> str:
+        normalized = unicodedata.normalize("NFKC", key).casefold().strip()
+        return _KEY_SEPARATOR.sub(".", normalized).strip(".")
+
+    def encode(self, key: str) -> np.ndarray:
+        canonical = self.canonicalize(key)
+        if not canonical:
+            raise ValueError("memory key cannot be empty")
+        payload = f"{self.namespace}\0{canonical}".encode()
+        digest = hashlib.shake_256(payload).digest((self.dimension + 7) // 8)
+        bits = np.unpackbits(np.frombuffer(digest, dtype=np.uint8))[: self.dimension]
+        return np.where(bits == 0, -1, 1).astype(np.int8)
 
 
 class BoundedAssociativeMemory:
@@ -139,3 +175,37 @@ class BoundedAssociativeMemory:
 
     def scan_operations(self) -> int:
         return self.size * self.dimension
+
+
+class EpisodicFactStore:
+    """One-shot explicit fact API over bounded associative storage."""
+
+    def __init__(
+        self,
+        capacity: int,
+        *,
+        dimension: int = 512,
+        namespace: str = "aira-v2-facts",
+    ) -> None:
+        self.encoder = StructuredKeyEncoder(dimension, namespace=namespace)
+        self.memory = BoundedAssociativeMemory(
+            capacity,
+            dimension,
+            similarity_threshold=0.75,
+            margin_threshold=0.02,
+        )
+
+    def remember(
+        self,
+        key: str,
+        value: Any,
+        *,
+        provenance: dict[str, Any] | None = None,
+    ) -> int:
+        return self.memory.write(self.encoder.encode(key), value, provenance=provenance)
+
+    def recall(self, key: str) -> MemoryHit:
+        return self.memory.query(self.encoder.encode(key))
+
+    def delete(self, slot: int) -> bool:
+        return self.memory.delete(slot)

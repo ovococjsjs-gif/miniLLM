@@ -41,8 +41,11 @@
 - exact cached GQA/conv/GDN2 decode, seeded generation и checkpoint smoke suite;
 - support/Wilson-gated компактная AIra byte/char shelf с frozen-holdout отчётами;
 - доменная калибровка precision на отдельном split и нормализованная shelf/neural смесь;
-- настоящее shelf-bypass декодирование с burst/risk/anchor/cycle ограничителями и догоняющим KV-cache;
-- bounded bipolar associative memory с unknown/conflict rejection, provenance, overwrite и удалением;
+- два decode-контроля: exact KV catch-up (не экономит весь active compute) и настоящий bounded byte-event core без скрытого state catch-up;
+- deterministic byte↔ByteLevel-BPE bridge, включая dynamic BPE patches на произвольной byte boundary;
+- bounded byte-event neural core: BPE-контекст, byte-output, без обязательного прохода по shelf-позициям;
+- request-level `AIraCascade`: accepted explicit fact возвращается напрямую, unknown/conflict падает в shelf→neural;
+- bounded bipolar associative memory с explicit structured keys, unknown/conflict rejection, provenance, overwrite и удалением;
 - soft-residual loss с ненулевым all-token control stream и matched 300-step сравнением;
 - математический autograd-референс finite PC/PC-ALM и gradient-alignment benchmark;
 - автономный stress test полки с oracle fallback, отдельно от teacher-forced coverage;
@@ -79,7 +82,7 @@ minillm smoke-train configs/toy.json --steps 8
 # Тесты
 pytest
 
-# AIra-v2: собрать tokenizer-bound BPE shelf для экспериментального bypass decode
+# AIra-v2: собрать tokenizer-bound UTF-8 shelf для bridge-control decode
 # (перед применением нужен отдельный frozen/domain calibration report)
 python scripts/build_aira_shelf.py \
   --text /path/to/train.txt \
@@ -87,10 +90,16 @@ python scripts/build_aira_shelf.py \
   --output artifacts/aira-shelf.npz
 
 # Затем: minillm generate CHECKPOINT --tokenizer TOKENIZER --prompt TEXT \
-#          --aira-shelf artifacts/aira-shelf.npz --json
+#          --aira-shelf artifacts/aira-shelf.npz --aira-byte-bpe-bridge --json
 
 # AIra-v2: воспроизвести PC-vs-PC-ALM alignment proxy
 python scripts/benchmark_pc_alm.py
+
+# AIra-v2: настоящий byte-event vertical slice (не более 300 шагов)
+python scripts/run_aira_byte_event_proxy.py \
+  --train-tokens /path/to/train.bin \
+  --validation-tokens /path/to/validation.bin \
+  --tokenizer artifacts/tokenizer-github-pilot-v1/tokenizer.json
 
 # AIra-v2: full/hard/soft residual control (не более 300 шагов)
 python scripts/run_aira_residual_proxy.py \
@@ -128,6 +137,18 @@ hard-filter хуже, soft-residual находится между ними. Зн
 loss. PC-ALM существенно лучше старого finite PC по совпадению с BP, однако простой
 16-слойный tanh-референс требует около `8L` шагов для global cosine около 0.95; это
 ещё не эффективный локальный kernel.
+
+Первый byte/BPE vertical slice обнаружил важную архитектурную ошибку: byte shelf,
+опрашиваемая только на BPE boundaries, сохраняет всего 1.28% coverage, хотя 96.88%
+её токен-кандидатов имеют правильный byte-prefix. Исправленный event core запускается
+на каждой неопределённой byte boundary, динамически BPE-сжимает только последние 64
+байта и предсказывает следующий байт. На отдельном validation proxy он снизил proper
+perplexity с 160.87 до 156.04, поднял accuracy с 21.95% до 23.12% и пропустил 2.61%
+neural calls. Но unfused Python cascade медленнее, а при автономной генерации слабое
+300-step ядро быстро уходит с manifold: shelf используется на 0.33% позиций с mean
+precision лишь 35.97%. Отдельная generated-context calibration не находит ни одного
+95%-safe threshold и правильно отключает bypass; oracle fallback сохраняет 95.32%
+shelf precision при 2.67% coverage.
 
 Плотные 350M, recurrent 209M, MoE и GDN2-конфигурации остаются контрольными ветками.
 Их обычное масштабирование приостановлено, пока end-to-end каскад не покажет лучший

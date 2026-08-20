@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "experiment": "aira-v2-token-boundary-byte-bpe-negative-control-v1",
+  "warning": "Negative control: querying a byte shelf only at canonical BPE-token boundaries loses most raw-byte coverage. The 300-step neural proxy is not product LM quality.",
+  "source": {
+    "train_tokens": "/tmp/l1data/l1-github-pilot-data-v1/tokens/train.bin",
+    "train_sha256": "e0d3d10c9d6e452a0f41f337572962e0545f312ec0fee510c80695819d961a3a",
+    "validation_tokens": "/tmp/l1data/l1-github-pilot-data-v1/tokens/validation.bin",
+    "validation_sha256": "74cdbc2981532f61d4207bfde3b4420bd44d9140dfc8d1c4fd6964fd7e4b194e",
+    "tokenizer": "artifacts/tokenizer-github-pilot-v1/tokenizer.json",
+    "tokenizer_sha256": "44387ead2087e61cdb3ec371a0bc5d63dd9a8b01e2e0d85ad33444b4fa9f1508"
+  },
+  "environment": {
+    "platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+    "torch": "2.13.0+cu130",
+    "numpy": "2.4.6",
+    "threads": 2
+  },
+  "protocol": {
+    "steps": 300,
+    "seeds": [
+      42,
+      314,
+      2718
+    ],
+    "shelf_train_tokens": 600000,
+    "shelf_train_bytes": 1894406,
+    "neural_train_token_window": [
+      600016,
+      1400000
+    ],
+    "context_size": 16,
+    "d_model": 48,
+    "batch_size": 128,
+    "evaluation_tokens": 20000,
+    "generation_sequences": 100,
+    "horizon_bytes": 64,
+    "trigger": "orders 4/8/16, support>=5, per-byte Wilson95>=0.95, max token burst 4, cumulative byte risk<=0.25, neural anchor 8, cycle guard"
+  },
+  "shelf": {
+    "packed_bytes": 71610056,
+    "build_seconds": 5.999086642999828,
+    "boundary_diagnostic": {
+      "boundaries": 5000,
+      "accepted": 64,
+      "coverage": 0.0128,
+      "canonical_token_precision": 0.15625,
+      "byte_prefix_precision": 0.96875,
+      "mean_candidate_bytes": 1.375
+    }
+  },
+  "episodic_memory_trace": {
+    "known_accepted": true,
+    "known_value": "green",
+    "known_provenance": {
+      "source": "turn-7",
+      "editable": true
+    },
+    "unknown_accepted": false,
+    "conflict_accepted": false,
+    "conflict_margin": 0,
+    "delete_succeeded": true,
+    "scan_operations_after_trace": 128
+  },
+  "oracle_fallback_generation": {
+    "sequences": 100,
+    "target_bytes": 6400,
+    "emitted_bytes": 6400,
+    "byte_accuracy": 0.9984375,
+    "mean_common_prefix_bytes": 60.33,
+    "complete_horizon_rate": 1,
+    "shelf_events": 137,
+    "neural_or_oracle_events": 6239,
+    "shelf_event_fraction": 0.021486825595984943,
+    "control_rejections": 0,
+    "stalls": 0,
+    "wall_seconds": 1.0824710440001581,
+    "model_seconds": 0,
+    "model_parameter_bytes_read_proxy": 0,
+    "model_parameter_bytes_per_target_byte": 0
+  },
+  "summary": {
+    "runs": 3,
+    "mean_neural_validation_perplexity": 878.3023697493873,
+    "mean_neural_only_byte_accuracy": 0.049479166666666664,
+    "mean_cascade_byte_accuracy": 0.049479166666666664,
+    "mean_neural_only_model_events": 3536,
+    "mean_cascade_model_events": 3536,
+    "mean_cascade_shelf_event_fraction": 0,
+    "mean_neural_only_parameter_bytes_per_target_byte": 1031380.48,
+    "mean_cascade_parameter_bytes_per_target_byte": 1031380.48,
+    "mean_neural_only_wall_seconds": 0.8051344933331469,
+    "mean_cascade_wall_seconds": 1.5938547020000442
+  },
+  "runs": [
+    {
+      "seed": 42,
+      "steps": 300,
+      "training_seconds": 3.1930433000002267,
+      "loss_samples": [
+        9.52333927154541,
+        6.978833198547363,
+        6.432693004608154
+      ],
+      "model_parameters": 466688,
+      "model_parameter_bytes": 1866752,
+      "neural_validation": {
+        "tokens": 20000,
+        "nll": 6.761732768249511,
+        "perplexity": 864.1382505805869,
+        "accuracy": 0.0648,
+        "seconds": 0.5168591679998826,
+        "tokens_per_second": 38695.26021448949
+      },
+      "neural_generation": {
+        "sequences": 100,
+        "target_bytes": 6400,
+        "emitted_bytes": 6400,
+        "byte_accuracy": 0.02015625,
+        "mean_common_prefix_bytes": 0.15,
+        "complete_horizon_rate": 1,
+        "shelf_events": 0,
+        "neural_or_oracle_events": 5513,
+        "shelf_event_fraction": 0,
+        "control_rejections": 0,
+        "stalls": 0,
+        "wall_seconds": 1.2369874369996978,
+        "model_seconds": 1.1372952190140495,
+        "model_parameter_bytes_read_proxy": 10291403776,
+        "model_parameter_bytes_per_target_byte": 1608031.84
+      },
+      "cascade_generation": {
+        "sequences": 100,
+        "target_bytes": 6400,
+        "emitted_bytes": 6400,
+        "byte_accuracy": 0.02015625,
+        "mean_common_prefix_bytes": 0.15,
+        "complete_horizon_rate": 1,
+        "shelf_events": 0,
+        "neural_or_oracle_events": 5513,
+        "shelf_event_fraction": 0,
+        "control_rejections": 0,
+        "stalls": 0,
+        "wall_seconds": 2.393697116000112,
+        "model_seconds": 1.2420524420022048,
+        "model_parameter_bytes_read_proxy": 10291403776,
+        "model_parameter_bytes_per_target_byte": 1608031.84
+      }
+    },
+    {
+      "seed": 314,
+      "steps": 300,
+      "training_seconds": 3.1358211259998825,
+      "loss_samples": [
+        9.389069557189941,
+        6.75435733795166,
+        6.893984794616699
+      ],
+      "model_parameters": 466688,
+      "model_parameter_bytes": 1866752,
+      "neural_validation": {
+        "tokens": 20000,
+        "nll": 6.785527724456787,
+        "perplexity": 884.9469719009912,
+        "accuracy": 0.06305,
+        "seconds": 0.4951128630000312,
+        "tokens_per_second": 40394.830137949255
+      },
+      "neural_generation": {
+        "sequences": 100,
+        "target_bytes": 6400,
+        "emitted_bytes": 6400,
+        "byte_accuracy": 0.0646875,
+        "mean_common_prefix_bytes": 0.2,
+        "complete_horizon_rate": 1,
+        "shelf_events": 0,
+        "neural_or_oracle_events": 2341,
+        "shelf_event_fraction": 0,
+        "control_rejections": 0,
+        "stalls": 0,
+        "wall_seconds": 0.5295143469998038,
+        "model_seconds": 0.47362879399406665,
+        "model_parameter_bytes_read_proxy": 4370066432,
+        "model_parameter_bytes_per_target_byte": 682822.88
+      },
+      "cascade_generation": {
+        "sequences": 100,
+        "target_bytes": 6400,
+        "emitted_bytes": 6400,
+        "byte_accuracy": 0.0646875,
+        "mean_common_prefix_bytes": 0.2,
+        "complete_horizon_rate": 1,
+        "shelf_events": 0,
+        "neural_or_oracle_events": 2341,
+        "shelf_event_fraction": 0,
+        "control_rejections": 0,
+        "stalls": 0,
+        "wall_seconds": 1.0647199889999683,
+        "model_seconds": 0.515022860998215,
+        "model_parameter_bytes_read_proxy": 4370066432,
+        "model_parameter_bytes_per_target_byte": 682822.88
+      }
+    },
+    {
+      "seed": 2718,
+      "steps": 300,
+      "training_seconds": 3.0176887550001084,
+      "loss_samples": [
+        9.563810348510742,
+        6.854915618896484,
+        6.911757469177246
+      ],
+      "model_parameters": 466688,
+      "model_parameter_bytes": 1866752,
+      "neural_validation": {
+        "tokens": 20000,
+        "nll": 6.786515899658204,
+        "perplexity": 885.8218867665837,
+        "accuracy": 0.0599,
+        "seconds": 0.5084129389997543,
+        "tokens_per_second": 39338.101896752996
+      },
+      "neural_generation": {
+        "sequences": 100,
+        "target_bytes": 6400,
+        "emitted_bytes": 6400,
+        "byte_accuracy": 0.06359375,
+        "mean_common_prefix_bytes": 0.18,
+        "complete_horizon_rate": 1,
+        "shelf_events": 0,
+        "neural_or_oracle_events": 2754,
+        "shelf_event_fraction": 0,
+        "control_rejections": 0,
+        "stalls": 0,
+        "wall_seconds": 0.648901695999939,
+        "model_seconds": 0.582872660002522,
+        "model_parameter_bytes_read_proxy": 5141035008,
+        "model_parameter_bytes_per_target_byte": 803286.72
+      },
+      "cascade_generation": {
+        "sequences": 100,
+        "target_bytes": 6400,
+        "emitted_bytes": 6400,
+        "byte_accuracy": 0.06359375,
+        "mean_common_prefix_bytes": 0.18,
+        "complete_horizon_rate": 1,
+        "shelf_events": 0,
+        "neural_or_oracle_events": 2754,
+        "shelf_event_fraction": 0,
+        "control_rejections": 0,
+        "stalls": 0,
+        "wall_seconds": 1.3231470010000521,
+        "model_seconds": 0.6363962210180034,
+        "model_parameter_bytes_read_proxy": 5141035008,
+        "model_parameter_bytes_per_target_byte": 803286.72
+      }
+    }
+  ]
+}

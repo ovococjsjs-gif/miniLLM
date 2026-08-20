@@ -17,6 +17,8 @@
 - `aira_autonomous_proxy.json` — autonomous 64-token shelf bursts with oracle fallback;
 - `aira_memory_proxy.json` — bounded random-code recall, rejection, scan work and latency;
 - `aira_residual_proxy.json` — matched full/hard/soft 300-step residual controls;
+- `aira_token_bridge_proxy.json` — negative control: raw shelf only at BPE-token boundaries;
+- `aira_byte_event_proxy.json` — dynamic-BPE byte-event core, proper loss, calls, traffic and autonomous generation;
 - `pc_alm_proxy.json` — old finite PC versus PC-ALM BP-gradient alignment.
 
 Каноническая интерпретация AIra-результатов находится в

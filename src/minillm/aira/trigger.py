@@ -139,6 +139,7 @@ def save_compact_shelf(
     levels: list[CompactShelfLevel],
     *,
     tokenizer_sha256: str | None = None,
+    representation: str | None = None,
 ) -> None:
     """Atomically persist a multilevel shelf without Python pickle objects."""
 
@@ -159,6 +160,10 @@ def save_compact_shelf(
         except ValueError as error:
             raise ValueError("tokenizer SHA-256 must be hexadecimal") from error
         payload["tokenizer_sha256"] = np.asarray([tokenizer_sha256.lower()])
+    if representation is not None:
+        if representation not in {"token-ids", "utf8-byte"}:
+            raise ValueError("unsupported shelf representation")
+        payload["representation"] = np.asarray([representation])
     for index, level in enumerate(levels):
         payload[f"context_hashes_{index}"] = level.context_hashes
         payload[f"top_tokens_{index}"] = level.top_tokens
@@ -170,7 +175,10 @@ def save_compact_shelf(
 
 
 def load_compact_shelf(
-    path: str | Path, *, expected_tokenizer_sha256: str | None = None
+    path: str | Path,
+    *,
+    expected_tokenizer_sha256: str | None = None,
+    expected_representation: str | None = None,
 ) -> list[CompactShelfLevel]:
     """Load a shelf, optionally requiring an exact tokenizer identity match."""
 
@@ -183,6 +191,12 @@ def load_compact_shelf(
             stored_hash = str(payload["tokenizer_sha256"][0])
             if stored_hash != expected_tokenizer_sha256.lower():
                 raise ValueError("shelf and generation tokenizers differ")
+        if expected_representation is not None:
+            if "representation" not in payload:
+                raise ValueError("shelf archive does not identify its representation")
+            stored_representation = str(payload["representation"][0])
+            if stored_representation != expected_representation:
+                raise ValueError("shelf archive has the wrong representation")
         orders = payload["orders"].astype(np.int64).tolist()
         levels = [
             CompactShelfLevel(

@@ -24,7 +24,12 @@ def main() -> None:
     parser.add_argument("--text", required=True)
     parser.add_argument("--tokenizer", required=True)
     parser.add_argument("--output", required=True)
-    parser.add_argument("--orders", nargs="+", type=int, default=[2, 3, 4])
+    parser.add_argument("--orders", nargs="+", type=int, default=[4, 8, 16])
+    parser.add_argument(
+        "--representation",
+        choices=("utf8-byte", "token-ids"),
+        default="utf8-byte",
+    )
     parser.add_argument("--max-characters", type=int, default=2_000_000)
     args = parser.parse_args()
     if len(set(args.orders)) != len(args.orders) or any(
@@ -38,12 +43,23 @@ def main() -> None:
         : args.max_characters
     ]
     tokenizer = load_tokenizer(tokenizer_path)
-    tokens = np.asarray(tokenizer.encode(text).ids, dtype=np.uint32)
-    if len(tokens) <= max(args.orders):
-        raise ValueError("training text encodes to too few tokens")
-    levels = [build_compact_shelf(tokens, order) for order in args.orders]
+    normalized = tokenizer.normalizer.normalize_str(text)
+    if args.representation == "utf8-byte":
+        units = np.frombuffer(normalized.encode("utf-8"), dtype=np.uint8).astype(
+            np.uint32
+        )
+    else:
+        units = np.asarray(tokenizer.encode(normalized).ids, dtype=np.uint32)
+    if len(units) <= max(args.orders):
+        raise ValueError("training text encodes to too few shelf units")
+    levels = [build_compact_shelf(units, order) for order in args.orders]
     tokenizer_hash = sha256(tokenizer_path)
-    save_compact_shelf(output, levels, tokenizer_sha256=tokenizer_hash)
+    save_compact_shelf(
+        output,
+        levels,
+        tokenizer_sha256=tokenizer_hash,
+        representation=args.representation,
+    )
     manifest = {
         "schema_version": 1,
         "artifact": "aira-v2-compact-shelf-v1",
@@ -55,7 +71,8 @@ def main() -> None:
         "tokenizer": str(tokenizer_path),
         "tokenizer_sha256": tokenizer_hash,
         "vocab_size": tokenizer.get_vocab_size(),
-        "tokens": len(tokens),
+        "representation": args.representation,
+        "shelf_units": len(units),
         "orders": args.orders,
         "levels": [
             {

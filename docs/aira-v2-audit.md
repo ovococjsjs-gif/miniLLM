@@ -358,14 +358,65 @@ known-query latency is about 1.4 ms on this host (timings vary between runs).
 These are independent random codes. No learned RU/EN semantic encoder, paraphrase benchmark or
 sublinear phone-scale index has passed yet.
 
-### A3 cascade: reference runtime exists; trained end-to-end test remains open
+### A3 cascade: first vertical slice found and repaired the representation/state error
 
-The shelf can now truly skip `MiniLLM.forward`, and unit tests verify bypass, anchor fallback and
-cache catch-up. `build_aira_shelf.py` creates a tokenizer-hash-bound NPZ archive, and
-`minillm generate --aira-shelf ...` exposes the path with route/neural-call telemetry. A normalized
-scoring path and autonomous oracle stress also exist. There is still no
-trained byte-trigger/BPE-neural checkpoint evaluated on matched autonomous completions, so the A3
-quality-adjusted active-compute claim is not complete.
+The initial `MiniLLM` integration skips a forward call when a shelf token is chosen and later catches
+the KV/state cache up on the emitted suffix. This is an exact integration control, but it does **not**
+save all neural layer execution: catch-up eventually processes those tokens. The earlier wording
+calling it a true active-compute bypass was incorrect. The tokenizer-bound archive, CLI telemetry and
+cache-equivalence tests remain useful controls.
+
+`results/aira_token_bridge_proxy.json` tests the next obvious bridge: query the raw-byte shelf only at
+canonical BPE-token boundaries and emit the longest vocabulary token matching predicted bytes. It
+fails as a primary bridge:
+
+- only 1.28% of sampled BPE boundaries route, despite a 1.89M-byte shelf;
+- canonical-token precision is 15.63%, while byte-prefix precision is 96.88%;
+- the oracle-fallback autonomous run routes only 2.15% of events;
+- the weak 300-step BPE core leaves the shelf manifold immediately and routes zero autonomous events.
+
+Most useful byte-shelf matches occur *inside* BPE tokens. Requiring a canonical token boundary loses
+the mechanism, while accepting a shorter valid token changes segmentation and destabilizes the
+ordinary token LM.
+
+The implemented repair is `ByteEventLM` plus `generate_byte_events`:
+
+1. generation and shelf routing remain raw-byte aligned;
+2. only a neural fallback dynamically BPE-merges the latest bounded 64-byte window;
+3. the neural core reads 16 dynamic BPE patches and predicts one raw byte;
+4. no recurrent/KV state is advanced through shelf bytes, so each accepted byte is a genuine skipped
+   neural invocation;
+5. `AIraCascade` serves an explicitly requested, accepted structured episodic fact directly with
+   provenance; unknown/conflicted keys fall through to shelf→neural generation, and deletion remains
+   user-controlled.
+
+`results/aira_byte_event_proxy.json` trains the 471,232-parameter FP32 event core for 300 steps over
+three seeds. On 10,000 independently sampled validation bytes, the proper normalized cascade gives:
+
+| metric | neural only | byte-event cascade |
+|---|---:|---:|
+| mean perplexity | 160.87 | **156.04** |
+| mean accuracy | 21.95% | **23.12%** |
+| neural call fraction | 100% | **97.39%** |
+| FP32 parameter-read proxy | 1.885 MB/byte | **1.836 MB/byte** |
+
+The shelf's routed-byte precision is 95.40%. Thus the first teacher-forced vertical slice improves
+quality while reducing neural calls and batch-1 parameter traffic by 2.61%; this is the first A3
+component result that satisfies the *direction* of quality-adjusted active compute.
+
+It does not yet pass the product/runtime gate. Unfused Python dynamic BPE+shelf routing makes the
+cascade validation path about 50x slower than the batched neural evaluation. In autonomous 64-byte
+generation, the undertrained core has only 6.68% byte accuracy and quickly leaves the familiar
+manifold. The uncalibrated cascade routes just 0.33% of bytes with 35.97% mean shelf precision. On a
+separate 100-sequence generated-context calibration split, candidate precision is only 7–8% for every
+seed and no threshold can prove 95% precision. The calibrated policy therefore disables autonomous
+bypass and exactly restores the neural-only quality/call count. By contrast, oracle fallback retains
+99.88% byte accuracy, 2.67% shelf routing and 95.32% autonomous shelf precision. This confirms both
+that fallback quality is the limiting factor and that generated-context calibration must be a hard
+safety gate rather than an optional report. `AIraCascade` consequently disables autonomous shelf
+routing unless it receives a fitted non-empty `ReliabilityThreshold`. The next gate is a stronger
+matched event core and fused
+incremental BPE/hash lookup; no general speedup claim is justified yet.
 
 ### A4 PC-ALM: mathematical reference supports the repair, not an efficiency claim
 

@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from minillm.aira import build_compact_shelf
+from minillm.aira import ByteBPEBridge, build_compact_shelf
 from minillm.config import EngramConfig, MiniLLMConfig
 from minillm.evaluation import check_completion, load_completion_cases
 from minillm.generation import (
@@ -123,6 +123,32 @@ def test_triggered_generation_really_bypasses_then_anchors() -> None:
     assert result.neural_calls >= 1
     assert result.neural_input_tokens >= 4
     assert result.control_rejections >= 1
+
+
+def test_byte_shelf_can_bypass_through_bpe_bridge() -> None:
+    torch.manual_seed(11)
+    model = MiniLLM(cached_config()).eval()
+    pieces: list[bytes | None] = [None] * model.config.vocab_size
+    pieces[10] = b"a"
+    pieces[11] = b"b"
+    pieces[12] = b"ab"
+    bridge = ByteBPEBridge(tuple(pieces))
+    byte_shelf = build_compact_shelf(
+        np.frombuffer(b"ab" * 100, dtype=np.uint8).astype(np.uint32), order=2
+    )
+
+    result = generate_triggered_ids(
+        model,
+        [byte_shelf],
+        [12],
+        SamplingConfig(max_new_tokens=2, temperature=0),
+        TriggerConfig(confidence_threshold=0.9, confidence_z=0),
+        byte_bpe_bridge=bridge,
+    )
+
+    assert result.generated_token_ids[0] == 12
+    assert result.routes[0] == "shelf"
+    assert result.shelf_tokens >= 1
 
 
 def test_triggered_generation_matches_neural_when_shelf_misses() -> None:

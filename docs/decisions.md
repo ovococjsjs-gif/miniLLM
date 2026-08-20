@@ -87,3 +87,15 @@ controls. Обычные большие scaling runs приостановлен�
 Аудит пользовательской AIra нашёл воспроизводимые trigger/memory/PC механизмы, но также
 выявил neural starvation, ложные hybrid perplexity, O(ND) memory и незавершённую live
 интеграцию. Канонические исправления и текущие измерения: `docs/aira-v2-audit.md`.
+
+## D-011 — Neural fallback является bounded byte-event core, а не exact cached LM
+
+**Решение:** основной A3 runtime сохраняет raw-byte output. На fallback последние 64
+байта детерминированно превращаются в dynamic BPE patches, bounded neural core предсказывает
+один следующий байт и не хранит state, который нужно обновлять на shelf-позициях. Обычный
+`MiniLLM` с KV catch-up остаётся correctness control.
+
+**Причина:** exact catch-up лишь откладывает neural compute. Опрос byte shelf только на BPE
+boundaries сохранил 1.28% coverage и разрушал canonical segmentation. Byte-event proxy на
+каждой raw boundary улучшил proper validation perplexity на 3.0%, accuracy на 1.17 п.п. и
+сократил neural calls на 2.61%, хотя Python runtime и автономное качество пока не прошли gate.

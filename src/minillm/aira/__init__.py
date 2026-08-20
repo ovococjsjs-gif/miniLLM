@@ -1,7 +1,21 @@
 """AIra-v2 event-triggered language substrate primitives."""
 
+from .bridge import BridgedShelfPrediction, ByteBPEBridge
 from .calibration import ReliabilityThreshold, calibrate_reliability_threshold
-from .memory import BoundedAssociativeMemory, MemoryHit
+from .cascade import (
+    AIraCascade,
+    ByteEventConfig,
+    ByteEventGenerationResult,
+    CognitiveCascadeResult,
+    generate_byte_events,
+)
+from .event_core import ByteEventLM, EventContextLM
+from .memory import (
+    BoundedAssociativeMemory,
+    EpisodicFactStore,
+    MemoryHit,
+    StructuredKeyEncoder,
+)
 from .mixture import normalized_shelf_neural_mixture, shelf_distribution
 from .pc_alm import (
     backprop_gradients,
@@ -25,17 +39,28 @@ from .trigger import (
 )
 
 __all__ = [
+    "AIraCascade",
     "BoundedAssociativeMemory",
+    "BridgedShelfPrediction",
+    "ByteBPEBridge",
+    "ByteEventConfig",
+    "ByteEventGenerationResult",
+    "ByteEventLM",
+    "CognitiveCascadeResult",
     "CompactShelfLevel",
+    "EpisodicFactStore",
+    "EventContextLM",
     "MemoryHit",
     "ReliabilityThreshold",
     "ShelfEvaluation",
     "ShelfPrediction",
     "ShelfRoutes",
+    "StructuredKeyEncoder",
     "backprop_gradients",
     "build_compact_shelf",
     "calibrate_reliability_threshold",
     "evaluate_hierarchical_shelf",
+    "generate_byte_events",
     "gradient_cosine",
     "load_compact_shelf",
     "local_augmented_gradients",

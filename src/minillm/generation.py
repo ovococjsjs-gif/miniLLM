@@ -10,7 +10,7 @@ from typing import Any
 import numpy as np
 import torch
 
-from .aira import CompactShelfLevel, predict_shelf_next
+from .aira import ByteBPEBridge, CompactShelfLevel, predict_shelf_next
 from .config import MiniLLMConfig
 from .model import MiniLLM, ModelCache
 
@@ -318,14 +318,18 @@ def generate_triggered_ids(
     sampling: SamplingConfig | None = None,
     trigger: TriggerConfig | None = None,
     *,
+    byte_bpe_bridge: ByteBPEBridge | None = None,
     stop_token_ids: set[int] | frozenset[int] | None = None,
     core_repetitions: int | None = None,
 ) -> TriggeredGenerationResult:
-    """Generate with true shelf bypasses and bounded periodic neural anchors.
+    """Generate with shelf-routed decisions and bounded periodic neural anchors.
 
-    Shelf tokens do not invoke the neural model. When a neural fallback is eventually
-    needed, cached decoding catches up on all shelf-emitted suffix tokens in one call.
-    This is an inference reference, not an optimized mobile runtime.
+    Shelf tokens do not invoke the neural model. With ``byte_bpe_bridge``, the shelf
+    predicts raw bytes and a deterministic vocabulary trie chooses the longest complete
+    BPE token. When neural fallback is needed, cached decoding catches up on all
+    shelf-emitted tokens in one call. Therefore this exact-cache path skips decision calls,
+    not all eventual layer compute; use :func:`generate_byte_events` for genuine event
+    skipping. This is a reference, not an optimized runtime.
     """
 
     sampling = (sampling or SamplingConfig()).validate()
@@ -342,11 +346,18 @@ def generate_triggered_ids(
         raise ValueError("prompt contains a token outside the model vocabulary")
     if any(not 0 <= token < model.config.vocab_size for token in stop_tokens):
         raise ValueError("stop token is outside the model vocabulary")
+    if byte_bpe_bridge is not None and (
+        byte_bpe_bridge.vocab_size != model.config.vocab_size
+    ):
+        raise ValueError("byte/BPE bridge vocabulary does not match the model")
+    maximum_shelf_token = (
+        255 if byte_bpe_bridge is not None else model.config.vocab_size - 1
+    )
     if any(
-        level.contexts and int(level.top_tokens.max()) >= model.config.vocab_size
+        level.contexts and int(level.top_tokens.max()) > maximum_shelf_token
         for level in shelf_levels
     ):
-        raise ValueError("shelf predicts a token outside the model vocabulary")
+        raise ValueError("shelf predicts a symbol outside its routing vocabulary")
 
     device = next(model.parameters()).device
     generator = torch.Generator(device=device).manual_seed(sampling.seed)
@@ -355,6 +366,11 @@ def generate_triggered_ids(
     generated: list[int] = []
     routes: list[str] = []
     all_tokens = list(prompt)
+    byte_context = (
+        bytearray(byte_bpe_bridge.suffix_bytes_after_special(all_tokens))
+        if byte_bpe_bridge is not None
+        else None
+    )
     use_cache = sampling.use_cache and model.supports_cached_decode
     cache: ModelCache | None = None
     stop_reason = "max_new_tokens"
@@ -370,20 +386,37 @@ def generate_triggered_ids(
                 if len(all_tokens) >= model.config.max_seq_len:
                     stop_reason = "max_sequence_length"
                     break
-                candidate = predict_shelf_next(
-                    shelf_levels,
-                    np.asarray(all_tokens, dtype=np.uint32),
-                    minimum_support=trigger.minimum_support,
-                    confidence_threshold=trigger.confidence_threshold,
-                    confidence_z=trigger.confidence_z,
-                    selection=trigger.selection,
-                )
+                if byte_bpe_bridge is None:
+                    candidate = predict_shelf_next(
+                        shelf_levels,
+                        np.asarray(all_tokens, dtype=np.uint32),
+                        minimum_support=trigger.minimum_support,
+                        confidence_threshold=trigger.confidence_threshold,
+                        confidence_z=trigger.confidence_z,
+                        selection=trigger.selection,
+                    )
+                else:
+                    assert byte_context is not None
+                    candidate = byte_bpe_bridge.draft_token(
+                        shelf_levels,
+                        byte_context,
+                        minimum_support=trigger.minimum_support,
+                        confidence_threshold=trigger.confidence_threshold,
+                        confidence_z=trigger.confidence_z,
+                        selection=trigger.selection,
+                    )
                 use_shelf = candidate is not None
+                candidate_risk = 0.0
                 if candidate is not None:
-                    risk = 1.0 - candidate.lower_confidence
+                    candidate_risk = (
+                        candidate.cumulative_risk
+                        if byte_bpe_bridge is not None
+                        else 1.0 - candidate.lower_confidence
+                    )
                     blocked = (
                         current_burst >= trigger.maximum_shelf_burst
-                        or cumulative_risk + risk > trigger.cumulative_risk_budget
+                        or cumulative_risk + candidate_risk
+                        > trigger.cumulative_risk_budget
                         or tokens_since_neural >= trigger.neural_anchor_interval
                         or _would_repeat_cycle(
                             all_tokens,
@@ -400,7 +433,7 @@ def generate_triggered_ids(
                     next_token = candidate.token
                     shelf_tokens += 1
                     current_burst += 1
-                    cumulative_risk += 1.0 - candidate.lower_confidence
+                    cumulative_risk += candidate_risk
                     routes.append("shelf")
                 else:
                     if use_cache:
@@ -434,6 +467,13 @@ def generate_triggered_ids(
                     routes.append("neural")
                 generated.append(next_token)
                 all_tokens.append(next_token)
+                if byte_bpe_bridge is not None:
+                    assert byte_context is not None
+                    piece = byte_bpe_bridge.token_bytes[next_token]
+                    if piece is None:
+                        byte_context.clear()
+                    else:
+                        byte_context.extend(piece)
                 tokens_since_neural += 1
                 if next_token in stop_tokens:
                     stop_reason = "stop_token"

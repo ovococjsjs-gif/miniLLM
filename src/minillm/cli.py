@@ -97,7 +97,7 @@ def _energy(args: argparse.Namespace) -> int:
 
 def _generate(args: argparse.Namespace) -> int:
     # Keep static architecture analysis usable without importing torch/tokenizers.
-    from .aira import load_compact_shelf
+    from .aira import ByteBPEBridge, load_compact_shelf
     from .generation import (
         SamplingConfig,
         TriggerConfig,
@@ -107,6 +107,8 @@ def _generate(args: argparse.Namespace) -> int:
     )
     from .tokenization import load_tokenizer
 
+    if args.aira_byte_bpe_bridge and args.aira_shelf is None:
+        raise ValueError("--aira-byte-bpe-bridge requires --aira-shelf")
     prompt = (
         Path(args.prompt_file).read_text(encoding="utf-8")
         if args.prompt_file is not None
@@ -143,10 +145,18 @@ def _generate(args: argparse.Namespace) -> int:
     else:
         with Path(args.tokenizer).open("rb") as handle:
             tokenizer_hash = hashlib.file_digest(handle, "sha256").hexdigest()
+        bridge = (
+            ByteBPEBridge.from_tokenizer_json(args.tokenizer)
+            if args.aira_byte_bpe_bridge
+            else None
+        )
+        representation = "utf8-byte" if bridge is not None else "token-ids"
         result = generate_triggered_ids(
             loaded.model,
             load_compact_shelf(
-                args.aira_shelf, expected_tokenizer_sha256=tokenizer_hash
+                args.aira_shelf,
+                expected_tokenizer_sha256=tokenizer_hash,
+                expected_representation=representation,
             ),
             prompt_ids,
             sampling,
@@ -159,6 +169,7 @@ def _generate(args: argparse.Namespace) -> int:
                 cumulative_risk_budget=args.aira_risk_budget,
                 neural_anchor_interval=args.aira_anchor_interval,
             ),
+            byte_bpe_bridge=bridge,
             stop_token_ids=stop_tokens,
             core_repetitions=args.recurrences,
         )
@@ -261,7 +272,13 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--device", default="cpu")
     generate.add_argument("--no-cache", action="store_true")
     generate.add_argument(
-        "--aira-shelf", help="NPZ shelf archive for true neural-bypass generation"
+        "--aira-shelf",
+        help="NPZ shelf archive for experimental shelf-routed generation",
+    )
+    generate.add_argument(
+        "--aira-byte-bpe-bridge",
+        action="store_true",
+        help="route a UTF-8 byte shelf through the tokenizer vocabulary trie",
     )
     generate.add_argument("--aira-min-support", type=int, default=5)
     generate.add_argument("--aira-confidence", type=float, default=0.95)
