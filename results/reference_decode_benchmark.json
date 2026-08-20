@@ -1,0 +1,16 @@
+{
+  "config": "configs/proxy_3m.json",
+  "device": "cpu",
+  "platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+  "torch_version": "2.13.0+cu130",
+  "torch_num_threads": 1,
+  "prompt_tokens": 128,
+  "decode_tokens": 32,
+  "repeats": 5,
+  "cached_total_seconds_including_prefill": 0.12363641700005701,
+  "full_prefix_total_seconds": 0.34939314099995045,
+  "generated_tokens_per_second_cached": 258.8234176988908,
+  "generated_tokens_per_second_full_prefix": 91.58737320491514,
+  "speedup": 2.825972714817426,
+  "note": "Reference PyTorch benchmark; includes cached prefill but full-prefix timing starts after prompt construction."
+}

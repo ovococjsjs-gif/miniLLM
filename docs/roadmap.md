@@ -14,8 +14,9 @@ checkpoint, не перепутав дорогой training run с ещё одн
 - corpus records, license/quality/PII filters, deduplication, contamination и manifests;
 - byte-BPE trainer и multilingual tokenizer economics;
 - distillation losses и fake-quantization/QAT primitives;
+- reference generation, exact GQA/conv/GDN2 cache и bilingual completion smoke suite;
 - память, permissioned tools, retrieval trust boundary и bounded assistant loop;
-- 36 unit/integration tests и воспроизводимые малые результаты.
+- 41 unit/integration tests и воспроизводимые малые результаты.
 
 ### Что на самом деле доказано
 
@@ -32,8 +33,8 @@ checkpoint, не перепутав дорогой training run с ещё одн
 - полезных pretrained/SFT весов;
 - production-legal русско-английского training corpus нужного масштаба;
 - финального tokenizer, обученного на будущей смеси;
-- generation API, model loader и incremental KV/conv-state decode;
-- систематического downstream evaluation harness;
+- обученного checkpoint, на котором reference generation можно оценивать по качеству;
+- систематического downstream evaluation шире диагностического smoke suite;
 - GPU/distributed mixed-precision trainer для большого run;
 - экспорта в реальный mobile runtime и измерений на телефоне.
 
@@ -165,13 +166,16 @@ Validation loss необходим, но недостаточен. Для каж
 
 ## 8. Последовательность ближайших работ
 
-### Блок 1 — inference/eval vertical slice
+### Блок 1 — inference/eval vertical slice — выполнен
 
-- model checkpoint loader;
-- reference generation;
-- cached attention/conv decode и equivalence tests;
+- model checkpoint loader и компактный inference checkpoint;
+- greedy/seeded reference generation;
+- exact cached attention/conv/GDN2 decode и equivalence tests;
 - completion/evaluation CLI;
 - фиксированный bilingual smoke set.
+
+Engram пока использует корректный full-prefix fallback. Reference CPU benchmark получил
+около 2.8× против полного пересчёта prefix на 1.74M proxy; mobile/runtime выводов из него нет.
 
 **Результат:** любой будущий checkpoint можно сразу прочитать, сравнить и показать.
 

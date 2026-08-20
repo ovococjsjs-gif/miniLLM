@@ -30,6 +30,7 @@
 - uint32 token packing и resume-safe proxy trainer с восстановлением всех RNG;
 - калькулятор параметров, INT4-памяти, KV-cache, recurrent state и FLOP/token;
 - Fermi-разложение decode energy по активным весам, KV/state traffic и MAC;
+- exact cached GQA/conv/GDN2 decode, seeded generation и checkpoint smoke suite;
 - support/confidence-gated n-gram draft shelf без неявной замены neural policy;
 - generated и real-text proxy experiments;
 - тесты causal-инвариантности, памяти, tools, distillation, QAT и учёта параметров.
@@ -87,6 +88,7 @@ MoE и GDN2/KDA остаются важными ветками, но не наз
 ## Документы
 
 - [Ускоренная карта до реально обученной модели](docs/roadmap.md)
+- [Reference generation, cache и checkpoint evaluation](docs/inference.md)
 - [Карта исследований и проверенные факты](docs/research-landscape.md)
 - [Предлагаемая архитектура и система памяти](docs/architecture.md)
 - [План экспериментов и критерии остановки](docs/experiments.md)

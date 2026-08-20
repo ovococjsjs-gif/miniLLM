@@ -10,7 +10,9 @@ from torch.nn import functional as F
 
 from .config import MiniLLMConfig
 from .modules import (
+    AttentionCache,
     CausalSelfAttention,
+    ConvCache,
     DenseSwiGLU,
     GatedShortConv,
     HashedNgramMemory,
@@ -29,6 +31,18 @@ class ModelOutput:
     mtp_loss: torch.Tensor | None = None
     router_loss: torch.Tensor | None = None
     router_stats: tuple[RouterStats, ...] = ()
+
+
+MixerCache = AttentionCache | ConvCache | torch.Tensor | None
+
+
+@dataclass(frozen=True)
+class ModelCache:
+    """Per-effective-layer decode state plus the number of consumed tokens."""
+
+    block_caches: tuple[MixerCache, ...]
+    token_count: int
+    core_repetitions: int
 
 
 class MiniBlock(nn.Module):
@@ -82,6 +96,29 @@ class MiniBlock(nn.Module):
         ffn_output, router_loss, stats = self.ffn(self.pre_ffn_norm(x))
         x = self.post_ffn_norm(x + self.dropout(ffn_output))
         return x, router_loss, stats
+
+    def forward_cached(
+        self, x: torch.Tensor, cache: MixerCache
+    ) -> tuple[torch.Tensor, torch.Tensor, RouterStats | None, MixerCache]:
+        normalized = self.pre_mixer_norm(x)
+        if self.mixer_type == "attention":
+            if cache is not None and not isinstance(cache, AttentionCache):
+                raise TypeError("attention block received the wrong cache type")
+            mixed, next_cache = self.mixer.forward_cached(normalized, cache)
+        elif self.mixer_type == "conv":
+            if cache is not None and not isinstance(cache, ConvCache):
+                raise TypeError("convolution block received the wrong cache type")
+            mixed, next_cache = self.mixer.forward_cached(normalized, cache)
+        else:
+            if cache is not None and not isinstance(cache, torch.Tensor):
+                raise TypeError("GDN2 block received the wrong cache type")
+            mixed, next_cache = self.mixer(
+                normalized, initial_state=cache, return_state=True
+            )
+        x = self.post_mixer_norm(x + self.dropout(mixed))
+        ffn_output, router_loss, stats = self.ffn(self.pre_ffn_norm(x))
+        x = self.post_ffn_norm(x + self.dropout(ffn_output))
+        return x, router_loss, stats, next_cache
 
 
 class MTPModule(nn.Module):
@@ -164,6 +201,92 @@ class MiniLLM(nn.Module):
             if stats is not None:
                 router_stats.append(stats)
         return hidden
+
+    @property
+    def supports_cached_decode(self) -> bool:
+        """Whether all enabled components have an exact reference cache path."""
+
+        return self.engram is None
+
+    def forward_cached(
+        self,
+        input_ids: torch.Tensor,
+        cache: ModelCache | None = None,
+        *,
+        core_repetitions: int | None = None,
+    ) -> tuple[ModelOutput, ModelCache]:
+        """Evaluate a prompt or suffix and return state for exact incremental decode.
+
+        The model must be in evaluation mode. Engram currently falls back to full-prefix
+        generation because its suffix hash and refinement convolution need a dedicated
+        cache implementation.
+        """
+
+        if self.training:
+            raise RuntimeError("cached decode requires model.eval()")
+        if not self.supports_cached_decode:
+            raise NotImplementedError("cached decode is not implemented for Engram")
+        if input_ids.ndim != 2 or input_ids.shape[1] < 1:
+            raise ValueError("input_ids must have shape [batch, positive time]")
+        repetitions = (
+            self.config.core_repetitions
+            if core_repetitions is None
+            else core_repetitions
+        )
+        if not 1 <= repetitions <= self.config.max_core_repetitions:
+            raise ValueError("core_repetitions outside configured bounds")
+        effective_blocks = (
+            len(self.prelude) + repetitions * len(self.core) + len(self.coda)
+        )
+        if cache is None:
+            previous: tuple[MixerCache, ...] = (None,) * effective_blocks
+            token_count = 0
+        else:
+            if cache.core_repetitions != repetitions:
+                raise ValueError("cache was created with a different recurrence count")
+            if len(cache.block_caches) != effective_blocks:
+                raise ValueError("cache has an incompatible effective depth")
+            previous = cache.block_caches
+            token_count = cache.token_count
+        if token_count + input_ids.shape[1] > self.config.max_seq_len:
+            raise ValueError("cached sequence exceeds configured maximum")
+
+        router_losses: list[torch.Tensor] = []
+        router_stats: list[RouterStats] = []
+        next_caches: list[MixerCache] = []
+
+        def run(blocks: nn.ModuleList, hidden: torch.Tensor) -> torch.Tensor:
+            for block in blocks:
+                block_cache = previous[len(next_caches)]
+                hidden, aux, stats, next_cache = block.forward_cached(
+                    hidden, block_cache
+                )
+                router_losses.append(aux)
+                if stats is not None:
+                    router_stats.append(stats)
+                next_caches.append(next_cache)
+            return hidden
+
+        hidden = self.embedding(input_ids) * (self.config.d_model**0.5)
+        hidden = run(self.prelude, hidden)
+        injected = hidden
+        if self.recurrent_adapter is not None:
+            state = self.initial_state[None, None, :].expand_as(hidden)
+        else:
+            state = hidden
+        for _ in range(repetitions):
+            if self.recurrent_adapter is not None:
+                state = self.recurrent_adapter(torch.cat((state, injected), dim=-1))
+            state = run(self.core, state)
+        hidden = run(self.coda, state)
+        logits = self.lm_head(self.final_norm(hidden))
+        output = ModelOutput(logits=logits, router_stats=tuple(router_stats))
+        next_model_cache = ModelCache(
+            block_caches=tuple(next_caches),
+            token_count=token_count + input_ids.shape[1],
+            core_repetitions=repetitions,
+        )
+        return output, next_model_cache
 
     def forward(
         self,

@@ -94,6 +94,66 @@ def _energy(args: argparse.Namespace) -> int:
     return 0
 
 
+def _generate(args: argparse.Namespace) -> int:
+    # Keep static architecture analysis usable without importing torch/tokenizers.
+    from .generation import SamplingConfig, generate_ids, load_model_checkpoint
+    from .tokenization import load_tokenizer
+
+    prompt = (
+        Path(args.prompt_file).read_text(encoding="utf-8")
+        if args.prompt_file is not None
+        else args.prompt
+    )
+    loaded = load_model_checkpoint(
+        args.checkpoint, config_path=args.config, device=args.device
+    )
+    tokenizer = load_tokenizer(args.tokenizer)
+    if tokenizer.get_vocab_size() != loaded.config.vocab_size:
+        raise ValueError("tokenizer vocabulary does not match model configuration")
+    prompt_ids = tokenizer.encode(prompt).ids
+    bos_id = tokenizer.token_to_id("<bos>")
+    if bos_id is not None and not args.no_bos:
+        prompt_ids.insert(0, bos_id)
+    eos_id = tokenizer.token_to_id("<eos>")
+    stop_tokens = {eos_id} if eos_id is not None and not args.no_eos_stop else set()
+    result = generate_ids(
+        loaded.model,
+        prompt_ids,
+        SamplingConfig(
+            max_new_tokens=args.max_new_tokens,
+            temperature=args.temperature,
+            top_k=args.top_k,
+            top_p=args.top_p,
+            seed=args.seed,
+            use_cache=not args.no_cache,
+        ),
+        stop_token_ids=stop_tokens,
+        core_repetitions=args.recurrences,
+    )
+    completion = tokenizer.decode(
+        list(result.generated_token_ids), skip_special_tokens=True
+    )
+    if args.json:
+        print(
+            json.dumps(
+                {
+                    "prompt": prompt,
+                    "completion": completion,
+                    "prompt_token_ids": result.prompt_token_ids,
+                    "generated_token_ids": result.generated_token_ids,
+                    "stop_reason": result.stop_reason,
+                    "used_cache": result.used_cache,
+                    "checkpoint_step": loaded.step,
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+    else:
+        print(completion)
+    return 0
+
+
 def _smoke(args: argparse.Namespace) -> int:
     # Import torch-dependent training only for this subcommand; static analysis remains light.
     from .train import smoke_train
@@ -140,6 +200,28 @@ def build_parser() -> argparse.ArgumentParser:
     energy.add_argument("--mac-pj", type=float, default=0.5)
     energy.add_argument("--json", action="store_true")
     energy.set_defaults(func=_energy)
+
+    generate = subparsers.add_parser(
+        "generate", help="generate text from a trusted checkpoint"
+    )
+    generate.add_argument("checkpoint")
+    generate.add_argument("--tokenizer", required=True)
+    generate.add_argument("--config")
+    prompt = generate.add_mutually_exclusive_group(required=True)
+    prompt.add_argument("--prompt")
+    prompt.add_argument("--prompt-file")
+    generate.add_argument("--max-new-tokens", type=int, default=64)
+    generate.add_argument("--temperature", type=float, default=0.0)
+    generate.add_argument("--top-k", type=int, default=0)
+    generate.add_argument("--top-p", type=float, default=1.0)
+    generate.add_argument("--seed", type=int, default=42)
+    generate.add_argument("--recurrences", type=int)
+    generate.add_argument("--device", default="cpu")
+    generate.add_argument("--no-cache", action="store_true")
+    generate.add_argument("--no-bos", action="store_true")
+    generate.add_argument("--no-eos-stop", action="store_true")
+    generate.add_argument("--json", action="store_true")
+    generate.set_defaults(func=_generate)
 
     smoke = subparsers.add_parser(
         "smoke-train", help="run a tiny end-to-end optimizer test"

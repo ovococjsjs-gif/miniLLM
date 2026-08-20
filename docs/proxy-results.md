@@ -84,7 +84,17 @@ coverage (6.683%), но лишь 93.784% accuracy и непригоден для
 
 Полные компоненты: [`results/decode_energy_proxy.json`](../results/decode_energy_proxy.json).
 
-## 5. Вывод для следующего цикла
+## 5. Exact cached reference decode
+
+Для random-weight `proxy_3m`, CPU, prefix 128 и 32 новых токена exact cache path дал
+**259 generated tok/s** против **92 tok/s** при полном пересчёте prefix, то есть 2.83× в
+этом reference test. Cached число консервативно включает prefill; это не mobile benchmark
+и не показатель качества. Full/chunk/token logits отдельно проверяются на равенство для
+attention, convolution, GDN2 и shared core repetitions.
+
+Полные данные: [`results/reference_decode_benchmark.json`](../results/reference_decode_benchmark.json).
+
+## 6. Вывод для следующего цикла
 
 - Не увеличивать steps, а расширять eval axes.
 - Сравнить layer ratios на generated retrieval/state tracking и short real-text loss.

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "en-capital",
+    "language": "en",
+    "category": "factual-completion",
+    "prompt": "The capital of France is",
+    "max_new_tokens": 16,
+    "contains_any": ["Paris"]
+  },
+  {
+    "id": "ru-capital",
+    "language": "ru",
+    "category": "factual-completion",
+    "prompt": "Столица Франции —",
+    "max_new_tokens": 16,
+    "contains_any": ["Париж", "Paris"]
+  },
+  {
+    "id": "en-arithmetic",
+    "language": "en",
+    "category": "arithmetic",
+    "prompt": "Question: What is 17 + 25?\nAnswer:",
+    "max_new_tokens": 12,
+    "contains_any": ["42"]
+  },
+  {
+    "id": "ru-arithmetic",
+    "language": "ru",
+    "category": "arithmetic",
+    "prompt": "Вопрос: сколько будет 17 + 25?\nОтвет:",
+    "max_new_tokens": 12,
+    "contains_any": ["42"]
+  },
+  {
+    "id": "en-to-ru-translation",
+    "language": "ru",
+    "category": "translation",
+    "prompt": "Translate from English to Russian: The cat is sleeping.\nTranslation:",
+    "max_new_tokens": 24,
+    "contains_any": ["кот", "кошка", "спит"]
+  },
+  {
+    "id": "ru-to-en-translation",
+    "language": "en",
+    "category": "translation",
+    "prompt": "Переведи на английский: Маленькая модель работает локально.\nПеревод:",
+    "max_new_tokens": 24,
+    "contains_any": ["small", "model", "local"]
+  },
+  {
+    "id": "python-add",
+    "language": "code",
+    "category": "code-completion",
+    "prompt": "def add(a, b):\n    return",
+    "max_new_tokens": 16,
+    "contains_any": ["a + b", "a+b"]
+  },
+  {
+    "id": "ru-honest-unknown",
+    "language": "ru",
+    "category": "abstention",
+    "prompt": "Если точных данных недостаточно, лучше",
+    "max_new_tokens": 24,
+    "contains_any": ["уточн", "не знаю", "провер"]
+  }
+]
