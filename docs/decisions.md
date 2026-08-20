@@ -8,7 +8,9 @@
 считать, помнить пользователя и рассуждать как frontier model. Внешние проверяемые
 примитивы дешевле и управляемее.
 
-## D-002 — Conv/GQA dense является первым baseline
+## D-002 — Conv/GQA dense является первым conventional control
+
+**Статус:** понижен с главного пути до контрольной архитектуры решением D-010.
 
 **Решение:** 10 gated short-conv + 6 GQA при ~350M.
 
@@ -64,11 +66,24 @@ experiments. Для научной честности KDA kernel всё равн
 
 ## D-009 — Trigger shelf не имеет права незаметно заменить policy
 
-**Решение:** n-gram shelf используется только как opt-in draft source; exact greedy path
-обязан проверить его основной моделью. Разрешение hard bypass требует отдельного явно
-помеченного quality/calibration эксперимента и не является default.
+**Решение:** старый BPE n-gram shelf по умолчанию остаётся opt-in draft source. Hard
+bypass разрешён только явно включённому AIra path после отдельной frozen/domain calibration
+конкретного shelf/tokenizer и с burst/risk/anchor/cycle ограничителями; structured output и
+policy-critical участки могут принудительно отключить bypass. Текущая transfer evidence
+относится к byte/char shelf; CLI BPE archive — интеграционный эксперимент, не default.
 
-**Причина:** сырая частота продолжения на real-text proxy дала недостаточную точность,
-тогда как support-aware Wilson gate получил 98.19% accuracy лишь при 2.52% coverage.
-Heuristic bypass может менять распределение, calibration и safety behavior. Для реального
-ускорения ещё нужен multi-token verifier и target-runtime benchmark.
+**Причина:** старый BPE proxy дал лишь 2.52% coverage при 98.19% accuracy. Новый raw
+trigger проходит отдельный transfer gate и действительно пропускает neural forward, но
+cross-domain coverage остаётся небольшим. Heuristic bypass меняет распределение и поэтому
+его teacher-forced, autonomous и end-to-end результаты всегда сообщаются отдельно.
+
+## D-010 — AIra-v2 является главным исследовательским путём
+
+**Решение:** целевая система — calibrated raw trigger → bounded episodic memory →
+residual neural core → deep/tool escalation. Conventional Attention/Edge модели — matched
+controls. Обычные большие scaling runs приостановлены до end-to-end cascade gate.
+
+**Причина:** ещё одна маленькая decoder-only LLM не является отличимой инновацией проекта.
+Аудит пользовательской AIra нашёл воспроизводимые trigger/memory/PC механизмы, но также
+выявил neural starvation, ложные hybrid perplexity, O(ND) memory и незавершённую live
+интеграцию. Канонические исправления и текущие измерения: `docs/aira-v2-audit.md`.

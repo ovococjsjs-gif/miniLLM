@@ -1,12 +1,16 @@
 from pathlib import Path
 
+import numpy as np
 import torch
 
+from minillm.aira import build_compact_shelf
 from minillm.config import EngramConfig, MiniLLMConfig
 from minillm.evaluation import check_completion, load_completion_cases
 from minillm.generation import (
     SamplingConfig,
+    TriggerConfig,
     generate_ids,
+    generate_triggered_ids,
     load_model_checkpoint,
     save_inference_checkpoint,
 )
@@ -91,6 +95,51 @@ def test_generation_is_seeded_and_cache_matches_full_prefix() -> None:
     assert first.generated_token_ids == second.generated_token_ids
     assert first.generated_token_ids == uncached.generated_token_ids
     assert first.used_cache and not uncached.used_cache
+
+
+def test_triggered_generation_really_bypasses_then_anchors() -> None:
+    torch.manual_seed(10)
+    model = MiniLLM(cached_config()).eval()
+    shelf = build_compact_shelf(
+        np.tile(np.array([1, 2, 3, 4], dtype=np.uint32), 100), order=2
+    )
+    result = generate_triggered_ids(
+        model,
+        [shelf],
+        [1, 2],
+        SamplingConfig(max_new_tokens=4, temperature=0),
+        TriggerConfig(
+            confidence_threshold=0.9,
+            maximum_shelf_burst=2,
+            cumulative_risk_budget=1.0,
+            neural_anchor_interval=8,
+            cycle_repetitions=10,
+        ),
+    )
+
+    assert result.generated_token_ids[:2] == (3, 4)
+    assert result.routes[:3] == ("shelf", "shelf", "neural")
+    assert result.shelf_tokens == 2
+    assert result.neural_calls >= 1
+    assert result.neural_input_tokens >= 4
+    assert result.control_rejections >= 1
+
+
+def test_triggered_generation_matches_neural_when_shelf_misses() -> None:
+    torch.manual_seed(11)
+    model = MiniLLM(cached_config()).eval()
+    shelf = build_compact_shelf(
+        np.tile(np.array([30, 31, 32, 33], dtype=np.uint32), 100), order=2
+    )
+    sampling = SamplingConfig(max_new_tokens=4, temperature=0)
+
+    baseline = generate_ids(model, [1, 2], sampling)
+    triggered = generate_triggered_ids(model, [shelf], [1, 2], sampling)
+
+    assert triggered.generated_token_ids == baseline.generated_token_ids
+    assert triggered.routes == ("neural",) * 4
+    assert triggered.shelf_tokens == 0
+    assert triggered.neural_calls == 4
 
 
 def test_engram_generation_falls_back_to_full_prefix() -> None:

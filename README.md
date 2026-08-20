@@ -3,14 +3,18 @@
 Исследовательский стенд для маленьких, быстрых и управляемых языковых моделей,
 которые можно запускать локально, в том числе на телефонах.
 
-Это не попытка «уменьшить Llama и надеяться». Проект разделяет задачу на пять
-независимо измеряемых частей:
+Это не попытка «уменьшить Llama и надеяться». Текущая основная гипотеза —
+**AIra-v2, событийно запускаемая когнитивная подложка**. Она разделяет задачу на
+пять независимо измеряемых частей:
 
-1. **вычислительное ядро** — гибрид дешёвых causal-conv и редких GQA-слоёв;
-2. **адаптивное мышление** — повторно используемое по глубине ядро;
-3. **знания и память** — learned Engram-память отдельно от изменяемой памяти пользователя;
-4. **точность действий** — retrieval, калькулятор, код и другие проверяемые инструменты;
-5. **обучение** — качественные данные, capacity-aligned distillation, MTP и INT4 QAT.
+1. **L0-триггер** — компактная byte/character-полка без нейронной проверки выдаёт только статистически надёжные продолжения;
+2. **эпизодическая память** — одношаговая запись, familiarity/margin rejection, provenance и удаление;
+3. **остаточное нейронное ядро** — обрабатывает новизну, неоднозначность и композицию;
+4. **эскалация** — неопределённость включает более глубокий проход, retrieval или детерминированный инструмент;
+5. **локальная адаптация** — soft-residual обучение сейчас, PC-ALM/μPC только после прохождения matched controls.
+
+Обычная маленькая decoder-модель сохранена как контрольный инструмент, а не как
+главная исследовательская новизна.
 
 ## Что уже реализовано
 
@@ -35,7 +39,13 @@
 - калькулятор параметров, INT4-памяти, KV-cache, recurrent state и FLOP/token;
 - Fermi-разложение decode energy по активным весам, KV/state traffic и MAC;
 - exact cached GQA/conv/GDN2 decode, seeded generation и checkpoint smoke suite;
-- support/confidence-gated n-gram draft shelf без неявной замены neural policy;
+- support/Wilson-gated компактная AIra byte/char shelf с frozen-holdout отчётами;
+- доменная калибровка precision на отдельном split и нормализованная shelf/neural смесь;
+- настоящее shelf-bypass декодирование с burst/risk/anchor/cycle ограничителями и догоняющим KV-cache;
+- bounded bipolar associative memory с unknown/conflict rejection, provenance, overwrite и удалением;
+- soft-residual loss с ненулевым all-token control stream и matched 300-step сравнением;
+- математический autograd-референс finite PC/PC-ALM и gradient-alignment benchmark;
+- автономный stress test полки с oracle fallback, отдельно от teacher-forced coverage;
 - generated и real-text proxy experiments;
 - тесты causal-инвариантности, памяти, tools, distillation, QAT и учёта параметров.
 
@@ -69,25 +79,59 @@ minillm smoke-train configs/toy.json --steps 8
 # Тесты
 pytest
 
-# Воспроизвести маленький MQAR-скрининг
-PYTHONPATH=src python scripts/run_toy_mqar.py --steps 400 --seeds 123 456 789
+# AIra-v2: собрать tokenizer-bound BPE shelf для экспериментального bypass decode
+# (перед применением нужен отдельный frozen/domain calibration report)
+python scripts/build_aira_shelf.py \
+  --text /path/to/train.txt \
+  --tokenizer artifacts/tokenizer-github-pilot-v1/tokenizer.json \
+  --output artifacts/aira-shelf.npz
+
+# Затем: minillm generate CHECKPOINT --tokenizer TOKENIZER --prompt TEXT \
+#          --aira-shelf artifacts/aira-shelf.npz --json
+
+# AIra-v2: воспроизвести PC-vs-PC-ALM alignment proxy
+python scripts/benchmark_pc_alm.py
+
+# AIra-v2: full/hard/soft residual control (не более 300 шагов)
+python scripts/run_aira_residual_proxy.py \
+  --train /path/to/wikitext-2/train.txt \
+  --validation /path/to/wikitext-2/valid.txt \
+  --steps 300
+
+# Исторический маленький MQAR-скрининг
+PYTHONPATH=src python scripts/run_toy_mqar.py --steps 300 --seeds 123 456 789
 ```
 
 ## Текущая рабочая гипотеза
 
-Первый серьёзный baseline — **плотная модель около 350M**: 10 дешёвых conv-блоков,
-6 GQA-блоков, tied 65K embeddings, MTP и последующий INT4 QAT. Расчёт для текущей
-конфигурации: 346M хранимых параметров, теоретически 165 MiB чистых INT4-весов и
-48 MiB KV-cache при 8K (без runtime overhead).
+Цель — локальный RU/EN-ассистент примерно в **0.7–1 GB** с режимами
+fast/balanced/deep, но преимущество должно появиться не от ещё одной обычной
+маленькой LLM. AIra-v2 должна платить за нейронное вычисление пропорционально
+новизне:
 
-Главный исследовательский вариант — **209M хранимых параметров с рекуррентной
-глубиной**. При трёх проходах он применяет около 301M активных параметров на токен,
-но занимает теоретически около 100 MiB в INT4. Число проходов можно выбирать по
-сложности запроса.
+```text
+raw byte/char shelf → episodic memory → residual neural core → deep/tool
+```
 
-MoE и GDN2/KDA остаются важными ветками, но не назначены baseline до измерения на
-реальном телефоне: их теоретические FLOP-преимущества легко съедаются dispatch и
-неоптимизированными kernels.
+На frozen WikiText-2 строгая UTF-8-полка уже даёт примерно 23% покрытия при 98.8%
+teacher-forced accuracy для Wilson n2/p90; более строгий автономный Wilson p95 proxy
+сохраняет 99.6% shelf precision при 15.3% фактических bypass-токенов. На русском
+cross-book строгий автономный proxy даёт лишь 7.2% bypass при 98.2% precision — это
+полезный, но небольшой выигрыш, а не основание для заявления об универсальном
+ускорении. Доменная калибровка на отдельной размеченной половине повышает cross-book
+UTF-8 coverage до 10.36% при 96.51% precision на финальной половине; она не заменяет
+unlabeled OOD detector.
+
+Matched 300-step контроль показал ожидаемый порядок: full loss лучше всего,
+hard-filter хуже, soft-residual находится между ними. Значит, мягкий поток исправляет
+голодание исходного AIra, но пока не даёт экономии обучения и не должен заменять full
+loss. PC-ALM существенно лучше старого finite PC по совпадению с BP, однако простой
+16-слойный tanh-референс требует около `8L` шагов для global cosine около 0.95; это
+ещё не эффективный локальный kernel.
+
+Плотные 350M, recurrent 209M, MoE и GDN2-конфигурации остаются контрольными ветками.
+Их обычное масштабирование приостановлено, пока end-to-end каскад не покажет лучший
+quality-adjusted active compute.
 
 ## Документы
 
@@ -102,7 +146,8 @@ MoE и GDN2/KDA остаются важными ветками, но не наз
 - [План экспериментов и критерии остановки](docs/experiments.md)
 - [Данные, distillation и post-training](docs/training.md)
 - [Результат первого MQAR-скрининга](docs/toy-mqar-result.md)
-- [Разбор AIra и безопасно принятые идеи](docs/aira-review.md)
+- [Канонический аудит и план AIra-v2](docs/aira-v2-audit.md)
+- [Исторический разбор AIra (superseded)](docs/aira-review.md)
 - [Аннотированные первоисточники](docs/sources.md)
 
 > Название репозитория задано заранее. Проект не связан с одноимённой работой

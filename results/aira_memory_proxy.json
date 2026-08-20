@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "experiment": "aira-v2-bounded-associative-memory-v1",
+  "warning": "Random bipolar-code reference; semantic encoding and ANN indexing are not established.",
+  "implementation": "one-shot ring-bounded storage; exact O(ND) scan; familiarity+margin gate",
+  "platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+  "rows": [
+    {
+      "facts": 100,
+      "dimension": 512,
+      "code_storage_bytes": 51200,
+      "scan_operations_per_query": 51200,
+      "noise": {
+        "0.0": {
+          "accepted": 100,
+          "correct": 100,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mean_query_milliseconds": 0.02954587999965952
+        },
+        "0.1": {
+          "accepted": 100,
+          "correct": 100,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mean_query_milliseconds": 0.04975958999921204
+        },
+        "0.2": {
+          "accepted": 100,
+          "correct": 100,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mean_query_milliseconds": 0.050177650000478025
+        },
+        "0.3": {
+          "accepted": 100,
+          "correct": 100,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mean_query_milliseconds": 0.05115338999985397
+        },
+        "0.4": {
+          "accepted": 0,
+          "correct": 0,
+          "recall": 0.0,
+          "precision": null,
+          "mean_query_milliseconds": 0.05191061000004993
+        }
+      },
+      "unknown_queries": 100,
+      "unknown_accept_rate": 0.0,
+      "unknown_mean_query_milliseconds": 0.0455875400007244
+    },
+    {
+      "facts": 1000,
+      "dimension": 512,
+      "code_storage_bytes": 512000,
+      "scan_operations_per_query": 512000,
+      "noise": {
+        "0.0": {
+          "accepted": 200,
+          "correct": 200,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mean_query_milliseconds": 0.29858995500035235
+        },
+        "0.1": {
+          "accepted": 200,
+          "correct": 200,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mean_query_milliseconds": 0.32848625000042375
+        },
+        "0.2": {
+          "accepted": 200,
+          "correct": 200,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mean_query_milliseconds": 0.32756102999996983
+        },
+        "0.3": {
+          "accepted": 200,
+          "correct": 200,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mean_query_milliseconds": 0.3328546400007326
+        },
+        "0.4": {
+          "accepted": 0,
+          "correct": 0,
+          "recall": 0.0,
+          "precision": null,
+          "mean_query_milliseconds": 0.3396753399999852
+        }
+      },
+      "unknown_queries": 200,
+      "unknown_accept_rate": 0.0,
+      "unknown_mean_query_milliseconds": 0.3086060750001707
+    },
+    {
+      "facts": 5000,
+      "dimension": 512,
+      "code_storage_bytes": 2560000,
+      "scan_operations_per_query": 2560000,
+      "noise": {
+        "0.0": {
+          "accepted": 200,
+          "correct": 200,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mean_query_milliseconds": 1.4221351950004646
+        },
+        "0.1": {
+          "accepted": 200,
+          "correct": 200,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mean_query_milliseconds": 1.4431252949998452
+        },
+        "0.2": {
+          "accepted": 200,
+          "correct": 200,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mean_query_milliseconds": 1.4702081149994228
+        },
+        "0.3": {
+          "accepted": 200,
+          "correct": 200,
+          "recall": 1.0,
+          "precision": 1.0,
+          "mean_query_milliseconds": 1.4465069150003274
+        },
+        "0.4": {
+          "accepted": 0,
+          "correct": 0,
+          "recall": 0.0,
+          "precision": null,
+          "mean_query_milliseconds": 1.4531838049992984
+        }
+      },
+      "unknown_queries": 200,
+      "unknown_accept_rate": 0.0,
+      "unknown_mean_query_milliseconds": 1.4580660850003824
+    }
+  ]
+}

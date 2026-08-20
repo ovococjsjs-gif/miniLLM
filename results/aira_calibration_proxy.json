@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "reports": [
+    {
+      "schema_version": 1,
+      "experiment": "aira-v2-held-out-domain-calibration-v1",
+      "tag": "russian-cross-book",
+      "warning": "The calibration split is labeled and domain-specific; final test is separate, but this is not an unlabeled OOD detector.",
+      "source": {
+        "train": "/tmp/AIra/corpus_external/russian_lit/voina_i_mir.txt",
+        "train_sha256": "3daa7af270b9de3d58dbbf43b4c23036ace5cee4cdb5b033b8ac1ec465c5eb59",
+        "domain_text": "/tmp/AIra/corpus_external/russian_lit/kavkazskiy_plennik.txt",
+        "domain_sha256": "83290eb17e66a84cd38fcc9562e990e6477b7b3d93a8be9c1649c354494f82ef"
+      },
+      "protocol": {
+        "shelf_train_characters": 2000000,
+        "calibration_characters": 20219,
+        "test_characters": 20219,
+        "minimum_support": 5,
+        "candidate_score": "per-context Wilson 95% lower bound",
+        "selection": "maximum lower bound, longest-order tie break",
+        "target_precision": 0.95,
+        "route_calibration": "largest tied score prefix whose aggregate Wilson 95% precision lower bound reaches target"
+      },
+      "representations": {
+        "char60": {
+          "orders": [
+            4,
+            6,
+            8
+          ],
+          "packed_shelf_bytes": 44023112,
+          "candidate_calibration": {
+            "evaluated": 20219,
+            "accepted": 18160,
+            "coverage": 0.8981650922399723,
+            "correct": 7872,
+            "precision": 0.43348017621145374
+          },
+          "calibration": {
+            "threshold": 0.9059390425448562,
+            "accepted_examples": 1307,
+            "correct_examples": 1258,
+            "empirical_precision": 0.9625095638867636,
+            "precision_lower_bound": 0.9507816064684125,
+            "target_precision": 0.95,
+            "confidence_z": 1.96
+          },
+          "fixed_wilson_threshold_test": {
+            "evaluated": 20219,
+            "accepted": 764,
+            "coverage": 0.037786240664721304,
+            "correct": 750,
+            "precision": 0.981675392670157
+          },
+          "calibrated_test": {
+            "evaluated": 20219,
+            "accepted": 1324,
+            "coverage": 0.06548296157079975,
+            "correct": 1270,
+            "precision": 0.959214501510574
+          }
+        },
+        "utf8-byte": {
+          "orders": [
+            4,
+            8,
+            16
+          ],
+          "packed_shelf_bytes": 75615260,
+          "candidate_calibration": {
+            "evaluated": 36082,
+            "accepted": 35789,
+            "coverage": 0.9918796075605565,
+            "correct": 21027,
+            "precision": 0.5875268937382995
+          },
+          "calibration": {
+            "threshold": 0.9205187766753944,
+            "accepted_examples": 3621,
+            "correct_examples": 3467,
+            "empirical_precision": 0.9574703120684893,
+            "precision_lower_bound": 0.9503983013642936,
+            "target_precision": 0.95,
+            "confidence_z": 1.96
+          },
+          "fixed_wilson_threshold_test": {
+            "evaluated": 35940,
+            "accepted": 2662,
+            "coverage": 0.07406789092932665,
+            "correct": 2625,
+            "precision": 0.9861006761833208
+          },
+          "calibrated_test": {
+            "evaluated": 35940,
+            "accepted": 3723,
+            "coverage": 0.10358931552587645,
+            "correct": 3593,
+            "precision": 0.965081923180231
+          }
+        }
+      }
+    },
+    {
+      "schema_version": 1,
+      "experiment": "aira-v2-held-out-domain-calibration-v1",
+      "tag": "wikitext2-in-domain",
+      "warning": "The calibration split is labeled and domain-specific; final test is separate, but this is not an unlabeled OOD detector.",
+      "source": {
+        "train": "/tmp/AIra/corpus_external/wikitext2/train.txt",
+        "train_sha256": "9e9fa1ad55b1c2c95b08e37dd8e653f638fac2c6de904b79e813611eefbc985f",
+        "domain_text": "/tmp/AIra/corpus_external/wikitext2/valid.txt",
+        "domain_sha256": "f0737ed31fc1329026e95cb8b98e19c2a182c39c240ab909dc31abf2f8af58e8"
+      },
+      "protocol": {
+        "shelf_train_characters": 2000000,
+        "calibration_characters": 150000,
+        "test_characters": 150000,
+        "minimum_support": 5,
+        "candidate_score": "per-context Wilson 95% lower bound",
+        "selection": "maximum lower bound, longest-order tie break",
+        "target_precision": 0.95,
+        "route_calibration": "largest tied score prefix whose aggregate Wilson 95% precision lower bound reaches target"
+      },
+      "representations": {
+        "char60": {
+          "orders": [
+            4,
+            6,
+            8
+          ],
+          "packed_shelf_bytes": 32121796,
+          "candidate_calibration": {
+            "evaluated": 150000,
+            "accepted": 144249,
+            "coverage": 0.96166,
+            "correct": 90109,
+            "precision": 0.6246767741890759
+          },
+          "calibration": {
+            "threshold": 0.7404820521187976,
+            "accepted_examples": 59526,
+            "correct_examples": 56664,
+            "empirical_precision": 0.9519201693377684,
+            "precision_lower_bound": 0.9501721757397863,
+            "target_precision": 0.95,
+            "confidence_z": 1.96
+          },
+          "fixed_wilson_threshold_test": {
+            "evaluated": 150000,
+            "accepted": 25933,
+            "coverage": 0.17288666666666666,
+            "correct": 25833,
+            "precision": 0.9961439093047468
+          },
+          "calibrated_test": {
+            "evaluated": 150000,
+            "accepted": 58880,
+            "coverage": 0.39253333333333335,
+            "correct": 56072,
+            "precision": 0.9523097826086957
+          }
+        },
+        "utf8-byte": {
+          "orders": [
+            4,
+            8,
+            16
+          ],
+          "packed_shelf_bytes": 74317180,
+          "candidate_calibration": {
+            "evaluated": 150155,
+            "accepted": 143653,
+            "coverage": 0.9566980786520596,
+            "correct": 88959,
+            "precision": 0.6192630853515068
+          },
+          "calibration": {
+            "threshold": 0.7372268060456276,
+            "accepted_examples": 56025,
+            "correct_examples": 53326,
+            "empirical_precision": 0.9518250780901383,
+            "precision_lower_bound": 0.9500207033288735,
+            "target_precision": 0.95,
+            "confidence_z": 1.96
+          },
+          "fixed_wilson_threshold_test": {
+            "evaluated": 150236,
+            "accepted": 24222,
+            "coverage": 0.1612263372294257,
+            "correct": 24135,
+            "precision": 0.9964082239286599
+          },
+          "calibrated_test": {
+            "evaluated": 150236,
+            "accepted": 55442,
+            "coverage": 0.3690327218509545,
+            "correct": 52835,
+            "precision": 0.9529778868006205
+          }
+        }
+      }
+    }
+  ]
+}

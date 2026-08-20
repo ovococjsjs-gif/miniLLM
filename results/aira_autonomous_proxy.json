@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "reports": [
+    {
+      "schema_version": 1,
+      "experiment": "aira-v2-autonomous-shelf-oracle-fallback-v1",
+      "tag": "wikitext2-en",
+      "warning": "The fallback emits the ground-truth token. This isolates autonomous shelf error propagation and neural-call opportunity; it is not LM quality.",
+      "source": {
+        "train": "/tmp/AIra/corpus_external/wikitext2/train.txt",
+        "train_sha256": "9e9fa1ad55b1c2c95b08e37dd8e653f638fac2c6de904b79e813611eefbc985f",
+        "validation": "/tmp/AIra/corpus_external/wikitext2/valid.txt",
+        "validation_sha256": "f0737ed31fc1329026e95cb8b98e19c2a182c39c240ab909dc31abf2f8af58e8"
+      },
+      "protocol": {
+        "representation": "utf8-byte",
+        "orders": [
+          4,
+          8,
+          16
+        ],
+        "minimum_support": 5,
+        "confidence_gate": "per-context Wilson95 lower bound >=0.95",
+        "sequences": 1000,
+        "horizon": 64,
+        "seed": 42,
+        "controlled": "maximum burst 4, cumulative lower-bound risk 0.10, neural anchor every 8, repeated-cycle guard"
+      },
+      "packed_shelf_bytes": 74317180,
+      "uncontrolled": {
+        "sequences": 1000,
+        "tokens": 64000,
+        "accuracy": 0.999421875,
+        "shelf_tokens": 10456,
+        "shelf_fraction": 0.163375,
+        "shelf_precision": 0.9964613618974751,
+        "oracle_neural_tokens": 53544,
+        "oracle_neural_fraction": 0.836625,
+        "control_rejections": 0
+      },
+      "controlled": {
+        "sequences": 1000,
+        "tokens": 64000,
+        "accuracy": 0.999421875,
+        "shelf_tokens": 9767,
+        "shelf_fraction": 0.152609375,
+        "shelf_precision": 0.996211733387939,
+        "oracle_neural_tokens": 54233,
+        "oracle_neural_fraction": 0.847390625,
+        "control_rejections": 689
+      }
+    },
+    {
+      "schema_version": 1,
+      "experiment": "aira-v2-autonomous-shelf-oracle-fallback-v1",
+      "tag": "russian-same-book",
+      "warning": "The fallback emits the ground-truth token. This isolates autonomous shelf error propagation and neural-call opportunity; it is not LM quality.",
+      "source": {
+        "train": "/tmp/AIra/corpus_external/russian_lit/voina_i_mir.txt",
+        "train_sha256": "3daa7af270b9de3d58dbbf43b4c23036ace5cee4cdb5b033b8ac1ec465c5eb59",
+        "validation": "/tmp/warpeace_tail.txt",
+        "validation_sha256": "d240bdbf150494a04eeb859ef2206b95561e332e6167ab976263b3614ef6686f"
+      },
+      "protocol": {
+        "representation": "utf8-byte",
+        "orders": [
+          4,
+          8,
+          16
+        ],
+        "minimum_support": 5,
+        "confidence_gate": "per-context Wilson95 lower bound >=0.95",
+        "sequences": 1000,
+        "horizon": 64,
+        "seed": 42,
+        "controlled": "maximum burst 4, cumulative lower-bound risk 0.10, neural anchor every 8, repeated-cycle guard"
+      },
+      "packed_shelf_bytes": 75615260,
+      "uncontrolled": {
+        "sequences": 1000,
+        "tokens": 64000,
+        "accuracy": 0.998890625,
+        "shelf_tokens": 7101,
+        "shelf_fraction": 0.110953125,
+        "shelf_precision": 0.9900014082523588,
+        "oracle_neural_tokens": 56899,
+        "oracle_neural_fraction": 0.889046875,
+        "control_rejections": 0
+      },
+      "controlled": {
+        "sequences": 1000,
+        "tokens": 64000,
+        "accuracy": 0.99890625,
+        "shelf_tokens": 6868,
+        "shelf_fraction": 0.1073125,
+        "shelf_precision": 0.9898078043098427,
+        "oracle_neural_tokens": 57132,
+        "oracle_neural_fraction": 0.8926875,
+        "control_rejections": 233
+      }
+    },
+    {
+      "schema_version": 1,
+      "experiment": "aira-v2-autonomous-shelf-oracle-fallback-v1",
+      "tag": "russian-cross-book",
+      "warning": "The fallback emits the ground-truth token. This isolates autonomous shelf error propagation and neural-call opportunity; it is not LM quality.",
+      "source": {
+        "train": "/tmp/AIra/corpus_external/russian_lit/voina_i_mir.txt",
+        "train_sha256": "3daa7af270b9de3d58dbbf43b4c23036ace5cee4cdb5b033b8ac1ec465c5eb59",
+        "validation": "/tmp/AIra/corpus_external/russian_lit/kavkazskiy_plennik.txt",
+        "validation_sha256": "83290eb17e66a84cd38fcc9562e990e6477b7b3d93a8be9c1649c354494f82ef"
+      },
+      "protocol": {
+        "representation": "utf8-byte",
+        "orders": [
+          4,
+          8,
+          16
+        ],
+        "minimum_support": 5,
+        "confidence_gate": "per-context Wilson95 lower bound >=0.95",
+        "sequences": 1000,
+        "horizon": 64,
+        "seed": 42,
+        "controlled": "maximum burst 4, cumulative lower-bound risk 0.10, neural anchor every 8, repeated-cycle guard"
+      },
+      "packed_shelf_bytes": 75615260,
+      "uncontrolled": {
+        "sequences": 1000,
+        "tokens": 64000,
+        "accuracy": 0.998640625,
+        "shelf_tokens": 4674,
+        "shelf_fraction": 0.07303125,
+        "shelf_precision": 0.9813863928112966,
+        "oracle_neural_tokens": 59326,
+        "oracle_neural_fraction": 0.92696875,
+        "control_rejections": 0
+      },
+      "controlled": {
+        "sequences": 1000,
+        "tokens": 64000,
+        "accuracy": 0.998671875,
+        "shelf_tokens": 4635,
+        "shelf_fraction": 0.072421875,
+        "shelf_precision": 0.9816612729234089,
+        "oracle_neural_tokens": 59365,
+        "oracle_neural_fraction": 0.927578125,
+        "control_rejections": 37
+      }
+    }
+  ]
+}

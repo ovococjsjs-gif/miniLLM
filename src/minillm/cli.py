@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -96,7 +97,14 @@ def _energy(args: argparse.Namespace) -> int:
 
 def _generate(args: argparse.Namespace) -> int:
     # Keep static architecture analysis usable without importing torch/tokenizers.
-    from .generation import SamplingConfig, generate_ids, load_model_checkpoint
+    from .aira import load_compact_shelf
+    from .generation import (
+        SamplingConfig,
+        TriggerConfig,
+        generate_ids,
+        generate_triggered_ids,
+        load_model_checkpoint,
+    )
     from .tokenization import load_tokenizer
 
     prompt = (
@@ -116,20 +124,44 @@ def _generate(args: argparse.Namespace) -> int:
         prompt_ids.insert(0, bos_id)
     eos_id = tokenizer.token_to_id("<eos>")
     stop_tokens = {eos_id} if eos_id is not None and not args.no_eos_stop else set()
-    result = generate_ids(
-        loaded.model,
-        prompt_ids,
-        SamplingConfig(
-            max_new_tokens=args.max_new_tokens,
-            temperature=args.temperature,
-            top_k=args.top_k,
-            top_p=args.top_p,
-            seed=args.seed,
-            use_cache=not args.no_cache,
-        ),
-        stop_token_ids=stop_tokens,
-        core_repetitions=args.recurrences,
+    sampling = SamplingConfig(
+        max_new_tokens=args.max_new_tokens,
+        temperature=args.temperature,
+        top_k=args.top_k,
+        top_p=args.top_p,
+        seed=args.seed,
+        use_cache=not args.no_cache,
     )
+    if args.aira_shelf is None:
+        result = generate_ids(
+            loaded.model,
+            prompt_ids,
+            sampling,
+            stop_token_ids=stop_tokens,
+            core_repetitions=args.recurrences,
+        )
+    else:
+        with Path(args.tokenizer).open("rb") as handle:
+            tokenizer_hash = hashlib.file_digest(handle, "sha256").hexdigest()
+        result = generate_triggered_ids(
+            loaded.model,
+            load_compact_shelf(
+                args.aira_shelf, expected_tokenizer_sha256=tokenizer_hash
+            ),
+            prompt_ids,
+            sampling,
+            TriggerConfig(
+                minimum_support=args.aira_min_support,
+                confidence_threshold=args.aira_confidence,
+                confidence_z=args.aira_confidence_z,
+                selection=args.aira_selection,
+                maximum_shelf_burst=args.aira_max_burst,
+                cumulative_risk_budget=args.aira_risk_budget,
+                neural_anchor_interval=args.aira_anchor_interval,
+            ),
+            stop_token_ids=stop_tokens,
+            core_repetitions=args.recurrences,
+        )
     completion = tokenizer.decode(
         list(result.generated_token_ids), skip_special_tokens=True
     )
@@ -144,6 +176,16 @@ def _generate(args: argparse.Namespace) -> int:
                     "stop_reason": result.stop_reason,
                     "used_cache": result.used_cache,
                     "checkpoint_step": loaded.step,
+                    "aira": {
+                        "shelf_tokens": result.shelf_tokens,
+                        "neural_tokens": result.neural_tokens,
+                        "neural_calls": result.neural_calls,
+                        "neural_input_tokens": result.neural_input_tokens,
+                        "control_rejections": result.control_rejections,
+                        "routes": result.routes,
+                    }
+                    if args.aira_shelf is not None
+                    else None,
                 },
                 ensure_ascii=False,
                 indent=2,
@@ -218,6 +260,18 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--recurrences", type=int)
     generate.add_argument("--device", default="cpu")
     generate.add_argument("--no-cache", action="store_true")
+    generate.add_argument(
+        "--aira-shelf", help="NPZ shelf archive for true neural-bypass generation"
+    )
+    generate.add_argument("--aira-min-support", type=int, default=5)
+    generate.add_argument("--aira-confidence", type=float, default=0.95)
+    generate.add_argument("--aira-confidence-z", type=float, default=1.96)
+    generate.add_argument(
+        "--aira-selection", choices=("longest", "confidence"), default="longest"
+    )
+    generate.add_argument("--aira-max-burst", type=int, default=4)
+    generate.add_argument("--aira-risk-budget", type=float, default=0.10)
+    generate.add_argument("--aira-anchor-interval", type=int, default=8)
     generate.add_argument("--no-bos", action="store_true")
     generate.add_argument("--no-eos-stop", action="store_true")
     generate.add_argument("--json", action="store_true")

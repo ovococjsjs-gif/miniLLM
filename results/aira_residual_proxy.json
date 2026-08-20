@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "experiment": "aira-v2-soft-residual-v1",
+  "warning": "300-step character-MLP proxy; compares starvation behavior, not final LM quality.",
+  "source": {
+    "train": "/tmp/AIra/corpus_external/wikitext2/train.txt",
+    "train_sha256": "9e9fa1ad55b1c2c95b08e37dd8e653f638fac2c6de904b79e813611eefbc985f",
+    "validation": "/tmp/AIra/corpus_external/wikitext2/valid.txt",
+    "validation_sha256": "f0737ed31fc1329026e95cb8b98e19c2a182c39c240ab909dc31abf2f8af58e8"
+  },
+  "protocol": {
+    "shelf_build_characters": 1000000,
+    "neural_train_characters": 500000,
+    "validation_characters": 300000,
+    "shelf_order": 8,
+    "shelf_gate": "support>=5 and empirical top probability>=0.95",
+    "soft_floor": 0.15,
+    "soft_scope": "surprise weighting only where the shelf gate accepts; fallback positions retain weight 1",
+    "proper_tail_approximation": "remaining count mass uniform over non-top symbols"
+  },
+  "platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+  "torch": "2.13.0+cu130",
+  "steps": 300,
+  "seeds": [
+    42,
+    314,
+    2718
+  ],
+  "summary": [
+    {
+      "variant": "full",
+      "runs": 3,
+      "effective_gradient_weight": 1.0,
+      "mean_training_seconds": 0.5756861886666987,
+      "mean_neural_perplexity": 10.322977969152008,
+      "mean_hybrid_perplexity": 9.099007841274162,
+      "mean_hybrid_accuracy": 0.4051738314932352
+    },
+    {
+      "variant": "hard-filter",
+      "runs": 3,
+      "effective_gradient_weight": 0.8736631944444444,
+      "mean_training_seconds": 0.5671624333333511,
+      "mean_neural_perplexity": 10.820252197849138,
+      "mean_hybrid_perplexity": 9.218599974973896,
+      "mean_hybrid_accuracy": 0.40248035450779596
+    },
+    {
+      "variant": "soft-residual",
+      "runs": 3,
+      "effective_gradient_weight": 0.895345937344763,
+      "mean_training_seconds": 0.595854555666771,
+      "mean_neural_perplexity": 10.629945981121928,
+      "mean_hybrid_perplexity": 9.165446641532624,
+      "mean_hybrid_accuracy": 0.40350707593293866
+    }
+  ],
+  "runs": [
+    {
+      "variant": "full",
+      "seed": 42,
+      "steps": 300,
+      "training_seconds": 0.5515946539999277,
+      "effective_gradient_weight": 1.0,
+      "loss_samples": [
+        4.216573238372803,
+        2.5677762031555176,
+        2.1905200481414795
+      ],
+      "validation": {
+        "neural_nll": 2.3379149850231595,
+        "neural_perplexity": 10.359614078455463,
+        "neural_accuracy": 0.3552522801216065,
+        "hybrid_nll": 2.2131164465075073,
+        "hybrid_perplexity": 9.144169348585304,
+        "hybrid_accuracy": 0.4037948690596832,
+        "shelf_duty": 0.1551349405301616,
+        "shelf_accuracy": 0.9808973312132021
+      }
+    },
+    {
+      "variant": "hard-filter",
+      "seed": 42,
+      "steps": 300,
+      "training_seconds": 0.5375122840000586,
+      "effective_gradient_weight": 0.8730729166666666,
+      "loss_samples": [
+        4.216638088226318,
+        2.756951332092285,
+        2.3740103244781494
+      ],
+      "validation": {
+        "neural_nll": 2.3853003491566427,
+        "neural_perplexity": 10.862324665078832,
+        "neural_accuracy": 0.3472485199210625,
+        "hybrid_nll": 2.2257815818342253,
+        "hybrid_perplexity": 9.2607179850445,
+        "hybrid_accuracy": 0.4018114299429303,
+        "shelf_duty": 0.1551349405301616,
+        "shelf_accuracy": 0.9808973312132021
+      }
+    },
+    {
+      "variant": "soft-residual",
+      "seed": 42,
+      "steps": 300,
+      "training_seconds": 0.569745211000054,
+      "effective_gradient_weight": 0.8948670544226964,
+      "loss_samples": [
+        4.21662712097168,
+        2.724032402038574,
+        2.337874412536621
+      ],
+      "validation": {
+        "neural_nll": 2.366903869150365,
+        "neural_perplexity": 10.664322977716356,
+        "neural_accuracy": 0.3498386580617633,
+        "hybrid_nll": 2.2198435185914245,
+        "hybrid_perplexity": 9.205890202500594,
+        "hybrid_accuracy": 0.4026448077230786,
+        "shelf_duty": 0.1551349405301616,
+        "shelf_accuracy": 0.9808973312132021
+      }
+    },
+    {
+      "variant": "full",
+      "seed": 314,
+      "steps": 300,
+      "training_seconds": 0.5804291580000154,
+      "effective_gradient_weight": 1.0,
+      "loss_samples": [
+        4.209646701812744,
+        2.566185712814331,
+        2.331159830093384
+      ],
+      "validation": {
+        "neural_nll": 2.331201716825939,
+        "neural_perplexity": 10.290300132600963,
+        "neural_accuracy": 0.3579257560403222,
+        "hybrid_nll": 2.2029996689750915,
+        "hybrid_perplexity": 9.052126196656467,
+        "hybrid_accuracy": 0.40666502213451383,
+        "shelf_duty": 0.1551349405301616,
+        "shelf_accuracy": 0.9808973312132021
+      }
+    },
+    {
+      "variant": "hard-filter",
+      "seed": 314,
+      "steps": 300,
+      "training_seconds": 0.5779046350000954,
+      "effective_gradient_weight": 0.8732291666666666,
+      "loss_samples": [
+        4.219278335571289,
+        2.8196356296539307,
+        2.58504056930542
+      ],
+      "validation": {
+        "neural_nll": 2.3845172377292414,
+        "neural_perplexity": 10.853821584369854,
+        "neural_accuracy": 0.34749186623286576,
+        "hybrid_nll": 2.2202168261471553,
+        "hybrid_perplexity": 9.209327472409912,
+        "hybrid_accuracy": 0.40198143901008054,
+        "shelf_duty": 0.1551349405301616,
+        "shelf_accuracy": 0.9808973312132021
+      }
+    },
+    {
+      "variant": "soft-residual",
+      "seed": 314,
+      "steps": 300,
+      "training_seconds": 0.6029752900001313,
+      "effective_gradient_weight": 0.8946834631760915,
+      "loss_samples": [
+        4.215993404388428,
+        2.770566940307617,
+        2.550286054611206
+      ],
+      "validation": {
+        "neural_nll": 2.366094131140119,
+        "neural_perplexity": 10.655691165272714,
+        "neural_accuracy": 0.3504753586857966,
+        "hybrid_nll": 2.213993532626581,
+        "hybrid_perplexity": 9.152193090833507,
+        "hybrid_accuracy": 0.40338484719185025,
+        "shelf_duty": 0.1551349405301616,
+        "shelf_accuracy": 0.9808973312132021
+      }
+    },
+    {
+      "variant": "full",
+      "seed": 2718,
+      "steps": 300,
+      "training_seconds": 0.595034754000153,
+      "effective_gradient_weight": 1.0,
+      "loss_samples": [
+        4.217349052429199,
+        2.5387401580810547,
+        2.4295313358306885
+      ],
+      "validation": {
+        "neural_nll": 2.3339887648825646,
+        "neural_perplexity": 10.319019696399597,
+        "neural_accuracy": 0.3557323057229719,
+        "hybrid_nll": 2.2083544079693955,
+        "hybrid_perplexity": 9.100727978580712,
+        "hybrid_accuracy": 0.40506160328550855,
+        "shelf_duty": 0.1551349405301616,
+        "shelf_accuracy": 0.9808973312132021
+      }
+    },
+    {
+      "variant": "hard-filter",
+      "seed": 2718,
+      "steps": 300,
+      "training_seconds": 0.5860703809998995,
+      "effective_gradient_weight": 0.8746875,
+      "loss_samples": [
+        4.2099456787109375,
+        2.7408506870269775,
+        2.567121744155884
+      ],
+      "validation": {
+        "neural_nll": 2.374404265509395,
+        "neural_perplexity": 10.744610344098726,
+        "neural_accuracy": 0.3495419755720305,
+        "hybrid_nll": 2.2176538565530466,
+        "hybrid_perplexity": 9.185754467467278,
+        "hybrid_accuracy": 0.4036481945703771,
+        "shelf_duty": 0.1551349405301616,
+        "shelf_accuracy": 0.9808973312132021
+      }
+    },
+    {
+      "variant": "soft-residual",
+      "seed": 2718,
+      "steps": 300,
+      "training_seconds": 0.6148431660001279,
+      "effective_gradient_weight": 0.8964872944355011,
+      "loss_samples": [
+        4.211179256439209,
+        2.6994080543518066,
+        2.544713020324707
+      ],
+      "validation": {
+        "neural_nll": 2.3580031299585977,
+        "neural_perplexity": 10.569823800376714,
+        "neural_accuracy": 0.35199543975678704,
+        "hybrid_nll": 2.2124696267108135,
+        "hybrid_perplexity": 9.13825663126377,
+        "hybrid_accuracy": 0.40449157288388715,
+        "shelf_duty": 0.1551349405301616,
+        "shelf_accuracy": 0.9808973312132021
+      }
+    }
+  ]
+}

@@ -7,8 +7,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import torch
 
+from .aira import CompactShelfLevel, predict_shelf_next
 from .config import MiniLLMConfig
 from .model import MiniLLM, ModelCache
 
@@ -44,6 +46,55 @@ class GenerationResult:
     @property
     def all_token_ids(self) -> tuple[int, ...]:
         return self.prompt_token_ids + self.generated_token_ids
+
+
+@dataclass(frozen=True)
+class TriggerConfig:
+    minimum_support: int = 5
+    confidence_threshold: float = 0.95
+    confidence_z: float = 1.96
+    selection: str = "longest"
+    maximum_shelf_burst: int = 4
+    cumulative_risk_budget: float = 0.10
+    neural_anchor_interval: int = 8
+    cycle_repetitions: int = 3
+    maximum_cycle_period: int = 8
+
+    def validate(self) -> TriggerConfig:
+        if self.minimum_support < 1 or not 0 < self.confidence_threshold <= 1:
+            raise ValueError("invalid shelf confidence gate")
+        if self.confidence_z < 0 or self.selection not in {"longest", "confidence"}:
+            raise ValueError("invalid shelf confidence method")
+        if self.maximum_shelf_burst < 1 or not 0 < self.cumulative_risk_budget <= 1:
+            raise ValueError("invalid shelf burst controls")
+        if self.neural_anchor_interval < 1:
+            raise ValueError("neural anchor interval must be positive")
+        if self.cycle_repetitions < 2 or self.maximum_cycle_period < 1:
+            raise ValueError("invalid cycle guard")
+        return self
+
+
+@dataclass(frozen=True)
+class TriggeredGenerationResult:
+    prompt_token_ids: tuple[int, ...]
+    generated_token_ids: tuple[int, ...]
+    routes: tuple[str, ...]
+    stop_reason: str
+    used_cache: bool
+    shelf_tokens: int
+    neural_tokens: int
+    neural_calls: int
+    neural_input_tokens: int
+    control_rejections: int
+
+    @property
+    def all_token_ids(self) -> tuple[int, ...]:
+        return self.prompt_token_ids + self.generated_token_ids
+
+    @property
+    def shelf_fraction(self) -> float:
+        total = self.shelf_tokens + self.neural_tokens
+        return self.shelf_tokens / total if total else 0.0
 
 
 @dataclass(frozen=True)
@@ -239,4 +290,166 @@ def generate_ids(
         generated_token_ids=tuple(generated),
         stop_reason=stop_reason,
         used_cache=use_cache,
+    )
+
+
+def _would_repeat_cycle(
+    tokens: list[int],
+    candidate: int,
+    *,
+    repetitions: int,
+    maximum_period: int,
+) -> bool:
+    sequence = tokens + [candidate]
+    for period in range(1, min(maximum_period, len(sequence) // repetitions) + 1):
+        suffix = sequence[-period:]
+        if all(
+            sequence[-repeat * period : -(repeat - 1) * period] == suffix
+            for repeat in range(2, repetitions + 1)
+        ):
+            return True
+    return False
+
+
+def generate_triggered_ids(
+    model: MiniLLM,
+    shelf_levels: list[CompactShelfLevel],
+    prompt_token_ids: list[int] | tuple[int, ...],
+    sampling: SamplingConfig | None = None,
+    trigger: TriggerConfig | None = None,
+    *,
+    stop_token_ids: set[int] | frozenset[int] | None = None,
+    core_repetitions: int | None = None,
+) -> TriggeredGenerationResult:
+    """Generate with true shelf bypasses and bounded periodic neural anchors.
+
+    Shelf tokens do not invoke the neural model. When a neural fallback is eventually
+    needed, cached decoding catches up on all shelf-emitted suffix tokens in one call.
+    This is an inference reference, not an optimized mobile runtime.
+    """
+
+    sampling = (sampling or SamplingConfig()).validate()
+    trigger = (trigger or TriggerConfig()).validate()
+    stop_tokens = stop_token_ids or frozenset()
+    prompt = tuple(int(token) for token in prompt_token_ids)
+    if not shelf_levels:
+        raise ValueError("at least one shelf level is required")
+    if not prompt:
+        raise ValueError("prompt must contain at least one token")
+    if len(prompt) > model.config.max_seq_len:
+        raise ValueError("prompt exceeds configured maximum sequence length")
+    if any(not 0 <= token < model.config.vocab_size for token in prompt):
+        raise ValueError("prompt contains a token outside the model vocabulary")
+    if any(not 0 <= token < model.config.vocab_size for token in stop_tokens):
+        raise ValueError("stop token is outside the model vocabulary")
+    if any(
+        level.contexts and int(level.top_tokens.max()) >= model.config.vocab_size
+        for level in shelf_levels
+    ):
+        raise ValueError("shelf predicts a token outside the model vocabulary")
+
+    device = next(model.parameters()).device
+    generator = torch.Generator(device=device).manual_seed(sampling.seed)
+    was_training = model.training
+    model.eval()
+    generated: list[int] = []
+    routes: list[str] = []
+    all_tokens = list(prompt)
+    use_cache = sampling.use_cache and model.supports_cached_decode
+    cache: ModelCache | None = None
+    stop_reason = "max_new_tokens"
+    shelf_tokens = neural_tokens = neural_calls = neural_input_tokens = 0
+    control_rejections = 0
+    current_burst = 0
+    cumulative_risk = 0.0
+    tokens_since_neural = 0
+
+    try:
+        with torch.inference_mode():
+            for _ in range(sampling.max_new_tokens):
+                if len(all_tokens) >= model.config.max_seq_len:
+                    stop_reason = "max_sequence_length"
+                    break
+                candidate = predict_shelf_next(
+                    shelf_levels,
+                    np.asarray(all_tokens, dtype=np.uint32),
+                    minimum_support=trigger.minimum_support,
+                    confidence_threshold=trigger.confidence_threshold,
+                    confidence_z=trigger.confidence_z,
+                    selection=trigger.selection,
+                )
+                use_shelf = candidate is not None
+                if candidate is not None:
+                    risk = 1.0 - candidate.lower_confidence
+                    blocked = (
+                        current_burst >= trigger.maximum_shelf_burst
+                        or cumulative_risk + risk > trigger.cumulative_risk_budget
+                        or tokens_since_neural >= trigger.neural_anchor_interval
+                        or _would_repeat_cycle(
+                            all_tokens,
+                            candidate.token,
+                            repetitions=trigger.cycle_repetitions,
+                            maximum_period=trigger.maximum_cycle_period,
+                        )
+                    )
+                    if blocked:
+                        use_shelf = False
+                        control_rejections += 1
+                if use_shelf:
+                    assert candidate is not None
+                    next_token = candidate.token
+                    shelf_tokens += 1
+                    current_burst += 1
+                    cumulative_risk += 1.0 - candidate.lower_confidence
+                    routes.append("shelf")
+                else:
+                    if use_cache:
+                        if cache is None:
+                            neural_input = all_tokens
+                        else:
+                            neural_input = all_tokens[cache.token_count :]
+                        input_tensor = torch.tensor(
+                            [neural_input], dtype=torch.long, device=device
+                        )
+                        output, cache = model.forward_cached(
+                            input_tensor,
+                            cache,
+                            core_repetitions=core_repetitions,
+                        )
+                    else:
+                        neural_input = all_tokens
+                        input_tensor = torch.tensor(
+                            [neural_input], dtype=torch.long, device=device
+                        )
+                        output = model(input_tensor, core_repetitions=core_repetitions)
+                    next_token = int(
+                        _sample_token(output.logits[:, -1], sampling, generator).item()
+                    )
+                    neural_tokens += 1
+                    neural_calls += 1
+                    neural_input_tokens += len(neural_input)
+                    current_burst = 0
+                    cumulative_risk = 0.0
+                    tokens_since_neural = 0
+                    routes.append("neural")
+                generated.append(next_token)
+                all_tokens.append(next_token)
+                tokens_since_neural += 1
+                if next_token in stop_tokens:
+                    stop_reason = "stop_token"
+                    break
+    finally:
+        model.train(was_training)
+
+    return TriggeredGenerationResult(
+        prompt_token_ids=prompt,
+        generated_token_ids=tuple(generated),
+        routes=tuple(routes),
+        stop_reason=stop_reason,
+        used_cache=use_cache,
+        shelf_tokens=shelf_tokens,
+        neural_tokens=neural_tokens,
+        neural_calls=neural_calls,
+        neural_input_tokens=neural_input_tokens,
+        control_rejections=control_rejections,
     )
