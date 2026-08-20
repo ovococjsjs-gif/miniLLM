@@ -27,7 +27,28 @@ PYTHONPATH=src python scripts/run_l1_screen.py
 
 It is hard-capped at 300 steps. Each run sees 76,800 real tokens; three seeds are required.
 The gate checks finite optimization, validation improvement and a maximum 5% edge-quality
-regression. It is an implementation/ranking signal, not a final architecture decision.
+regression. The runner refuses a dirty Git worktree, so checkpoints and the result point to
+the exact implementation commit. It is an implementation/ranking signal, not a final
+architecture decision.
+
+### Result at commit `a3a558d`
+
+| variant | seeds | mean best validation main loss | mean improvement | mean CPU train tokens/s |
+|---|---:|---:|---:|---:|
+| attention | 3 | 7.0017 ± 0.0579 | 2.4618 | 1,721.0 |
+| edge | 3 | 7.1244 ± 0.0403 | 2.3232 | 1,965.4 |
+
+Every run was finite and passed the 0.03 improvement floor. Edge/attention loss was
+1.0175, inside the preregistered 1.05 boundary, while edge trained 14.2% faster on this
+reference CPU. Therefore the gate **passes**: attention remains the provisional quality
+leader and edge remains the efficiency control for a longer test. This does not establish
+a statistically powered quality difference or phone speed.
+
+The fixed bilingual suite scored 0/8 for both selected seed-314 checkpoints: attention
+mostly emitted newlines, while edge emitted punctuation and repeated fragments. That is an
+expected and useful negative control after only 76.8K tokens. The exact six-run report is
+`results/l1_real_screen.json`; generations and reference cached-decode diagnostics are in
+`results/l1_screen_diagnostics.json`.
 
 ## Full 20M plan
 

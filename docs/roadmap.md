@@ -16,7 +16,7 @@ checkpoint, не перепутав дорогой training run с ещё одн
 - distillation losses и fake-quantization/QAT primitives;
 - reference generation, exact GQA/conv/GDN2 cache и bilingual completion smoke suite;
 - память, permissioned tools, retrieval trust boundary и bounded assistant loop;
-- 49 unit/integration tests и воспроизводимые малые результаты.
+- 53 unit/integration tests и воспроизводимые малые результаты.
 
 ### Что на самом деле доказано
 
@@ -26,16 +26,18 @@ checkpoint, не перепутав дорогой training run с ещё одн
 - Shared-depth имеет большую between-seed variance.
 - Support-aware n-gram shelf даёт 2.52% coverage при 98.19% accuracy, но ещё не даёт
   end-to-end ускорения.
+- На реальном 31M-token stream шестирукий 5M screen прошёл gate: attention loss 7.0017,
+  edge 7.1244 (ratio 1.0175), edge быстрее в CPU training на 14.2%. Это 76.8K tokens/run,
+  а не достаточное обучение или device benchmark.
 - Статический energy proxy полезен для постановки эксперимента, но не заменяет телефон.
 
 ### Чего пока нет
 
-- полезных pretrained/SFT весов;
+- полезных pretrained/SFT весов: 5M screen checkpoints намеренно недообучены;
 - production-legal русско-английского training corpus нужного масштаба;
-- финального tokenizer, обученного на будущей смеси;
-- обученного checkpoint, на котором reference generation можно оценивать по качеству;
+- финального product tokenizer, повторно проверенного на расширенной смеси;
 - систематического downstream evaluation шире диагностического smoke suite;
-- GPU/distributed mixed-precision trainer для большого run;
+- distributed/sharded trainer для позднего большого run;
 - экспорта в реальный mobile runtime и измерений на телефоне.
 
 Иными словами: **исследовательский каркас уже серьёзный, но модель как продукт ещё не
@@ -137,16 +139,14 @@ multi-seed screen, затем длиннее обучается победите
 
 ## 6. Что нужно усилить в trainer до L2
 
-L1 можно начать на простом single-GPU trainer после smoke tests. До L2 нужны:
+Для L1 уже готовы BF16/FP16 autocast, gradient checkpointing, fused AdamW, token-based
+schedule, NaN/gradient guards, throughput/peak-VRAM logs и checkpoint v3 с
+corpus/tokenizer/commit identity. До L2 остаются:
 
-- BF16/FP16 autocast и измеренный memory budget;
-- gradient checkpointing;
 - sharded/streaming token loader и deterministic shard resume;
-- token-based LR schedule и logs по фактическим tokens/FLOPs;
-- NaN, gradient/update norm и validation-drift guards;
-- checkpoint с tokenizer/data manifest/commit identity;
-- DDP/FSDP только если выбранное железо действительно требует нескольких GPU;
-- benchmark throughput и cost projection перед полным token budget.
+- update norm и validation-drift guards;
+- фактический GPU memory/throughput benchmark и cost projection;
+- DDP/FSDP только если выбранное железо действительно требует нескольких GPU.
 
 Сложный distributed stack не должен задерживать L1 на одной GPU.
 
@@ -202,15 +202,21 @@ RusDraCor: 8,560 документов / 142.7 MB, 47.6% EN и 52.4% RU по byte
 **Текущий результат:** реальный переносимый pipeline/scaling checkpoint уже можно
 обучать; полезную base model на 31M tokens обещать нельзя.
 
-### Блок 3 — L1 training package
+### Блок 3 — L1 training package — package/screen выполнены, GPU run ожидается
 
-- matched 10–30M configs для quality/edge controls;
-- mixed-precision single-GPU path;
-- preregistered gates и short multi-seed screen;
-- один 0.1–0.6B-token pilot с промежуточными checkpoints;
-- генерация и downstream evaluation по ходу run.
+Готовы matched 4.86M/19.60M quality/edge controls, mixed-precision single-GPU path,
+checkpoint v3 и preregistered three-seed screen. Все шесть runs по 300 шагов прошли gate.
+Attention пока лидирует по loss; edge остаётся в 1.75% и быстрее в CPU training на 14.2%.
+Обе completion-диагностики дали 0/8, как и должно быть после всего 76.8K tokens/run.
 
-**Результат:** первая реально обученная miniLLM и измеренная scaling point.
+Осталось:
+
+- GPU memory/throughput smoke для 20M пары;
+- один проход по 31.09M stream сначала attention, затем matched edge control;
+- расширение unique corpus до 0.1B+ и продолжение только при хорошем scaling;
+- генерация и downstream evaluation по промежуточным checkpoints.
+
+**Следующий результат:** первая содержательно обученная miniLLM и измеренная scaling point.
 
 ### Блок 4 — L2 и выбор backbone
 
@@ -248,8 +254,9 @@ RusDraCor: 8,560 документов / 142.7 MB, 47.6% EN и 52.4% RU по byte
 
 ## 10. Ближайшее решение
 
-Следующий критический блок — **inference/evaluation vertical slice**. Trainer уже умеет
-сохранять воспроизводимые checkpoints, но без generation/cache/eval мы можем дорого
-обучить модель и увидеть только одну цифру loss. Параллельно начинается проектирование
-corpus v1. Как только Gates A–C выполнены, работа переходит к L1 без дополнительного
-архитектурного ожидания.
+Следующее критическое решение — **запустить 20M attention и edge controls на GPU**, не
+меняя preregistered recipe после просмотра одного результата. Сначала нужен короткий
+memory/throughput smoke, затем один проход по текущим 31.09M tokens с validation и
+completion checkpoints. Параллельно corpus расширяется до 0.1B+ unique tokens. Attention
+— provisional quality leader, но edge не удаляется до GPU/device Pareto: текущий CPU
+screen недостаточен для выбора product backbone.
