@@ -1,0 +1,102 @@
+{
+  "warning": "1.7M-parameter, 153.6K-token proxy; a ranking signal, not a target-model claim.",
+  "steps": 300,
+  "tokens_per_run": 153600,
+  "seeds": [
+    42,
+    314,
+    2718
+  ],
+  "aggregate": [
+    {
+      "variant": "conv_gqa",
+      "runs": 3,
+      "parameters": 1740672,
+      "mean_best_validation_main_loss": 6.726353971163432,
+      "std_best_validation_main_loss": 0.040682542871045585,
+      "mean_wall_seconds": 31.282697016000082
+    },
+    {
+      "variant": "attention_only",
+      "runs": 3,
+      "parameters": 1738880,
+      "mean_best_validation_main_loss": 6.586157099405924,
+      "std_best_validation_main_loss": 0.05664898386267108,
+      "mean_wall_seconds": 34.002907634333496
+    }
+  ],
+  "runs": [
+    {
+      "variant": "conv_gqa",
+      "seed": 42,
+      "config": "configs/proxy_3m.json",
+      "parameters": 1740672,
+      "steps": 300,
+      "tokens_seen": 153600,
+      "best_validation_main_loss": 6.745129013061524,
+      "last_validation_main_loss": 6.745129013061524,
+      "wall_seconds": 31.105954673999804,
+      "output_directory": "runs/lm-ablation/conv_gqa-seed42"
+    },
+    {
+      "variant": "conv_gqa",
+      "seed": 314,
+      "config": "configs/proxy_3m.json",
+      "parameters": 1740672,
+      "steps": 300,
+      "tokens_seen": 153600,
+      "best_validation_main_loss": 6.679674458503723,
+      "last_validation_main_loss": 6.679674458503723,
+      "wall_seconds": 32.36810579400026,
+      "output_directory": "runs/lm-ablation/conv_gqa-seed314"
+    },
+    {
+      "variant": "conv_gqa",
+      "seed": 2718,
+      "config": "configs/proxy_3m.json",
+      "parameters": 1740672,
+      "steps": 300,
+      "tokens_seen": 153600,
+      "best_validation_main_loss": 6.754258441925049,
+      "last_validation_main_loss": 6.754258441925049,
+      "wall_seconds": 30.37403058000018,
+      "output_directory": "runs/lm-ablation/conv_gqa-seed2718"
+    },
+    {
+      "variant": "attention_only",
+      "seed": 42,
+      "config": "configs/proxy_attention_3m.json",
+      "parameters": 1738880,
+      "steps": 300,
+      "tokens_seen": 153600,
+      "best_validation_main_loss": 6.646540689468384,
+      "last_validation_main_loss": 6.646540689468384,
+      "wall_seconds": 34.55235113200024,
+      "output_directory": "runs/lm-ablation/attention_only-seed42"
+    },
+    {
+      "variant": "attention_only",
+      "seed": 314,
+      "config": "configs/proxy_attention_3m.json",
+      "parameters": 1738880,
+      "steps": 300,
+      "tokens_seen": 153600,
+      "best_validation_main_loss": 6.53418288230896,
+      "last_validation_main_loss": 6.53418288230896,
+      "wall_seconds": 34.60314403800021,
+      "output_directory": "runs/lm-ablation/attention_only-seed314"
+    },
+    {
+      "variant": "attention_only",
+      "seed": 2718,
+      "config": "configs/proxy_attention_3m.json",
+      "parameters": 1738880,
+      "steps": 300,
+      "tokens_seen": 153600,
+      "best_validation_main_loss": 6.57774772644043,
+      "last_validation_main_loss": 6.57774772644043,
+      "wall_seconds": 32.85322773300004,
+      "output_directory": "runs/lm-ablation/attention_only-seed2718"
+    }
+  ]
+}

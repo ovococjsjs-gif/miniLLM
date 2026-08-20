@@ -1,0 +1,41 @@
+{
+  "warning": "Reference PyTorch CPU benchmark, not a mobile-kernel result.",
+  "torch": "2.13.0+cu130",
+  "threads": 2,
+  "batch": 4,
+  "sequence_length": 128,
+  "results": [
+    {
+      "variant": "2_attention_4_conv",
+      "config": "configs/proxy_3m.json",
+      "parameters": 1740672,
+      "median_milliseconds": 15.594695999993746,
+      "tokens_per_second": 32831.67559022666,
+      "iterations": 30
+    },
+    {
+      "variant": "3_attention_3_conv",
+      "config": "configs/proxy_hybrid3_3m.json",
+      "parameters": 1740224,
+      "median_milliseconds": 16.516925999980003,
+      "tokens_per_second": 30998.50420112192,
+      "iterations": 30
+    },
+    {
+      "variant": "4_attention_2_conv",
+      "config": "configs/proxy_hybrid4_3m.json",
+      "parameters": 1739776,
+      "median_milliseconds": 17.35514449998732,
+      "tokens_per_second": 29501.338925779277,
+      "iterations": 30
+    },
+    {
+      "variant": "6_attention_0_conv",
+      "config": "configs/proxy_attention_3m.json",
+      "parameters": 1738880,
+      "median_milliseconds": 18.013126500022736,
+      "tokens_per_second": 28423.71644918797,
+      "iterations": 30
+    }
+  ]
+}

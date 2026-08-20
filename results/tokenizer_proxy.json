@@ -1,0 +1,302 @@
+{
+  "warning": "Small tokenizer proxy snapshot; final vocabulary needs a much larger target-domain corpus.",
+  "train_documents_available": 960,
+  "train_documents_selected": 332,
+  "train_documents_by_language": {
+    "de": 100,
+    "en": 78,
+    "ru": 100,
+    "uk": 54
+  },
+  "evaluation_documents": 229,
+  "d_model_for_economics": 1024,
+  "backbone_config": "configs/edge_dense_350m.json",
+  "context_for_compute_estimate": 4096,
+  "backbone_flops_excluding_lm_head": 654460416,
+  "reports": [
+    {
+      "vocab_size": 4096,
+      "embedding_parameters_tied": 4194304,
+      "lm_head_flops_per_token": 8388608,
+      "overall": {
+        "documents": 229,
+        "utf8_bytes": 3795744,
+        "characters": 2225280,
+        "words": 320824,
+        "tokens": 863366,
+        "unknown_tokens": 0,
+        "bytes_per_token": 4.396448319716088,
+        "characters_per_token": 2.5774468765274516,
+        "tokens_per_word": 2.691089195322046,
+        "unknown_rate": 0.0
+      },
+      "by_language": {
+        "de": {
+          "documents": 18,
+          "utf8_bytes": 173263,
+          "characters": 170741,
+          "words": 24510,
+          "tokens": 60683,
+          "unknown_tokens": 0,
+          "bytes_per_token": 2.8552148048053,
+          "characters_per_token": 2.813654565529061,
+          "tokens_per_word": 2.475846593227254,
+          "unknown_rate": 0.0
+        },
+        "en": {
+          "documents": 21,
+          "utf8_bytes": 132867,
+          "characters": 132850,
+          "words": 24142,
+          "tokens": 50737,
+          "unknown_tokens": 0,
+          "bytes_per_token": 2.6187397757060924,
+          "characters_per_token": 2.61840471450815,
+          "tokens_per_word": 2.1016071576505673,
+          "unknown_rate": 0.0
+        },
+        "ru": {
+          "documents": 176,
+          "utf8_bytes": 3219679,
+          "characters": 1773131,
+          "words": 250985,
+          "tokens": 688731,
+          "unknown_tokens": 0,
+          "bytes_per_token": 4.674799014419272,
+          "characters_per_token": 2.5744898951840414,
+          "tokens_per_word": 2.7441121979401157,
+          "unknown_rate": 0.0
+        },
+        "uk": {
+          "documents": 14,
+          "utf8_bytes": 269935,
+          "characters": 148558,
+          "words": 21187,
+          "tokens": 63215,
+          "unknown_tokens": 0,
+          "bytes_per_token": 4.2701099422605395,
+          "characters_per_token": 2.350043502333307,
+          "tokens_per_word": 2.983669231132298,
+          "unknown_rate": 0.0
+        }
+      },
+      "requested_vocab_size": 4096,
+      "artifact": "runs/tokenizers/byte_bpe_4096.json",
+      "embedding_q4_mib": 2.0,
+      "estimated_decode_flops_per_utf8_byte": 150769206.36765388
+    },
+    {
+      "vocab_size": 8192,
+      "embedding_parameters_tied": 8388608,
+      "lm_head_flops_per_token": 16777216,
+      "overall": {
+        "documents": 229,
+        "utf8_bytes": 3795744,
+        "characters": 2225280,
+        "words": 320824,
+        "tokens": 759194,
+        "unknown_tokens": 0,
+        "bytes_per_token": 4.9997023158771015,
+        "characters_per_token": 2.9311085177174743,
+        "tokens_per_word": 2.3663878014113657,
+        "unknown_rate": 0.0
+      },
+      "by_language": {
+        "de": {
+          "documents": 18,
+          "utf8_bytes": 173263,
+          "characters": 170741,
+          "words": 24510,
+          "tokens": 52772,
+          "unknown_tokens": 0,
+          "bytes_per_token": 3.283237322822709,
+          "characters_per_token": 3.2354468278632607,
+          "tokens_per_word": 2.153080375356997,
+          "unknown_rate": 0.0
+        },
+        "en": {
+          "documents": 21,
+          "utf8_bytes": 132867,
+          "characters": 132850,
+          "words": 24142,
+          "tokens": 44835,
+          "unknown_tokens": 0,
+          "bytes_per_token": 2.963466042154567,
+          "characters_per_token": 2.9630868740939,
+          "tokens_per_word": 1.8571369397730098,
+          "unknown_rate": 0.0
+        },
+        "ru": {
+          "documents": 176,
+          "utf8_bytes": 3219679,
+          "characters": 1773131,
+          "words": 250985,
+          "tokens": 605180,
+          "unknown_tokens": 0,
+          "bytes_per_token": 5.320200601473942,
+          "characters_per_token": 2.9299233285964505,
+          "tokens_per_word": 2.4112197940115943,
+          "unknown_rate": 0.0
+        },
+        "uk": {
+          "documents": 14,
+          "utf8_bytes": 269935,
+          "characters": 148558,
+          "words": 21187,
+          "tokens": 56407,
+          "unknown_tokens": 0,
+          "bytes_per_token": 4.785487616785151,
+          "characters_per_token": 2.6336802169943447,
+          "tokens_per_word": 2.6623401142209846,
+          "unknown_rate": 0.0
+        }
+      },
+      "requested_vocab_size": 8192,
+      "artifact": "runs/tokenizers/byte_bpe_8192.json",
+      "embedding_q4_mib": 4.0,
+      "estimated_decode_flops_per_utf8_byte": 134255519.54731613
+    },
+    {
+      "vocab_size": 16384,
+      "embedding_parameters_tied": 16777216,
+      "lm_head_flops_per_token": 33554432,
+      "overall": {
+        "documents": 229,
+        "utf8_bytes": 3795744,
+        "characters": 2225280,
+        "words": 320824,
+        "tokens": 675924,
+        "unknown_tokens": 0,
+        "bytes_per_token": 5.615637260993839,
+        "characters_per_token": 3.292204449020896,
+        "tokens_per_word": 2.1068373937111935,
+        "unknown_rate": 0.0
+      },
+      "by_language": {
+        "de": {
+          "documents": 18,
+          "utf8_bytes": 173263,
+          "characters": 170741,
+          "words": 24510,
+          "tokens": 46665,
+          "unknown_tokens": 0,
+          "bytes_per_token": 3.7129111753991215,
+          "characters_per_token": 3.658866388085289,
+          "tokens_per_word": 1.9039167686658507,
+          "unknown_rate": 0.0
+        },
+        "en": {
+          "documents": 21,
+          "utf8_bytes": 132867,
+          "characters": 132850,
+          "words": 24142,
+          "tokens": 40035,
+          "unknown_tokens": 0,
+          "bytes_per_token": 3.3187710753091046,
+          "characters_per_token": 3.3183464468589983,
+          "tokens_per_word": 1.658313312898683,
+          "unknown_rate": 0.0
+        },
+        "ru": {
+          "documents": 176,
+          "utf8_bytes": 3219679,
+          "characters": 1773131,
+          "words": 250985,
+          "tokens": 539385,
+          "unknown_tokens": 0,
+          "bytes_per_token": 5.9691667361902905,
+          "characters_per_token": 3.2873198179408027,
+          "tokens_per_word": 2.1490726537442475,
+          "unknown_rate": 0.0
+        },
+        "uk": {
+          "documents": 14,
+          "utf8_bytes": 269935,
+          "characters": 148558,
+          "words": 21187,
+          "tokens": 49839,
+          "unknown_tokens": 0,
+          "bytes_per_token": 5.4161399707056725,
+          "characters_per_token": 2.980758040891671,
+          "tokens_per_word": 2.352338698258366,
+          "unknown_rate": 0.0
+        }
+      },
+      "requested_vocab_size": 16384,
+      "artifact": "runs/tokenizers/byte_bpe_16384.json",
+      "embedding_q4_mib": 8.0,
+      "estimated_decode_flops_per_utf8_byte": 122517679.83287388
+    },
+    {
+      "vocab_size": 32768,
+      "embedding_parameters_tied": 33554432,
+      "lm_head_flops_per_token": 67108864,
+      "overall": {
+        "documents": 229,
+        "utf8_bytes": 3795744,
+        "characters": 2225280,
+        "words": 320824,
+        "tokens": 608758,
+        "unknown_tokens": 0,
+        "bytes_per_token": 6.235226477516517,
+        "characters_per_token": 3.6554427210812834,
+        "tokens_per_word": 1.8974827319651897,
+        "unknown_rate": 0.0
+      },
+      "by_language": {
+        "de": {
+          "documents": 18,
+          "utf8_bytes": 173263,
+          "characters": 170741,
+          "words": 24510,
+          "tokens": 41983,
+          "unknown_tokens": 0,
+          "bytes_per_token": 4.126979968082319,
+          "characters_per_token": 4.066908034204321,
+          "tokens_per_word": 1.712892696858425,
+          "unknown_rate": 0.0
+        },
+        "en": {
+          "documents": 21,
+          "utf8_bytes": 132867,
+          "characters": 132850,
+          "words": 24142,
+          "tokens": 36845,
+          "unknown_tokens": 0,
+          "bytes_per_token": 3.6061066630479033,
+          "characters_per_token": 3.6056452707287283,
+          "tokens_per_word": 1.5261784442051196,
+          "unknown_rate": 0.0
+        },
+        "ru": {
+          "documents": 176,
+          "utf8_bytes": 3219679,
+          "characters": 1773131,
+          "words": 250985,
+          "tokens": 485485,
+          "unknown_tokens": 0,
+          "bytes_per_token": 6.631881520541314,
+          "characters_per_token": 3.6522879182673,
+          "tokens_per_word": 1.9343187839910752,
+          "unknown_rate": 0.0
+        },
+        "uk": {
+          "documents": 14,
+          "utf8_bytes": 269935,
+          "characters": 148558,
+          "words": 21187,
+          "tokens": 44445,
+          "unknown_tokens": 0,
+          "bytes_per_token": 6.073461581730228,
+          "characters_per_token": 3.342513218584768,
+          "tokens_per_word": 2.0977486194364467,
+          "unknown_rate": 0.0
+        }
+      },
+      "requested_vocab_size": 32768,
+      "artifact": "runs/tokenizers/byte_bpe_32768.json",
+      "embedding_q4_mib": 16.0,
+      "estimated_decode_flops_per_utf8_byte": 115724630.46881983
+    }
+  ]
+}

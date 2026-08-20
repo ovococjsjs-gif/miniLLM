@@ -1,0 +1,34 @@
+{
+  "warning": "Single-seed <=300-step follow-up; use only to place layer-ratio candidates.",
+  "steps": 300,
+  "tokens_per_run": 153600,
+  "seeds": [
+    42
+  ],
+  "runs": [
+    {
+      "variant": "hybrid_3attn_3conv",
+      "seed": 42,
+      "config": "configs/proxy_hybrid3_3m.json",
+      "parameters": 1740224,
+      "steps": 300,
+      "tokens_seen": 153600,
+      "best_validation_main_loss": 6.757483673095703,
+      "last_validation_main_loss": 6.757483673095703,
+      "wall_seconds": 32.66574175500003,
+      "output_directory": "runs/lm-hybrid-followup/hybrid_3attn_3conv-seed42"
+    },
+    {
+      "variant": "hybrid_4attn_2conv",
+      "seed": 42,
+      "config": "configs/proxy_hybrid4_3m.json",
+      "parameters": 1739776,
+      "steps": 300,
+      "tokens_seen": 153600,
+      "best_validation_main_loss": 6.73799467086792,
+      "last_validation_main_loss": 6.73799467086792,
+      "wall_seconds": 50.553529287,
+      "output_directory": "runs/lm-hybrid-followup/hybrid_4attn_2conv-seed42"
+    }
+  ]
+}

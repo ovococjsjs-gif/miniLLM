@@ -1,0 +1,336 @@
+{
+  "warning": "Tiny CPU proxy screen; use for debugging/ranking hypotheses, not capability claims.",
+  "task": "generated multi-query associative recall (4 bindings, 2 queries)",
+  "chance_token_accuracy": 0.03125,
+  "seeds": [
+    123,
+    456,
+    789
+  ],
+  "torch": "2.13.0+cu130",
+  "python_platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+  "summary": [
+    {
+      "name": "attention_4",
+      "runs": 3,
+      "mean_held_out_token_accuracy": 0.2867838442325592,
+      "between_seed_accuracy_std": 0.013375104404985905,
+      "mean_wall_seconds": 11.935714721679688
+    },
+    {
+      "name": "conv3_attention1",
+      "runs": 3,
+      "mean_held_out_token_accuracy": 0.97412109375,
+      "between_seed_accuracy_std": 0.02173263020813465,
+      "mean_wall_seconds": 10.140973091125488
+    },
+    {
+      "name": "gdn2_3_attention1",
+      "runs": 3,
+      "mean_held_out_token_accuracy": 0.2985025942325592,
+      "between_seed_accuracy_std": 0.015131467953324318,
+      "mean_wall_seconds": 33.912567138671875
+    },
+    {
+      "name": "recursive_conv_attention",
+      "runs": 3,
+      "mean_held_out_token_accuracy": 0.5333659052848816,
+      "between_seed_accuracy_std": 0.38763636350631714,
+      "mean_wall_seconds": 17.67110252380371
+    },
+    {
+      "name": "recursive_plus_engram",
+      "runs": 3,
+      "mean_held_out_token_accuracy": 0.5369465947151184,
+      "between_seed_accuracy_std": 0.2090991884469986,
+      "mean_wall_seconds": 19.3614501953125
+    }
+  ],
+  "results": [
+    {
+      "name": "attention_4",
+      "seed": 123,
+      "stored_parameters": 152512,
+      "active_parameter_applications_per_token": 148096,
+      "effective_depth": 4,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 11.695073963000027,
+      "loss_samples": [
+        5.3747429847717285,
+        2.767918348312378,
+        2.2476208209991455,
+        1.8575161695480347,
+        1.6146718263626099
+      ],
+      "held_out_token_accuracy": 0.2841796875,
+      "held_out_accuracy_std": 0.0204312726855278
+    },
+    {
+      "name": "conv3_attention1",
+      "seed": 123,
+      "stored_parameters": 153184,
+      "active_parameter_applications_per_token": 148768,
+      "effective_depth": 4,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 9.885577202000036,
+      "loss_samples": [
+        4.8120646476745605,
+        2.972419023513794,
+        2.0081162452697754,
+        0.07148624956607819,
+        0.01906607486307621
+      ],
+      "held_out_token_accuracy": 0.99609375,
+      "held_out_accuracy_std": 0.002952847396954894
+    },
+    {
+      "name": "gdn2_3_attention1",
+      "seed": 123,
+      "stored_parameters": 214288,
+      "active_parameter_applications_per_token": 209872,
+      "effective_depth": 4,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 33.543678408999995,
+      "loss_samples": [
+        5.2256903648376465,
+        2.917362689971924,
+        2.225127935409546,
+        1.976170539855957,
+        1.582959532737732
+      ],
+      "held_out_token_accuracy": 0.28857421875,
+      "held_out_accuracy_std": 0.0242095235735178
+    },
+    {
+      "name": "recursive_conv_attention",
+      "seed": 123,
+      "stored_parameters": 124032,
+      "active_parameter_applications_per_token": 284608,
+      "effective_depth": 7,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 17.8407251860001,
+      "loss_samples": [
+        4.851041316986084,
+        2.8180668354034424,
+        2.1130547523498535,
+        1.8865617513656616,
+        1.8254963159561157
+      ],
+      "held_out_token_accuracy": 0.306640625,
+      "held_out_accuracy_std": 0.023714875802397728
+    },
+    {
+      "name": "recursive_plus_engram",
+      "seed": 123,
+      "stored_parameters": 130448,
+      "active_parameter_applications_per_token": 286912,
+      "effective_depth": 7,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 19.43599980800002,
+      "loss_samples": [
+        4.598712921142578,
+        2.9774978160858154,
+        2.26248836517334,
+        1.8594942092895508,
+        1.5469834804534912
+      ],
+      "held_out_token_accuracy": 0.50732421875,
+      "held_out_accuracy_std": 0.036311469972133636
+    },
+    {
+      "name": "attention_4",
+      "seed": 456,
+      "stored_parameters": 152512,
+      "active_parameter_applications_per_token": 148096,
+      "effective_depth": 4,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 12.511019724999983,
+      "loss_samples": [
+        5.186673164367676,
+        2.5851399898529053,
+        2.052483320236206,
+        1.8799716234207153,
+        1.7047035694122314
+      ],
+      "held_out_token_accuracy": 0.27490234375,
+      "held_out_accuracy_std": 0.02128688618540764
+    },
+    {
+      "name": "conv3_attention1",
+      "seed": 456,
+      "stored_parameters": 153184,
+      "active_parameter_applications_per_token": 148768,
+      "effective_depth": 4,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 10.372854187999906,
+      "loss_samples": [
+        4.560192584991455,
+        2.8537144660949707,
+        2.254662036895752,
+        1.1289787292480469,
+        0.19173406064510345
+      ],
+      "held_out_token_accuracy": 0.95263671875,
+      "held_out_accuracy_std": 0.013761267066001892
+    },
+    {
+      "name": "gdn2_3_attention1",
+      "seed": 456,
+      "stored_parameters": 214288,
+      "active_parameter_applications_per_token": 209872,
+      "effective_depth": 4,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 34.25969038000005,
+      "loss_samples": [
+        4.937420845031738,
+        2.9125423431396484,
+        2.165323495864868,
+        1.9147794246673584,
+        1.9259601831436157
+      ],
+      "held_out_token_accuracy": 0.291015625,
+      "held_out_accuracy_std": 0.03281515836715698
+    },
+    {
+      "name": "recursive_conv_attention",
+      "seed": 456,
+      "stored_parameters": 124032,
+      "active_parameter_applications_per_token": 284608,
+      "effective_depth": 7,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 17.25078342400002,
+      "loss_samples": [
+        4.7205963134765625,
+        2.559574604034424,
+        2.044057846069336,
+        1.942518949508667,
+        1.9102274179458618
+      ],
+      "held_out_token_accuracy": 0.3125,
+      "held_out_accuracy_std": 0.04139256104826927
+    },
+    {
+      "name": "recursive_plus_engram",
+      "seed": 456,
+      "stored_parameters": 130448,
+      "active_parameter_applications_per_token": 286912,
+      "effective_depth": 7,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 19.313506983000025,
+      "loss_samples": [
+        4.533231258392334,
+        2.7673258781433105,
+        2.1330766677856445,
+        1.8716682195663452,
+        0.6543903350830078
+      ],
+      "held_out_token_accuracy": 0.75927734375,
+      "held_out_accuracy_std": 0.0249631330370903
+    },
+    {
+      "name": "attention_4",
+      "seed": 789,
+      "stored_parameters": 152512,
+      "active_parameter_applications_per_token": 148096,
+      "effective_depth": 4,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 11.601049495999973,
+      "loss_samples": [
+        5.047367095947266,
+        2.6197497844696045,
+        2.010106086730957,
+        1.818065881729126,
+        1.8178051710128784
+      ],
+      "held_out_token_accuracy": 0.30126953125,
+      "held_out_accuracy_std": 0.019299687817692757
+    },
+    {
+      "name": "conv3_attention1",
+      "seed": 789,
+      "stored_parameters": 153184,
+      "active_parameter_applications_per_token": 148768,
+      "effective_depth": 4,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 10.164491010999996,
+      "loss_samples": [
+        4.863731384277344,
+        3.056798219680786,
+        2.297056198120117,
+        1.4804706573486328,
+        0.1309429258108139
+      ],
+      "held_out_token_accuracy": 0.9736328125,
+      "held_out_accuracy_std": 0.009959022514522076
+    },
+    {
+      "name": "gdn2_3_attention1",
+      "seed": 789,
+      "stored_parameters": 214288,
+      "active_parameter_applications_per_token": 209872,
+      "effective_depth": 4,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 33.93432969599996,
+      "loss_samples": [
+        5.221518039703369,
+        2.7098441123962402,
+        2.1098949909210205,
+        1.846357822418213,
+        1.6684081554412842
+      ],
+      "held_out_token_accuracy": 0.31591796875,
+      "held_out_accuracy_std": 0.03552249073982239
+    },
+    {
+      "name": "recursive_conv_attention",
+      "seed": 789,
+      "stored_parameters": 124032,
+      "active_parameter_applications_per_token": 284608,
+      "effective_depth": 7,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 17.921799095999972,
+      "loss_samples": [
+        4.599306583404541,
+        2.815429449081421,
+        1.3412858247756958,
+        0.1920647919178009,
+        0.07763193547725677
+      ],
+      "held_out_token_accuracy": 0.98095703125,
+      "held_out_accuracy_std": 0.012945045717060566
+    },
+    {
+      "name": "recursive_plus_engram",
+      "seed": 789,
+      "stored_parameters": 130448,
+      "active_parameter_applications_per_token": 286912,
+      "effective_depth": 7,
+      "train_steps": 400,
+      "examples_seen": 12800,
+      "wall_seconds": 19.33484528300005,
+      "loss_samples": [
+        4.484439373016357,
+        2.7124433517456055,
+        2.1787991523742676,
+        1.8365390300750732,
+        1.79258131980896
+      ],
+      "held_out_token_accuracy": 0.34423828125,
+      "held_out_accuracy_std": 0.02184283919632435
+    }
+  ]
+}
