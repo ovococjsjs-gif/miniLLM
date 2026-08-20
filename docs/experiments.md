@@ -87,8 +87,11 @@ Data mixture подбирается RegMix/data-mixing-law proxy runs, а не �
 
 ## Фаза 3 — первая серьёзная модель
 
-Кандидаты: Dense B0 и Shared-Depth R1. Начальная цель 100–300B качественных tokens,
-а не сразу 10T. Checkpoints каждые фиксированные FLOPs.
+Кандидаты проходят лестницу 10–30M → 50–100M → 300–400M параметров. Первый реальный
+pilot получает 0.1–0.6B tokens, а 300–400M baseline — ориентировочно 7–15B; точный
+бюджет продолжается только пока scaling curve и downstream растут. Диапазон 100–300B
+качественных tokens относится к позднему inference-optimal product candidate, а не к
+первому запуску. Checkpoints сохраняются через фиксированное число tokens/FLOPs.
 
 Продолжение разрешается, если scaling curve остаётся предсказуемой и downstream
 качество растёт; иначе бюджет переносится на data correction. Полный trillion-token run
