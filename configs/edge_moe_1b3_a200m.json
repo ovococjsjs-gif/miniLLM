@@ -1,0 +1,38 @@
+{
+  "vocab_size": 65536,
+  "d_model": 768,
+  "n_heads": 12,
+  "n_kv_heads": 3,
+  "head_dim": 64,
+  "ffn_hidden": 3072,
+  "max_seq_len": 32768,
+  "rope_base": 500000.0,
+  "conv_kernel": 3,
+  "norm_eps": 1e-06,
+  "dropout": 0.0,
+  "tie_embeddings": true,
+  "sandwich_norm": false,
+  "prelude_layers": [],
+  "core_layers": [
+    "conv", "attention", "conv", "conv", "conv",
+    "attention", "conv", "conv", "conv", "attention",
+    "conv", "conv", "conv", "attention", "conv",
+    "conv", "conv", "attention", "conv", "attention"
+  ],
+  "coda_layers": [],
+  "core_repetitions": 1,
+  "max_core_repetitions": 1,
+  "recurrent_input_injection": false,
+  "mtp_depth": 1,
+  "mtp_loss_weight": 0.3,
+  "moe": {
+    "enabled": true,
+    "num_experts": 60,
+    "top_k": 4,
+    "expert_hidden": 384,
+    "shared_expert_hidden": 1536,
+    "router_z_loss": 0.0001,
+    "load_balance_loss": 0.01
+  },
+  "engram": {"enabled": false}
+}

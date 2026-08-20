@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "minillm-lab"
+version = "0.1.0"
+description = "A controlled research lab for small, fast, on-device language models"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["torch>=2.2"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "numpy>=1.26"]
+
+[project.scripts]
+minillm = "minillm.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+pythonpath = ["src"]

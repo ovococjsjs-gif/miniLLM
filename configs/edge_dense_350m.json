@@ -1,0 +1,30 @@
+{
+  "vocab_size": 65536,
+  "d_model": 1024,
+  "n_heads": 16,
+  "n_kv_heads": 8,
+  "head_dim": 64,
+  "ffn_hidden": 4608,
+  "max_seq_len": 32768,
+  "rope_base": 500000.0,
+  "conv_kernel": 3,
+  "norm_eps": 1e-06,
+  "dropout": 0.0,
+  "tie_embeddings": true,
+  "sandwich_norm": false,
+  "prelude_layers": [],
+  "core_layers": [
+    "conv", "attention", "conv", "conv",
+    "attention", "conv", "conv", "attention",
+    "conv", "conv", "attention", "conv",
+    "attention", "conv", "conv", "attention"
+  ],
+  "coda_layers": [],
+  "core_repetitions": 1,
+  "max_core_repetitions": 1,
+  "recurrent_input_injection": false,
+  "mtp_depth": 1,
+  "mtp_loss_weight": 0.3,
+  "moe": {"enabled": false},
+  "engram": {"enabled": false}
+}
