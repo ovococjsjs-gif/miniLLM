@@ -10,9 +10,54 @@ import torch
 
 from .bridge import ByteBPEBridge
 from .calibration import ReliabilityThreshold
-from .event_core import ByteEventLM
+from .event_core import AttentionByteEventLM, ByteEventLM, ConvByteEventLM
 from .memory import EpisodicFactStore, MemoryHit
 from .trigger import CompactShelfLevel, predict_shelf_next
+
+ByteEventCore = ByteEventLM | ConvByteEventLM | AttentionByteEventLM
+
+
+def utf8_allowed_next_bytes(prefix: bytes | bytearray) -> np.ndarray:
+    """Return a strict mask for bytes that keep a valid UTF-8 prefix."""
+
+    allowed = np.zeros(256, dtype=bool)
+    if not prefix:
+        allowed[:128] = True
+        allowed[0xC2:0xF5] = True
+        return allowed
+    trailing = 0
+    for value in reversed(prefix[-3:]):
+        if 0x80 <= value <= 0xBF:
+            trailing += 1
+        else:
+            break
+    lead_index = len(prefix) - trailing - 1
+    lead = prefix[lead_index] if lead_index >= 0 else -1
+    if 0xC2 <= lead <= 0xDF:
+        total = 1
+    elif 0xE0 <= lead <= 0xEF:
+        total = 2
+    elif 0xF0 <= lead <= 0xF4:
+        total = 3
+    else:
+        total = 0
+    pending = total > trailing and lead_index + trailing + 1 == len(prefix)
+    if not pending:
+        allowed[:128] = True
+        allowed[0xC2:0xF5] = True
+        return allowed
+    lower, upper = 0x80, 0xBF
+    if trailing == 0:
+        if lead == 0xE0:
+            lower = 0xA0
+        elif lead == 0xED:
+            upper = 0x9F
+        elif lead == 0xF0:
+            lower = 0x90
+        elif lead == 0xF4:
+            upper = 0x8F
+    allowed[lower : upper + 1] = True
+    return allowed
 
 
 @dataclass(frozen=True)
@@ -24,6 +69,7 @@ class ByteEventConfig:
     cumulative_risk_budget: float = 0.10
     neural_anchor_interval: int = 8
     raw_context_bytes: int = 64
+    enforce_utf8: bool = True
     cycle_repetitions: int = 3
     maximum_cycle_period: int = 8
 
@@ -75,7 +121,7 @@ def _cycle_repeats(prefix: bytearray, candidate: int, config: ByteEventConfig) -
 def _dynamic_context(
     bridge: ByteBPEBridge,
     prefix: bytearray,
-    model: ByteEventLM,
+    model: ByteEventCore,
     raw_context_bytes: int,
 ) -> torch.Tensor:
     token_ids = bridge.encode_bytes(prefix[-raw_context_bytes:])
@@ -86,7 +132,7 @@ def _dynamic_context(
 
 
 def generate_byte_events(
-    model: ByteEventLM,
+    model: ByteEventCore,
     bridge: ByteBPEBridge,
     shelf_levels: list[CompactShelfLevel],
     prompt_bytes: bytes,
@@ -142,6 +188,10 @@ def generate_byte_events(
                             or risk + candidate_risk > config.cumulative_risk_budget
                             or since_neural >= config.neural_anchor_interval
                             or _cycle_repeats(prefix, candidate.token, config)
+                            or (
+                                config.enforce_utf8
+                                and not utf8_allowed_next_bytes(prefix)[candidate.token]
+                            )
                         )
                         if blocked:
                             candidate = None
@@ -156,7 +206,13 @@ def generate_byte_events(
                     dynamic = _dynamic_context(
                         bridge, prefix, model, config.raw_context_bytes
                     ).to(device)
-                    emitted = int(model(dynamic).argmax(dim=-1))
+                    logits = model(dynamic)[0]
+                    if config.enforce_utf8:
+                        allowed = torch.from_numpy(utf8_allowed_next_bytes(prefix)).to(
+                            device=logits.device
+                        )
+                        logits = logits.masked_fill(~allowed, -torch.inf)
+                    emitted = int(logits.argmax())
                     neural_bytes += 1
                     burst = 0
                     risk = 0.0
@@ -197,7 +253,7 @@ class AIraCascade:
 
     def __init__(
         self,
-        model: ByteEventLM,
+        model: ByteEventCore,
         bridge: ByteBPEBridge,
         shelf_levels: list[CompactShelfLevel],
         facts: EpisodicFactStore,

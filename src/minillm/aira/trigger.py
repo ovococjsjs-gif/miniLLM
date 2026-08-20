@@ -275,6 +275,26 @@ def lookup_compact_level(
     }
 
 
+def _single_context_hash(tokens: np.ndarray) -> np.uint64:
+    value = 1469598103934665603
+    for token in tokens:
+        value ^= int(token) + 1
+        value = (value * 1099511628211) & ((1 << 64) - 1)
+    return np.uint64(value)
+
+
+def _scalar_wilson_lower(successes: int, total: int, z: float) -> float:
+    probability = successes / total
+    if z == 0:
+        return probability
+    denominator = 1 + z**2 / total
+    centre = probability + z**2 / (2 * total)
+    margin = z * math.sqrt(
+        probability * (1 - probability) / total + z**2 / (4 * total**2)
+    )
+    return (centre - margin) / denominator
+
+
 def predict_shelf_next(
     levels: list[CompactShelfLevel],
     prefix: np.ndarray,
@@ -297,24 +317,14 @@ def predict_shelf_next(
     for level in sorted(levels, key=lambda item: item.order):
         if len(prefix) < level.order or not level.contexts:
             continue
-        context = np.concatenate(
-            (
-                prefix[-level.order :].astype(np.uint32, copy=False),
-                np.zeros(1, np.uint32),
-            )
-        )
-        query = context_hashes(context, level.order)[0]
+        query = _single_context_hash(prefix[-level.order :])
         index = int(np.searchsorted(level.context_hashes, query))
         if index >= level.contexts or level.context_hashes[index] != query:
             continue
         support = int(level.totals[index])
         top_count = int(level.top_counts[index])
         empirical = top_count / support
-        lower = float(
-            wilson_lower_bound(
-                np.asarray([top_count]), np.asarray([support]), confidence_z
-            )[0]
-        )
+        lower = _scalar_wilson_lower(top_count, support, confidence_z)
         if support < minimum_support or lower < confidence_threshold:
             continue
         candidate = ShelfPrediction(

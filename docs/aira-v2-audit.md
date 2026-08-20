@@ -406,17 +406,53 @@ component result that satisfies the *direction* of quality-adjusted active compu
 
 It does not yet pass the product/runtime gate. Unfused Python dynamic BPE+shelf routing makes the
 cascade validation path about 50x slower than the batched neural evaluation. In autonomous 64-byte
-generation, the undertrained core has only 6.68% byte accuracy and quickly leaves the familiar
-manifold. The uncalibrated cascade routes just 0.33% of bytes with 35.97% mean shelf precision. On a
+generation, the undertrained core has only 6.69% byte accuracy and quickly leaves the familiar
+manifold. The uncalibrated cascade routes just 0.31% of bytes with 38.78% mean shelf precision. On a
 separate 100-sequence generated-context calibration split, candidate precision is only 7–8% for every
 seed and no threshold can prove 95% precision. The calibrated policy therefore disables autonomous
 bypass and exactly restores the neural-only quality/call count. By contrast, oracle fallback retains
 99.88% byte accuracy, 2.67% shelf routing and 95.32% autonomous shelf precision. This confirms both
 that fallback quality is the limiting factor and that generated-context calibration must be a hard
 safety gate rather than an optional report. `AIraCascade` consequently disables autonomous shelf
-routing unless it receives a fitted non-empty `ReliabilityThreshold`. The next gate is a stronger
-matched event core and fused
-incremental BPE/hash lookup; no general speedup claim is justified yet.
+routing unless it receives a fitted non-empty `ReliabilityThreshold`. The follow-up below tests
+stronger matched cores; fused incremental BPE/hash lookup remains necessary for wall-clock, but no
+general speedup claim is justified yet.
+
+#### A3 follow-up: core/curriculum ablation did not repair autonomous drift
+
+`event_core.py` now includes parameter-matched gated-MLP, convolutional and two-layer attention
+cores. A strict incremental UTF-8 grammar mask prevents the neural core or shelf from emitting
+invalid byte prefixes. `results/aira_event_core_ablation.json` compares six preregistered variants,
+three seeds each, all capped at 300 optimizer steps and within 1.4% parameter count:
+
+| core | curriculum | params | cascade validation ppl | validation accuracy | autonomous accuracy | safe thresholds |
+|---|---|---:|---:|---:|---:|---:|
+| gated MLP | random | 471,232 | **156.04** | 23.12% | 7.40% | 0/3 |
+| conv | random | 464,877 | 172.90 | 24.52% | **7.71%** | 0/3 |
+| attention | random | 474,912 | 164.34 | 24.10% | 7.26% | 0/3 |
+| attention | contiguous spans | 474,912 | 172.03 | 24.18% | 7.36% | 0/3 |
+| attention | 10% context noise | 474,912 | 183.41 | 23.84% | 7.36% | 0/3 |
+| attention | 4-byte recovery rollout, 50/50 phase | 474,912 | 164.34 | 19.76% | **7.80%** | 0/3 |
+
+A true 50/50 recovery second phase raises autonomous accuracy by only 0.40 percentage points, while
+regressing static cascade perplexity by 5.3%, accuracy by 3.36 points and taking about 18x the gated
+MLP training wall time. Conv reaches 7.71% autonomous accuracy while regressing cascade perplexity by
+10.8%. Contiguous and noise curricula do not help. Most importantly, generated-context calibration
+rejects autonomous bypass for every one of the 18 runs. UTF-8 validity and recovery exposure were
+therefore useful controls, not solutions to distributional drift.
+
+Decision: retain the gated MLP as the speed/reference baseline; do not promote conv, attention or the
+attempted curricula. The next intervention must directly train a stable transition on generated
+states or use a stronger frozen/distilled fallback. Increasing local mixer complexity is not the
+bottleneck demonstrated by this proxy.
+
+A matched data-window control in `results/aira_byte_event_broad_proxy.json` keeps the gated MLP,
+40,000 sampled examples, 300 updates and all seeds fixed, but samples those examples from 8M unique
+BPE tokens instead of 0.8M. Static neural ppl improves from 160.87 to 154.61; cascade ppl improves
+from 156.04 to 149.11 and accuracy from 23.12% to 23.88%. Autonomous accuracy remains effectively
+flat at 7.38%, and all generated-context calibrations still reject bypass. The broader window is
+accepted as the new data default because it improves generalization without extra optimizer steps,
+but data diversity alone does not solve exposure drift.
 
 ### A4 PC-ALM: mathematical reference supports the repair, not an efficiency claim
 

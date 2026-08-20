@@ -11,7 +11,20 @@ from minillm.aira import (
     EpisodicFactStore,
     build_compact_shelf,
     generate_byte_events,
+    utf8_allowed_next_bytes,
 )
+
+
+def test_utf8_constraint_tracks_incomplete_multibyte_sequences() -> None:
+    start = utf8_allowed_next_bytes(b"")
+    assert start[ord("A")] and start[0xC2] and not start[0x80] and not start[0xC0]
+
+    after_e0 = utf8_allowed_next_bytes(b"\xe0")
+    assert after_e0[0xA0] and not after_e0[0x80]
+    after_f4 = utf8_allowed_next_bytes(b"\xf4")
+    assert after_f4[0x8F] and not after_f4[0x90]
+    completed = utf8_allowed_next_bytes("€".encode())
+    assert completed[ord("!")] and not completed[0x80]
 
 
 def test_byte_event_cascade_skips_neural_core_on_reliable_bytes() -> None:

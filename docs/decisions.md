@@ -99,3 +99,26 @@ controls. Обычные большие scaling runs приостановлен�
 boundaries сохранил 1.28% coverage и разрушал canonical segmentation. Byte-event proxy на
 каждой raw boundary улучшил proper validation perplexity на 3.0%, accuracy на 1.17 п.п. и
 сократил neural calls на 2.61%, хотя Python runtime и автономное качество пока не прошли gate.
+
+## D-012 — Mixer complexity не исправляет generated-context drift
+
+**Решение:** gated 471K MLP остаётся event-core baseline. Parameter-matched conv и attention,
+contiguous batches, 10% context corruption и четырёхбайтовый recovery rollout не допускаются
+как новый default. Строгая UTF-8 mask включена как обязательный deterministic control.
+
+**Причина:** 50/50 attention+recovery повышает autonomous accuracy с 7.40% до 7.80%,
+но ухудшает static cascade ppl с 156.04 до 164.34, accuracy с 23.12% до 19.76% и требует
+примерно в 18× больше training time. Conv получает 7.71% autonomous accuracy, но ухудшает
+ppl до 172.90. Ни один из 18 runs не доказал safe generated-context threshold. Следующий эксперимент должен
+учить устойчивый переход непосредственно на generated states или использовать более сильный
+frozen/distilled fallback, а не добавлять ещё один локальный mixer.
+
+## D-013 — Broad unique sampling принят, но не считается exposure решением
+
+**Решение:** следующие event-core controls сэмплируют training examples минимум из
+8M-token unique window вместо узкого 0.8M окна при том же лимите 300 updates.
+
+**Причина:** matched broad-data control снижает cascade ppl с 156.04 до 149.11 и повышает
+accuracy с 23.12% до 23.88% без дополнительных optimizer steps. Autonomous accuracy остаётся
+7.38%, и generated-context threshold по-прежнему отсутствует. Это исправление data coverage,
+не исправление переходной динамики.

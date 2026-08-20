@@ -36,13 +36,13 @@
     "generation_calibration_sequences": 100,
     "generation_test_sequences": 100,
     "generation_horizon_bytes": 64,
-    "trigger": "orders 4/8/16, support>=5, per-byte Wilson95>=0.95; autonomous max burst 4, cumulative risk 0.10, neural anchor 8, cycle guard"
+    "trigger": "orders 4/8/16, support>=5, per-byte Wilson95>=0.95; autonomous strict UTF-8, max burst 4, cumulative risk 0.10, neural anchor 8, cycle guard"
   },
   "shelf": {
     "packed_bytes": 71610056,
-    "build_seconds": 6.158475187000022
+    "build_seconds": 6.138180025999645
   },
-  "example_preparation_seconds": 24.41195847500012,
+  "example_preparation_seconds": 18.898413534999236,
   "episodic_memory_trace": {
     "accepted": true,
     "value": "Pskov",
@@ -65,10 +65,10 @@
     "neural_or_oracle_bytes": 6229,
     "neural_fraction": 0.97328125,
     "control_rejections": 3,
-    "wall_seconds": 0.9362395609996383,
-    "model_seconds": 0.0,
+    "wall_seconds": 0.9483881420001126,
+    "model_seconds": 0,
     "parameter_bytes_read_proxy": 0,
-    "parameter_bytes_per_generated_byte": 0.0
+    "parameter_bytes_per_generated_byte": 0
   },
   "summary": {
     "runs": 3,
@@ -78,21 +78,21 @@
     "mean_cascade_validation_accuracy": 0.2312,
     "mean_cascade_neural_call_fraction": 0.9739,
     "mean_validation_parameter_byte_reduction": 0.0260999999999999,
-    "mean_neural_generation_accuracy": 0.06677083333333333,
-    "mean_cascade_generation_accuracy": 0.06807291666666666,
-    "mean_cascade_generation_neural_fraction": 0.9966666666666666,
-    "mean_cascade_generation_shelf_precision": 0.3597285067873303,
+    "mean_neural_generation_accuracy": 0.066875,
+    "mean_cascade_generation_accuracy": 0.06822916666666666,
+    "mean_cascade_generation_neural_fraction": 0.9969270833333334,
+    "mean_cascade_generation_shelf_precision": 0.38776881720430106,
     "generated_calibrations_with_safe_threshold": 0,
-    "mean_calibrated_generation_accuracy": 0.06677083333333333,
-    "mean_calibrated_generation_neural_fraction": 1.0,
-    "mean_neural_generation_wall_seconds": 2.61945899099995,
-    "mean_cascade_generation_wall_seconds": 4.202511755666516
+    "mean_calibrated_generation_accuracy": 0.066875,
+    "mean_calibrated_generation_neural_fraction": 1,
+    "mean_neural_generation_wall_seconds": 2.7440712356668278,
+    "mean_cascade_generation_wall_seconds": 4.316361394333096
   },
   "runs": [
     {
       "seed": 42,
       "steps": 300,
-      "training_seconds": 1.3507367899997007,
+      "training_seconds": 1.5614488070004882,
       "loss_samples": [
         5.727935791015625,
         2.6801652908325195,
@@ -106,8 +106,8 @@
         "perplexity": 177.9254467414303,
         "accuracy": 0.2242,
         "neural_calls": 10000,
-        "seconds": 0.023461715999928856,
-        "bytes_per_second": 426226.2828528963
+        "seconds": 0.03118951000033121,
+        "bytes_per_second": 320620.61891622556
       },
       "cascade_validation": {
         "bytes": 10000,
@@ -119,47 +119,47 @@
         "shelf_precision": 0.9540229885057471,
         "neural_calls": 9739,
         "neural_call_fraction": 0.9739,
-        "route_seconds": 1.4727827259998776,
-        "model_seconds": 0.025882955999804835,
-        "total_seconds": 1.4986656819996824,
+        "route_seconds": 1.4415623929999128,
+        "model_seconds": 0.02950497300025745,
+        "total_seconds": 1.4710673660001703,
         "parameter_bytes_read_proxy": 18357313792,
         "parameter_bytes_per_evaluated_byte": 1835731.3792
       },
       "neural_generation": {
         "sequences": 100,
         "bytes": 6400,
-        "byte_accuracy": 0.070625,
+        "byte_accuracy": 0.07046875,
         "mean_common_prefix_bytes": 0.38,
         "shelf_bytes": 0,
-        "shelf_fraction": 0.0,
-        "shelf_precision": 0.0,
+        "shelf_fraction": 0,
+        "shelf_precision": 0,
         "neural_or_oracle_bytes": 6400,
-        "neural_fraction": 1.0,
+        "neural_fraction": 1,
         "control_rejections": 0,
-        "wall_seconds": 2.297672032999799,
-        "model_seconds": 0.7415937519863292,
+        "wall_seconds": 2.598658821000754,
+        "model_seconds": 0.9734134290138172,
         "parameter_bytes_read_proxy": 12063539200,
-        "parameter_bytes_per_generated_byte": 1884928.0
+        "parameter_bytes_per_generated_byte": 1884928
       },
       "cascade_generation": {
         "sequences": 100,
         "bytes": 6400,
-        "byte_accuracy": 0.0721875,
+        "byte_accuracy": 0.07203125,
         "mean_common_prefix_bytes": 0.43,
-        "shelf_bytes": 17,
-        "shelf_fraction": 0.00265625,
-        "shelf_precision": 0.4117647058823529,
-        "neural_or_oracle_bytes": 6383,
-        "neural_fraction": 0.99734375,
+        "shelf_bytes": 16,
+        "shelf_fraction": 0.0025,
+        "shelf_precision": 0.4375,
+        "neural_or_oracle_bytes": 6384,
+        "neural_fraction": 0.9975,
         "control_rejections": 0,
-        "wall_seconds": 3.8573416029998953,
-        "model_seconds": 0.8859562850034308,
-        "parameter_bytes_read_proxy": 12031495424,
-        "parameter_bytes_per_generated_byte": 1879921.16
+        "wall_seconds": 4.06488624099984,
+        "model_seconds": 1.0900885659857522,
+        "parameter_bytes_read_proxy": 12033380352,
+        "parameter_bytes_per_generated_byte": 1880215.68
       },
       "generated_context_calibration": {
-        "candidate_examples": 6225,
-        "candidate_precision": 0.0780722891566265,
+        "candidate_examples": 6213,
+        "candidate_precision": 0.0783840334781909,
         "fitted": {
           "threshold": null,
           "accepted_examples": 0,
@@ -173,24 +173,24 @@
       "calibrated_cascade_generation": {
         "sequences": 100,
         "bytes": 6400,
-        "byte_accuracy": 0.070625,
+        "byte_accuracy": 0.07046875,
         "mean_common_prefix_bytes": 0.38,
         "shelf_bytes": 0,
-        "shelf_fraction": 0.0,
-        "shelf_precision": 0.0,
+        "shelf_fraction": 0,
+        "shelf_precision": 0,
         "neural_or_oracle_bytes": 6400,
-        "neural_fraction": 1.0,
+        "neural_fraction": 1,
         "control_rejections": 0,
-        "wall_seconds": 2.6104927310002495,
-        "model_seconds": 0.9180099920245084,
+        "wall_seconds": 2.4984592529999645,
+        "model_seconds": 0.9209911939824451,
         "parameter_bytes_read_proxy": 12063539200,
-        "parameter_bytes_per_generated_byte": 1884928.0
+        "parameter_bytes_per_generated_byte": 1884928
       }
     },
     {
       "seed": 314,
       "steps": 300,
-      "training_seconds": 1.602750388000004,
+      "training_seconds": 1.6212576480002099,
       "loss_samples": [
         5.863603115081787,
         2.641697645187378,
@@ -204,8 +204,8 @@
         "perplexity": 134.2640815195112,
         "accuracy": 0.217,
         "neural_calls": 10000,
-        "seconds": 0.027960491000158072,
-        "bytes_per_second": 357647.5105513514
+        "seconds": 0.03100173199982237,
+        "bytes_per_second": 322562.6232772187
       },
       "cascade_validation": {
         "bytes": 10000,
@@ -217,47 +217,47 @@
         "shelf_precision": 0.9540229885057471,
         "neural_calls": 9739,
         "neural_call_fraction": 0.9739,
-        "route_seconds": 1.4854869420000796,
-        "model_seconds": 0.03229554600011397,
-        "total_seconds": 1.5177824880001936,
+        "route_seconds": 1.4596942199996192,
+        "model_seconds": 0.02934658300000592,
+        "total_seconds": 1.4890408029996252,
         "parameter_bytes_read_proxy": 18357313792,
         "parameter_bytes_per_evaluated_byte": 1835731.3792
       },
       "neural_generation": {
         "sequences": 100,
         "bytes": 6400,
-        "byte_accuracy": 0.06140625,
+        "byte_accuracy": 0.06203125,
         "mean_common_prefix_bytes": 0.35,
         "shelf_bytes": 0,
-        "shelf_fraction": 0.0,
-        "shelf_precision": 0.0,
+        "shelf_fraction": 0,
+        "shelf_precision": 0,
         "neural_or_oracle_bytes": 6400,
-        "neural_fraction": 1.0,
+        "neural_fraction": 1,
         "control_rejections": 0,
-        "wall_seconds": 2.6865822079998907,
-        "model_seconds": 0.8418961019951894,
+        "wall_seconds": 2.8685619090001637,
+        "model_seconds": 0.9722470169799635,
         "parameter_bytes_read_proxy": 12063539200,
-        "parameter_bytes_per_generated_byte": 1884928.0
+        "parameter_bytes_per_generated_byte": 1884928
       },
       "cascade_generation": {
         "sequences": 100,
         "bytes": 6400,
-        "byte_accuracy": 0.0640625,
+        "byte_accuracy": 0.0646875,
         "mean_common_prefix_bytes": 0.42,
-        "shelf_bytes": 13,
-        "shelf_fraction": 0.00203125,
-        "shelf_precision": 0.46153846153846156,
-        "neural_or_oracle_bytes": 6387,
-        "neural_fraction": 0.99796875,
+        "shelf_bytes": 12,
+        "shelf_fraction": 0.001875,
+        "shelf_precision": 0.5,
+        "neural_or_oracle_bytes": 6388,
+        "neural_fraction": 0.998125,
         "control_rejections": 0,
-        "wall_seconds": 4.326511165999818,
-        "model_seconds": 1.0072763620123624,
-        "parameter_bytes_read_proxy": 12039035136,
-        "parameter_bytes_per_generated_byte": 1881099.24
+        "wall_seconds": 4.588159570999778,
+        "model_seconds": 1.1461143110082048,
+        "parameter_bytes_read_proxy": 12040920064,
+        "parameter_bytes_per_generated_byte": 1881393.76
       },
       "generated_context_calibration": {
-        "candidate_examples": 6181,
-        "candidate_precision": 0.08170198996926063,
+        "candidate_examples": 6169,
+        "candidate_precision": 0.08267142162425029,
         "fitted": {
           "threshold": null,
           "accepted_examples": 0,
@@ -271,24 +271,24 @@
       "calibrated_cascade_generation": {
         "sequences": 100,
         "bytes": 6400,
-        "byte_accuracy": 0.06140625,
+        "byte_accuracy": 0.06203125,
         "mean_common_prefix_bytes": 0.35,
         "shelf_bytes": 0,
-        "shelf_fraction": 0.0,
-        "shelf_precision": 0.0,
+        "shelf_fraction": 0,
+        "shelf_precision": 0,
         "neural_or_oracle_bytes": 6400,
-        "neural_fraction": 1.0,
+        "neural_fraction": 1,
         "control_rejections": 0,
-        "wall_seconds": 2.7985289789999115,
-        "model_seconds": 0.8831942699930551,
+        "wall_seconds": 2.905129712999951,
+        "model_seconds": 0.9811698500343482,
         "parameter_bytes_read_proxy": 12063539200,
-        "parameter_bytes_per_generated_byte": 1884928.0
+        "parameter_bytes_per_generated_byte": 1884928
       }
     },
     {
       "seed": 2718,
       "steps": 300,
-      "training_seconds": 1.6510420310000882,
+      "training_seconds": 1.3099143749996074,
       "loss_samples": [
         5.564462184906006,
         2.5259523391723633,
@@ -302,8 +302,8 @@
         "perplexity": 170.43202687032743,
         "accuracy": 0.2172,
         "neural_calls": 10000,
-        "seconds": 0.03057316099966556,
-        "bytes_per_second": 327084.2684572063
+        "seconds": 0.023113981999813404,
+        "bytes_per_second": 432638.5648340787
       },
       "cascade_validation": {
         "bytes": 10000,
@@ -315,47 +315,47 @@
         "shelf_precision": 0.9540229885057471,
         "neural_calls": 9739,
         "neural_call_fraction": 0.9739,
-        "route_seconds": 1.5923507259999496,
-        "model_seconds": 0.03362595699991289,
-        "total_seconds": 1.6259766829998625,
+        "route_seconds": 1.4787099530003616,
+        "model_seconds": 0.025117529000453942,
+        "total_seconds": 1.5038274820008155,
         "parameter_bytes_read_proxy": 18357313792,
         "parameter_bytes_per_evaluated_byte": 1835731.3792
       },
       "neural_generation": {
         "sequences": 100,
         "bytes": 6400,
-        "byte_accuracy": 0.06828125,
+        "byte_accuracy": 0.068125,
         "mean_common_prefix_bytes": 0.29,
         "shelf_bytes": 0,
-        "shelf_fraction": 0.0,
-        "shelf_precision": 0.0,
+        "shelf_fraction": 0,
+        "shelf_precision": 0,
         "neural_or_oracle_bytes": 6400,
-        "neural_fraction": 1.0,
+        "neural_fraction": 1,
         "control_rejections": 0,
-        "wall_seconds": 2.87412273200016,
-        "model_seconds": 0.8587151920050928,
+        "wall_seconds": 2.764992976999565,
+        "model_seconds": 0.8931079949816194,
         "parameter_bytes_read_proxy": 12063539200,
-        "parameter_bytes_per_generated_byte": 1884928.0
+        "parameter_bytes_per_generated_byte": 1884928
       },
       "cascade_generation": {
         "sequences": 100,
         "bytes": 6400,
         "byte_accuracy": 0.06796875,
         "mean_common_prefix_bytes": 0.34,
-        "shelf_bytes": 34,
-        "shelf_fraction": 0.0053125,
-        "shelf_precision": 0.20588235294117646,
-        "neural_or_oracle_bytes": 6366,
-        "neural_fraction": 0.9946875,
+        "shelf_bytes": 31,
+        "shelf_fraction": 0.00484375,
+        "shelf_precision": 0.22580645161290322,
+        "neural_or_oracle_bytes": 6369,
+        "neural_fraction": 0.99515625,
         "control_rejections": 0,
-        "wall_seconds": 4.423682497999835,
-        "model_seconds": 0.9955454110390747,
-        "parameter_bytes_read_proxy": 11999451648,
-        "parameter_bytes_per_generated_byte": 1874914.32
+        "wall_seconds": 4.296038370999668,
+        "model_seconds": 1.0363534199896094,
+        "parameter_bytes_read_proxy": 12005106432,
+        "parameter_bytes_per_generated_byte": 1875797.88
       },
       "generated_context_calibration": {
-        "candidate_examples": 6059,
-        "candidate_precision": 0.07426968146558838,
+        "candidate_examples": 6052,
+        "candidate_precision": 0.07452081956378057,
         "fitted": {
           "threshold": null,
           "accepted_examples": 0,
@@ -369,19 +369,20 @@
       "calibrated_cascade_generation": {
         "sequences": 100,
         "bytes": 6400,
-        "byte_accuracy": 0.06828125,
+        "byte_accuracy": 0.068125,
         "mean_common_prefix_bytes": 0.29,
         "shelf_bytes": 0,
-        "shelf_fraction": 0.0,
-        "shelf_precision": 0.0,
+        "shelf_fraction": 0,
+        "shelf_precision": 0,
         "neural_or_oracle_bytes": 6400,
-        "neural_fraction": 1.0,
+        "neural_fraction": 1,
         "control_rejections": 0,
-        "wall_seconds": 2.7887094709999474,
-        "model_seconds": 0.8252483190099156,
+        "wall_seconds": 2.824805788000049,
+        "model_seconds": 0.926725989951592,
         "parameter_bytes_read_proxy": 12063539200,
-        "parameter_bytes_per_generated_byte": 1884928.0
+        "parameter_bytes_per_generated_byte": 1884928
       }
     }
-  ]
+  ],
+  "tag": "baseline-800k-token-window"
 }

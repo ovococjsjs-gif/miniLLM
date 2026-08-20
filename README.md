@@ -43,7 +43,8 @@
 - доменная калибровка precision на отдельном split и нормализованная shelf/neural смесь;
 - два decode-контроля: exact KV catch-up (не экономит весь active compute) и настоящий bounded byte-event core без скрытого state catch-up;
 - deterministic byte↔ByteLevel-BPE bridge, включая dynamic BPE patches на произвольной byte boundary;
-- bounded byte-event neural core: BPE-контекст, byte-output, без обязательного прохода по shelf-позициям;
+- bounded byte-event neural cores: matched gated-MLP, conv и attention patch controls, byte-output без обязательного прохода по shelf-позициям;
+- строгая UTF-8 grammar mask и отдельная calibration на generated contexts до разрешения bypass;
 - request-level `AIraCascade`: accepted explicit fact возвращается напрямую, unknown/conflict падает в shelf→neural;
 - bounded bipolar associative memory с explicit structured keys, unknown/conflict rejection, provenance, overwrite и удалением;
 - soft-residual loss с ненулевым all-token control stream и matched 300-step сравнением;
@@ -101,6 +102,12 @@ python scripts/run_aira_byte_event_proxy.py \
   --validation-tokens /path/to/validation.bin \
   --tokenizer artifacts/tokenizer-github-pilot-v1/tokenizer.json
 
+# AIra-v2: matched MLP/conv/attention + curriculum ablation
+python scripts/run_aira_event_core_ablation.py \
+  --train-tokens /path/to/train.bin \
+  --validation-tokens /path/to/validation.bin \
+  --tokenizer artifacts/tokenizer-github-pilot-v1/tokenizer.json
+
 # AIra-v2: full/hard/soft residual control (не более 300 шагов)
 python scripts/run_aira_residual_proxy.py \
   --train /path/to/wikitext-2/train.txt \
@@ -145,10 +152,22 @@ loss. PC-ALM существенно лучше старого finite PC по с�
 байта и предсказывает следующий байт. На отдельном validation proxy он снизил proper
 perplexity с 160.87 до 156.04, поднял accuracy с 21.95% до 23.12% и пропустил 2.61%
 neural calls. Но unfused Python cascade медленнее, а при автономной генерации слабое
-300-step ядро быстро уходит с manifold: shelf используется на 0.33% позиций с mean
-precision лишь 35.97%. Отдельная generated-context calibration не находит ни одного
+300-step ядро быстро уходит с manifold: shelf используется на 0.31% позиций с mean
+precision лишь 38.78%. Отдельная generated-context calibration не находит ни одного
 95%-safe threshold и правильно отключает bypass; oracle fallback сохраняет 95.32%
 shelf precision при 2.67% coverage.
+
+Matched 300-step ablation сравнил 471K gated-MLP, 465K conv и 475K attention, а также
+random/contiguous/noise/recovery curricula. Настоящий 50/50 recovery phase повышает
+autonomous accuracy до 7.80%, но ухудшает static cascade ppl до 164.34, accuracy до
+19.76% и требует примерно в 18× больше training wall-time. Conv получает 7.71%
+autonomous accuracy, но ppl 172.90. Ни один из 18 runs не получил safe generated-context
+threshold, поэтому gated-MLP остаётся быстрым baseline, а ни один новый core не принят.
+Расширение unique sampling window с 0.8M до 8M BPE tokens при
+том же числе examples/steps улучшает static cascade ppl до 149.11 и accuracy до 23.88%,
+но autonomous accuracy остаётся 7.38% и safe threshold всё ещё отсутствует. Более
+разнообразные данные приняты как новый training default, но сами по себе exposure drift
+не исправляют.
 
 Плотные 350M, recurrent 209M, MoE и GDN2-конфигурации остаются контрольными ветками.
 Их обычное масштабирование приостановлено, пока end-to-end каскад не покажет лучший

@@ -19,6 +19,8 @@
 - `aira_residual_proxy.json` — matched full/hard/soft 300-step residual controls;
 - `aira_token_bridge_proxy.json` — negative control: raw shelf only at BPE-token boundaries;
 - `aira_byte_event_proxy.json` — dynamic-BPE byte-event core, proper loss, calls, traffic and autonomous generation;
+- `aira_byte_event_broad_proxy.json` — same 300-step core with an 8M-token unique sampling window;
+- `aira_event_core_ablation.json` — matched MLP/conv/attention and random/contiguous/noise/recovery controls (18 runs);
 - `pc_alm_proxy.json` — old finite PC versus PC-ALM BP-gradient alignment.
 
 Каноническая интерпретация AIra-результатов находится в

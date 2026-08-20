@@ -24,6 +24,7 @@ from minillm.aira import (
     build_compact_shelf,
     calibrate_reliability_threshold,
     predict_shelf_next,
+    utf8_allowed_next_bytes,
 )
 
 
@@ -68,7 +69,7 @@ def prepare_examples(
         [
             encoded_context(
                 bridge,
-                stream[: int(position)],
+                stream[max(0, int(position) - raw_context_bytes) : int(position)],
                 raw_context_bytes=raw_context_bytes,
                 token_context=token_context,
             )
@@ -265,7 +266,8 @@ def calibrate_generated_contexts(
                 confidence_threshold=tiny_threshold,
                 confidence_z=1.96,
             )
-            if candidate is not None:
+            allowed = utf8_allowed_next_bytes(prefix)
+            if candidate is not None and allowed[candidate.token]:
                 scores.append(candidate.lower_confidence)
                 correctness.append(candidate.token == reference[offset])
             encoded = encoded_context(
@@ -276,7 +278,9 @@ def calibrate_generated_contexts(
             )
             context = torch.from_numpy(encoded[None, :])
             with torch.inference_mode():
-                emitted = int(model(context).argmax(dim=-1))
+                logits = model(context)[0]
+                logits[~torch.from_numpy(allowed)] = -torch.inf
+                emitted = int(logits.argmax())
             prefix.append(emitted)
     fitted = calibrate_reliability_threshold(
         np.asarray(scores),
@@ -337,6 +341,7 @@ def autonomous_generation(
                         or cumulative_risk + byte_risk > 0.10
                         or since_neural >= 8
                         or repeats_cycle(prefix, candidate.token)
+                        or not utf8_allowed_next_bytes(prefix)[candidate.token]
                     )
                     if blocked:
                         candidate = None
@@ -361,7 +366,10 @@ def autonomous_generation(
                     context = torch.from_numpy(encoded[None, :])
                     model_started = time.perf_counter()
                     with torch.inference_mode():
-                        emitted = int(model(context).argmax(dim=-1))
+                        logits = model(context)[0]
+                        allowed = torch.from_numpy(utf8_allowed_next_bytes(prefix))
+                        logits[~allowed] = -torch.inf
+                        emitted = int(logits.argmax())
                     model_seconds += time.perf_counter() - model_started
                 neural_bytes += 1
                 burst = 0
@@ -424,10 +432,11 @@ def main() -> None:
     parser.add_argument("--train-tokens", required=True)
     parser.add_argument("--validation-tokens", required=True)
     parser.add_argument("--tokenizer", required=True)
+    parser.add_argument("--tag", default="broad-8m-token-window")
     parser.add_argument("--steps", type=int, default=300, choices=range(1, 301))
     parser.add_argument("--seeds", nargs="+", type=int, default=[42, 314, 2718])
     parser.add_argument("--shelf-train-tokens", type=int, default=600_000)
-    parser.add_argument("--neural-train-tokens", type=int, default=800_000)
+    parser.add_argument("--neural-train-tokens", type=int, default=8_000_000)
     parser.add_argument("--training-examples", type=int, default=40_000)
     parser.add_argument("--validation-examples", type=int, default=10_000)
     parser.add_argument("--batch-size", type=int, default=128)
@@ -635,6 +644,7 @@ def main() -> None:
     payload = {
         "schema_version": 1,
         "experiment": "aira-v2-dynamic-bpe-byte-event-core-v1",
+        "tag": args.tag,
         "warning": "300-step bounded event core. Python BPE merging/shelf lookup is unfused, and FP32 parameter-byte counts are a batch-1 traffic proxy, not device energy.",
         "source": {
             "train_tokens": str(train_path),
@@ -666,7 +676,7 @@ def main() -> None:
             "generation_calibration_sequences": len(calibration_starts),
             "generation_test_sequences": len(starts),
             "generation_horizon_bytes": args.horizon,
-            "trigger": "orders 4/8/16, support>=5, per-byte Wilson95>=0.95; autonomous max burst 4, cumulative risk 0.10, neural anchor 8, cycle guard",
+            "trigger": "orders 4/8/16, support>=5, per-byte Wilson95>=0.95; autonomous strict UTF-8, max burst 4, cumulative risk 0.10, neural anchor 8, cycle guard",
         },
         "shelf": {
             "packed_bytes": sum(level.packed_bytes for level in levels),

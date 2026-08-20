@@ -3,7 +3,12 @@ from __future__ import annotations
 import pytest
 import torch
 
-from minillm.aira import ByteEventLM, EventContextLM
+from minillm.aira import (
+    AttentionByteEventLM,
+    ByteEventLM,
+    ConvByteEventLM,
+    EventContextLM,
+)
 
 
 def test_event_context_lm_is_bounded_and_differentiable() -> None:
@@ -24,6 +29,17 @@ def test_event_context_lm_is_bounded_and_differentiable() -> None:
 def test_byte_event_lm_predicts_raw_byte_distribution() -> None:
     model = ByteEventLM(vocab_size=64, context_size=5, d_model=8)
     logits = model(torch.randint(0, 64, (3, 5)))
+
+    assert logits.shape == (3, 256)
+    assert model.parameter_bytes > 0
+
+
+@pytest.mark.parametrize(
+    "model_class", [ByteEventLM, ConvByteEventLM, AttentionByteEventLM]
+)
+def test_all_byte_event_cores_have_matched_interface(model_class) -> None:
+    model = model_class(vocab_size=64, context_size=8, d_model=16)
+    logits = model(torch.randint(0, 64, (3, 8)))
 
     assert logits.shape == (3, 256)
     assert model.parameter_bytes > 0

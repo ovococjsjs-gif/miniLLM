@@ -8,8 +8,14 @@ from .cascade import (
     ByteEventGenerationResult,
     CognitiveCascadeResult,
     generate_byte_events,
+    utf8_allowed_next_bytes,
 )
-from .event_core import ByteEventLM, EventContextLM
+from .event_core import (
+    AttentionByteEventLM,
+    ByteEventLM,
+    ConvByteEventLM,
+    EventContextLM,
+)
 from .memory import (
     BoundedAssociativeMemory,
     EpisodicFactStore,
@@ -40,6 +46,7 @@ from .trigger import (
 
 __all__ = [
     "AIraCascade",
+    "AttentionByteEventLM",
     "BoundedAssociativeMemory",
     "BridgedShelfPrediction",
     "ByteBPEBridge",
@@ -48,6 +55,7 @@ __all__ = [
     "ByteEventLM",
     "CognitiveCascadeResult",
     "CompactShelfLevel",
+    "ConvByteEventLM",
     "EpisodicFactStore",
     "EventContextLM",
     "MemoryHit",
@@ -72,4 +80,5 @@ __all__ = [
     "route_hierarchical_shelf",
     "save_compact_shelf",
     "shelf_distribution",
+    "utf8_allowed_next_bytes",
 ]
