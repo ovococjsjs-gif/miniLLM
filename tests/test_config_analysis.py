@@ -21,6 +21,24 @@ def test_all_configs_validate_and_profile() -> None:
         assert profile.weight_memory_bytes > 0
 
 
+def test_l1_quality_and_edge_controls_are_parameter_matched() -> None:
+    pairs = (
+        ("l1_screen_attention_5m.json", "l1_screen_edge_5m.json"),
+        ("l1_attention_20m.json", "l1_edge_20m.json"),
+    )
+    for quality_name, edge_name in pairs:
+        quality = profile_model(MiniLLMConfig.load(ROOT / "configs" / quality_name))
+        edge = profile_model(MiniLLMConfig.load(ROOT / "configs" / edge_name))
+        relative_difference = (
+            abs(quality.unique_parameters - edge.unique_parameters)
+            / quality.unique_parameters
+        )
+        assert relative_difference < 0.001
+        assert quality.layer_counts["conv"] == 0
+        assert edge.layer_counts["conv"] > 0
+        assert edge.kv_cache_bytes < quality.kv_cache_bytes
+
+
 def test_bad_head_shape_is_rejected() -> None:
     with pytest.raises(ValueError, match="d_model"):
         MiniLLMConfig(d_model=63).validate()

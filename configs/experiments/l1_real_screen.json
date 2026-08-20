@@ -1,0 +1,38 @@
+{
+  "id": "l1-real-text-screen-v1",
+  "status": "preregistered-before-run",
+  "data": {
+    "corpus_sha256": "40f1191398b9ece1301f43279eec98c0c6d550ba305a721eb0ac78bd62ae3e4e",
+    "tokenizer_sha256": "44387ead2087e61cdb3ec371a0bc5d63dd9a8b01e2e0d85ad33444b4fa9f1508",
+    "train_tokens_available": 31094503,
+    "validation_tokens_available": 1178019
+  },
+  "variants": {
+    "attention": "configs/l1_screen_attention_5m.json",
+    "edge": "configs/l1_screen_edge_5m.json"
+  },
+  "training": {
+    "steps": 300,
+    "batch_size": 2,
+    "sequence_length": 128,
+    "gradient_accumulation": 1,
+    "tokens_per_run": 76800,
+    "seeds": [42, 314, 2718],
+    "precision": "fp32"
+  },
+  "primary_gates": {
+    "all_runs_finite": true,
+    "minimum_main_loss_improvement": 0.03,
+    "edge_mean_loss_ratio_max": 1.05
+  },
+  "death_criteria": [
+    "Any non-finite loss or gradient norm.",
+    "Either variant improves validation main loss by less than 0.03 from its first evaluation.",
+    "Edge mean best validation main loss exceeds attention by more than 5% at matched tokens and parameters."
+  ],
+  "non_claims": [
+    "76.8K tokens per run cannot select the final 20M or 350M backbone.",
+    "Reference CPU wall time is not mobile latency.",
+    "Passing does not imply coherent generation or assistant usefulness."
+  ]
+}

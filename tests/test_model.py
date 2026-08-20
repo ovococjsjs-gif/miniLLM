@@ -49,6 +49,39 @@ def test_more_recurrences_do_not_change_parameter_count() -> None:
     assert not torch.allclose(shallow, deep)
 
 
+def test_gradient_checkpointing_preserves_loss_and_gradients() -> None:
+    torch.manual_seed(12)
+    config = MiniLLMConfig(
+        vocab_size=64,
+        d_model=16,
+        n_heads=2,
+        n_kv_heads=1,
+        head_dim=8,
+        ffn_hidden=32,
+        prelude_layers=(),
+        core_layers=("attention", "conv"),
+        coda_layers=(),
+        core_repetitions=1,
+        max_core_repetitions=1,
+        recurrent_input_injection=False,
+        mtp_depth=0,
+    ).validate()
+    baseline = MiniLLM(config).train()
+    checkpointed = MiniLLM(config).train()
+    checkpointed.load_state_dict(baseline.state_dict())
+    checkpointed.set_gradient_checkpointing(True)
+    token_ids = torch.randint(0, config.vocab_size, (2, 8))
+    baseline_output = baseline(token_ids, labels=token_ids)
+    checkpointed_output = checkpointed(token_ids, labels=token_ids)
+    assert baseline_output.loss is not None and checkpointed_output.loss is not None
+    torch.testing.assert_close(checkpointed_output.loss, baseline_output.loss)
+    checkpointed_output.loss.backward()
+    assert all(
+        parameter.grad is None or torch.isfinite(parameter.grad).all()
+        for parameter in checkpointed.parameters()
+    )
+
+
 def test_moe_parameter_accounting_matches_model() -> None:
     config = MiniLLMConfig(
         vocab_size=80,

@@ -133,10 +133,11 @@ Native ternary — отдельный backbone, а не PTQ-флаг. Он пр�
 
 ## 9. Воспроизводимое продолжение runs
 
-Checkpoint format v2 хранит model/optimizer, все RNG, генератор batch sampling, step и
-validation state. Resume допускается только при точном совпадении model/train configs и
-сигнатур token streams; это защищает от тихого продолжения на другой смеси данных или с
-другим schedule. CLI-пример:
+Checkpoint format v3 хранит model/optimizer, FP16 scaler, все RNG, генератор batch
+sampling, step, validation state и run metadata. Resume допускается только при точном
+совпадении model/train configs, corpus/tokenizer identity и сигнатур token streams; это
+защищает от тихого продолжения на другой смеси данных или с другим schedule. Format-v2
+FP32 checkpoints мигрируют с безопасными default-полями. CLI-пример:
 
 ```bash
 PYTHONPATH=src python scripts/train_proxy_lm.py \

@@ -7,7 +7,8 @@ import math
 import os
 import random
 import time
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
+from contextlib import nullcontext
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -47,6 +48,12 @@ class TrainConfig:
     checkpoint_interval: int = 500
     seed: int = 42
     device: str = "cpu"
+    precision: str = "fp32"
+    gradient_checkpointing: bool = False
+    fused_optimizer: bool = False
+    schedule_tokens: int | None = None
+    warmup_tokens: int | None = None
+    stop_on_nonfinite: bool = True
     min_recurrences: int = 1
     max_recurrences: int | None = None
 
@@ -63,10 +70,33 @@ class TrainConfig:
             raise ValueError("training counts must be positive")
         if self.sequence_length > model.max_seq_len:
             raise ValueError("training sequence exceeds model context")
+        if self.precision not in {"fp32", "bf16", "fp16"}:
+            raise ValueError("precision must be fp32, bf16, or fp16")
+        device_type = torch.device(self.device).type
+        if self.precision == "fp16" and device_type != "cuda":
+            raise ValueError("fp16 training requires CUDA")
+        if self.fused_optimizer and device_type != "cuda":
+            raise ValueError("fused optimizer requires CUDA")
+        if self.schedule_tokens is not None and self.schedule_tokens < 1:
+            raise ValueError("schedule_tokens must be positive")
+        if self.warmup_tokens is not None and self.warmup_tokens < 0:
+            raise ValueError("warmup_tokens cannot be negative")
+        if (
+            self.schedule_tokens is not None
+            and self.warmup_tokens is not None
+            and self.warmup_tokens >= self.schedule_tokens
+        ):
+            raise ValueError("warmup_tokens must be smaller than schedule_tokens")
+        if self.checkpoint_interval < 0 or self.warmup_steps < 0:
+            raise ValueError("checkpoint interval and warmup cannot be negative")
         maximum = self.max_recurrences or model.core_repetitions
         if not 1 <= self.min_recurrences <= maximum <= model.max_core_repetitions:
             raise ValueError("invalid recurrence training range")
         return self
+
+    @property
+    def tokens_per_step(self) -> int:
+        return self.batch_size * self.sequence_length * self.gradient_accumulation
 
 
 class BinaryTokenDataset:
@@ -162,12 +192,32 @@ def pack_documents(
 
 
 def learning_rate(step: int, config: TrainConfig) -> float:
-    if step < config.warmup_steps:
-        return config.learning_rate * (step + 1) / max(1, config.warmup_steps)
-    progress = (step - config.warmup_steps) / max(1, config.steps - config.warmup_steps)
-    cosine = 0.5 * (1 + math.cos(math.pi * min(1.0, progress)))
+    consumed_tokens = (step + 1) * config.tokens_per_step
+    warmup_tokens = (
+        config.warmup_tokens
+        if config.warmup_tokens is not None
+        else config.warmup_steps * config.tokens_per_step
+    )
+    schedule_tokens = (
+        config.schedule_tokens
+        if config.schedule_tokens is not None
+        else config.steps * config.tokens_per_step
+    )
+    if warmup_tokens and consumed_tokens <= warmup_tokens:
+        return config.learning_rate * consumed_tokens / warmup_tokens
+    progress = (consumed_tokens - warmup_tokens) / max(
+        1, schedule_tokens - warmup_tokens
+    )
+    cosine = 0.5 * (1 + math.cos(math.pi * min(1.0, max(0.0, progress))))
     minimum = config.minimum_learning_rate_ratio
     return config.learning_rate * (minimum + (1 - minimum) * cosine)
+
+
+def _autocast_context(config: TrainConfig):
+    if config.precision == "fp32":
+        return nullcontext()
+    dtype = torch.bfloat16 if config.precision == "bf16" else torch.float16
+    return torch.autocast(device_type=torch.device(config.device).type, dtype=dtype)
 
 
 @torch.no_grad()
@@ -194,7 +244,8 @@ def evaluate_metrics(
             generator=generator,
             device=config.device,
         )
-        output = model(batch, labels=batch)
+        with _autocast_context(config):
+            output = model(batch, labels=batch)
         assert output.loss is not None
         values["loss"].append(float(output.loss))
         values["main_loss"].append(
@@ -211,12 +262,31 @@ def evaluate_metrics(
 
 
 def _data_signature(path: str | Path) -> dict[str, Any]:
-    """Return a cheap identity check without hashing an entire large token stream."""
+    """Validate a packed-token manifest or return a cheap legacy identity check."""
 
     import hashlib
 
     token_path = Path(path)
     size = token_path.stat().st_size
+    sidecar = token_path.with_suffix(token_path.suffix + ".json")
+    if sidecar.exists():
+        manifest = json.loads(sidecar.read_text(encoding="utf-8"))
+        dtype = str(manifest["dtype"])
+        if dtype != "uint32":
+            raise ValueError(f"unsupported packed-token dtype {dtype}: {token_path}")
+        expected_size = int(manifest["tokens"]) * np.dtype(dtype).itemsize
+        if expected_size != size:
+            raise ValueError(f"packed-token size disagrees with manifest: {token_path}")
+        with token_path.open("rb") as handle:
+            digest = hashlib.file_digest(handle, "sha256").hexdigest()
+        if digest != manifest["sha256"]:
+            raise ValueError(f"packed-token hash disagrees with manifest: {token_path}")
+        return {
+            "size_bytes": size,
+            "tokens": int(manifest["tokens"]),
+            "dtype": dtype,
+            "sha256": digest,
+        }
     sample_size = 4096
     with token_path.open("rb") as handle:
         first = handle.read(sample_size)
@@ -265,12 +335,14 @@ def _save_checkpoint(
     data_signatures: dict[str, dict[str, Any]],
     best_validation: float,
     last_validation: float,
+    grad_scaler: Any,
+    run_metadata: Mapping[str, Any],
 ) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
     torch.save(
         {
-            "format_version": 2,
+            "format_version": 3,
             "step": step,
             "model": model.state_dict(),
             "optimizer": optimizer.state_dict(),
@@ -286,6 +358,10 @@ def _save_checkpoint(
             "python_rng": random.getstate(),
             "numpy_rng": np.random.get_state(),
             "data_generator_state": data_generator.bit_generator.state,
+            "grad_scaler": grad_scaler.state_dict()
+            if grad_scaler.is_enabled()
+            else None,
+            "run_metadata": dict(run_metadata),
         },
         temporary,
     )
@@ -300,9 +376,11 @@ def train_proxy(
     validation_tokens: str | Path,
     output_directory: str | Path,
     resume_from: str | Path | None = None,
+    run_metadata: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     model_config.validate()
     train_config.validate(model_config)
+    metadata = dict(run_metadata or {})
     torch.manual_seed(train_config.seed)
     random.seed(train_config.seed)
     np.random.seed(train_config.seed)
@@ -314,12 +392,18 @@ def train_proxy(
         "validation": _data_signature(validation_tokens),
     }
     model = MiniLLM(model_config).to(train_config.device)
+    model.set_gradient_checkpointing(train_config.gradient_checkpointing)
     optimizer = torch.optim.AdamW(
         model.parameters(),
         lr=train_config.learning_rate,
         betas=(0.9, 0.95),
         weight_decay=train_config.weight_decay,
+        fused=train_config.fused_optimizer,
     )
+    grad_scaler = torch.amp.GradScaler("cuda", enabled=train_config.precision == "fp16")
+    device_type = torch.device(train_config.device).type
+    if device_type == "cuda":
+        torch.cuda.reset_peak_memory_stats(torch.device(train_config.device))
     output = Path(output_directory)
     output.mkdir(parents=True, exist_ok=True)
     metrics_path = output / "metrics.jsonl"
@@ -332,12 +416,21 @@ def train_proxy(
         checkpoint = torch.load(
             Path(resume_from), map_location=train_config.device, weights_only=False
         )
-        if checkpoint.get("format_version") != 2:
+        checkpoint_version = int(checkpoint.get("format_version", 0))
+        if checkpoint_version not in {2, 3}:
             raise ValueError("checkpoint predates resume-safe format version 2")
         if checkpoint["model_config"] != model_config.to_dict():
             raise ValueError("checkpoint model configuration does not match")
-        if checkpoint["train_config"] != asdict(train_config):
+        saved_train_config = dict(checkpoint["train_config"])
+        defaults = asdict(TrainConfig())
+        for key in asdict(train_config):
+            if key in defaults:
+                saved_train_config.setdefault(key, defaults[key])
+        if saved_train_config != asdict(train_config):
             raise ValueError("checkpoint training configuration does not match")
+        saved_metadata = dict(checkpoint.get("run_metadata", {}))
+        if saved_metadata != metadata:
+            raise ValueError("checkpoint run metadata does not match")
         if checkpoint["data_signatures"] != data_signatures:
             raise ValueError("checkpoint token data does not match")
         start_step = int(checkpoint["step"])
@@ -353,6 +446,13 @@ def train_proxy(
         random.setstate(checkpoint["python_rng"])
         np.random.set_state(checkpoint["numpy_rng"])
         generator.bit_generator.state = checkpoint["data_generator_state"]
+        if grad_scaler.is_enabled():
+            scaler_state = checkpoint.get("grad_scaler")
+            if scaler_state is None:
+                raise ValueError(
+                    "mixed-precision checkpoint lacks gradient scaler state"
+                )
+            grad_scaler.load_state_dict(scaler_state)
         best_validation = float(checkpoint["best_validation"])
         last_validation = float(checkpoint["last_validation"])
         _truncate_metrics_after(metrics_path, start_step)
@@ -377,9 +477,16 @@ def train_proxy(
                     generator=generator,
                     device=train_config.device,
                 )
-                result = model(batch, labels=batch, core_repetitions=recurrence)
+                with _autocast_context(train_config):
+                    result = model(batch, labels=batch, core_repetitions=recurrence)
                 assert result.loss is not None
-                (result.loss / train_config.gradient_accumulation).backward()
+                if train_config.stop_on_nonfinite and not torch.isfinite(result.loss):
+                    raise FloatingPointError(f"non-finite loss at step {step + 1}")
+                scaled_loss = result.loss / train_config.gradient_accumulation
+                if grad_scaler.is_enabled():
+                    grad_scaler.scale(scaled_loss).backward()
+                else:
+                    scaled_loss.backward()
                 divisor = train_config.gradient_accumulation
                 accumulated["loss"] += float(result.loss.detach()) / divisor
                 accumulated["main_loss"] += (
@@ -397,13 +504,21 @@ def train_proxy(
                     if result.router_loss is not None
                     else 0.0
                 )
+            if grad_scaler.is_enabled():
+                grad_scaler.unscale_(optimizer)
             gradient_norm = torch.nn.utils.clip_grad_norm_(
                 model.parameters(), train_config.gradient_clip
             )
+            if train_config.stop_on_nonfinite and not torch.isfinite(gradient_norm):
+                raise FloatingPointError(f"non-finite gradient norm at step {step + 1}")
             rate = learning_rate(step, train_config)
             for group in optimizer.param_groups:
                 group["lr"] = rate
-            optimizer.step()
+            if grad_scaler.is_enabled():
+                grad_scaler.step(optimizer)
+                grad_scaler.update()
+            else:
+                optimizer.step()
 
             record: dict[str, Any] = {
                 "step": step + 1,
@@ -414,11 +529,13 @@ def train_proxy(
                 "learning_rate": rate,
                 "gradient_norm": float(gradient_norm),
                 "recurrences": recurrence,
-                "tokens_seen": (step + 1)
-                * train_config.batch_size
-                * train_config.sequence_length
-                * train_config.gradient_accumulation,
+                "tokens_seen": (step + 1) * train_config.tokens_per_step,
                 "wall_seconds": time.perf_counter() - started,
+                "tokens_per_second": (
+                    (step + 1 - start_step) * train_config.tokens_per_step
+                )
+                / max(1e-9, time.perf_counter() - started),
+                "precision": train_config.precision,
             }
             if (step + 1) % train_config.eval_interval == 0 or step == 0:
                 validation = evaluate_metrics(
@@ -444,6 +561,8 @@ def train_proxy(
                         data_signatures=data_signatures,
                         best_validation=best_validation,
                         last_validation=last_validation,
+                        grad_scaler=grad_scaler,
+                        run_metadata=metadata,
                     )
             metrics.write(json.dumps(record, sort_keys=True) + "\n")
             metrics.flush()
@@ -461,19 +580,37 @@ def train_proxy(
                     data_signatures=data_signatures,
                     best_validation=best_validation,
                     last_validation=last_validation,
+                    grad_scaler=grad_scaler,
+                    run_metadata=metadata,
                 )
 
+    wall_seconds = time.perf_counter() - started
+    invocation_tokens = (train_config.steps - start_step) * train_config.tokens_per_step
+    peak_device_memory = (
+        int(torch.cuda.max_memory_allocated(torch.device(train_config.device)))
+        if device_type == "cuda"
+        else None
+    )
     summary = {
         "parameters": sum(parameter.numel() for parameter in model.parameters()),
+        "trainable_parameters": sum(
+            parameter.numel()
+            for parameter in model.parameters()
+            if parameter.requires_grad
+        ),
         "steps": train_config.steps,
-        "tokens_seen": train_config.steps
-        * train_config.batch_size
-        * train_config.sequence_length
-        * train_config.gradient_accumulation,
+        "resumed_from_step": start_step,
+        "tokens_seen": train_config.steps * train_config.tokens_per_step,
+        "tokens_processed_this_invocation": invocation_tokens,
+        "tokens_per_second": invocation_tokens / max(1e-9, wall_seconds),
+        "precision": train_config.precision,
+        "gradient_checkpointing": train_config.gradient_checkpointing,
+        "peak_device_memory_bytes": peak_device_memory,
         "best_validation_main_loss": best_validation,
         "last_validation_main_loss": last_validation,
-        "wall_seconds": time.perf_counter() - started,
+        "wall_seconds": wall_seconds,
         "output_directory": str(output),
+        "run_metadata": metadata,
     }
     (output / "summary.json").write_text(
         json.dumps(summary, indent=2) + "\n", encoding="utf-8"

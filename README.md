@@ -29,7 +29,9 @@
 - corpus manifests, quality/PII filters и protected-eval decontamination;
 - multilingual byte-BPE candidates и corpus-bound tokenizer freeze;
 - pinned GitHub RU/EN pilot: 142.7 MB, 31.1M train tokens, frozen 8K tokenizer;
-- uint32 token packing и resume-safe proxy trainer с восстановлением всех RNG;
+- uint32 token packing и resume-safe checkpoint v3 с восстановлением всех RNG;
+- BF16/FP16, gradient checkpointing, token-based schedule и non-finite guards;
+- matched 5M/20M attention и edge L1 training controls;
 - калькулятор параметров, INT4-памяти, KV-cache, recurrent state и FLOP/token;
 - Fermi-разложение decode energy по активным весам, KV/state traffic и MAC;
 - exact cached GQA/conv/GDN2 decode, seeded generation и checkpoint smoke suite;
@@ -92,6 +94,7 @@ MoE и GDN2/KDA остаются важными ветками, но не наз
 - [Ускоренная карта до реально обученной модели](docs/roadmap.md)
 - [Reference generation, cache и checkpoint evaluation](docs/inference.md)
 - [Corpus v1: источники, policy, shards и tokenizer freeze](docs/data-v1.md)
+- [L1: matched screen и первый 20M training package](docs/l1-training.md)
 - [Карта исследований и проверенные факты](docs/research-landscape.md)
 - [Предлагаемая архитектура и система памяти](docs/architecture.md)
 - [План экспериментов и критерии остановки](docs/experiments.md)

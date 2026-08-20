@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import torch
 from torch import nn
 from torch.nn import functional as F
+from torch.utils.checkpoint import checkpoint
 
 from .config import MiniLLMConfig
 from .modules import (
@@ -146,6 +147,7 @@ class MiniLLM(nn.Module):
     def __init__(self, config: MiniLLMConfig) -> None:
         super().__init__()
         self.config = config.validate()
+        self.gradient_checkpointing = False
         self.embedding = nn.Embedding(config.vocab_size, config.d_model)
         self.prelude = nn.ModuleList(
             MiniBlock(config, kind) for kind in config.prelude_layers
@@ -188,15 +190,31 @@ class MiniLLM(nn.Module):
         if self.initial_state is not None:
             nn.init.normal_(self.initial_state, std=std)
 
-    @staticmethod
+    def set_gradient_checkpointing(self, enabled: bool = True) -> None:
+        """Trade extra forward compute for lower activation memory during training."""
+
+        self.gradient_checkpointing = enabled
+
     def _run_blocks(
+        self,
         blocks: nn.ModuleList,
         hidden: torch.Tensor,
         router_losses: list[torch.Tensor],
         router_stats: list[RouterStats],
     ) -> torch.Tensor:
         for block in blocks:
-            hidden, aux, stats = block(hidden)
+            if self.training and self.gradient_checkpointing and hidden.requires_grad:
+
+                def checkpointed(
+                    value: torch.Tensor, current_block: MiniBlock = block
+                ) -> tuple[torch.Tensor, torch.Tensor]:
+                    output, auxiliary, _ = current_block(value)
+                    return output, auxiliary
+
+                hidden, aux = checkpoint(checkpointed, hidden, use_reentrant=False)
+                stats = None
+            else:
+                hidden, aux, stats = block(hidden)
             router_losses.append(aux)
             if stats is not None:
                 router_stats.append(stats)
