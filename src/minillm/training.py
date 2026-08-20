@@ -412,6 +412,7 @@ def train_proxy(
     best_validation = float("inf")
     last_validation = float("nan")
     start_step = 0
+    skipped_optimizer_steps = 0
     if resume_from is not None:
         checkpoint = torch.load(
             Path(resume_from), map_location=train_config.device, weights_only=False
@@ -509,14 +510,23 @@ def train_proxy(
             gradient_norm = torch.nn.utils.clip_grad_norm_(
                 model.parameters(), train_config.gradient_clip
             )
-            if train_config.stop_on_nonfinite and not torch.isfinite(gradient_norm):
+            gradient_is_finite = bool(torch.isfinite(gradient_norm))
+            if (
+                train_config.stop_on_nonfinite
+                and not gradient_is_finite
+                and not grad_scaler.is_enabled()
+            ):
                 raise FloatingPointError(f"non-finite gradient norm at step {step + 1}")
             rate = learning_rate(step, train_config)
             for group in optimizer.param_groups:
                 group["lr"] = rate
+            optimizer_step_skipped = False
             if grad_scaler.is_enabled():
+                scale_before = grad_scaler.get_scale()
                 grad_scaler.step(optimizer)
                 grad_scaler.update()
+                optimizer_step_skipped = grad_scaler.get_scale() < scale_before
+                skipped_optimizer_steps += int(optimizer_step_skipped)
             else:
                 optimizer.step()
 
@@ -527,7 +537,11 @@ def train_proxy(
                 "train_mtp_loss": accumulated["mtp_loss"],
                 "train_router_loss": accumulated["router_loss"],
                 "learning_rate": rate,
-                "gradient_norm": float(gradient_norm),
+                "gradient_norm": float(gradient_norm) if gradient_is_finite else None,
+                "optimizer_step_skipped": optimizer_step_skipped,
+                "loss_scale": grad_scaler.get_scale()
+                if grad_scaler.is_enabled()
+                else None,
                 "recurrences": recurrence,
                 "tokens_seen": (step + 1) * train_config.tokens_per_step,
                 "wall_seconds": time.perf_counter() - started,
@@ -603,6 +617,7 @@ def train_proxy(
         "tokens_seen": train_config.steps * train_config.tokens_per_step,
         "tokens_processed_this_invocation": invocation_tokens,
         "tokens_per_second": invocation_tokens / max(1e-9, wall_seconds),
+        "skipped_optimizer_steps_this_invocation": skipped_optimizer_steps,
         "precision": train_config.precision,
         "gradient_checkpointing": train_config.gradient_checkpointing,
         "peak_device_memory_bytes": peak_device_memory,

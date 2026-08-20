@@ -146,6 +146,12 @@ def test_bf16_checkpointed_training_smoke(tmp_path: Path) -> None:
     )
     assert summary["precision"] == "bf16"
     assert summary["gradient_checkpointing"]
+    assert summary["skipped_optimizer_steps_this_invocation"] == 0
+    record = json.loads(
+        (tmp_path / "bf16-run" / "metrics.jsonl").read_text(encoding="utf-8")
+    )
+    assert record["optimizer_step_skipped"] is False
+    assert record["loss_scale"] is None
     checkpoint = torch.load(tmp_path / "bf16-run" / "step-1.pt", weights_only=False)
     assert checkpoint["format_version"] == 3
 

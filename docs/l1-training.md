@@ -77,6 +77,10 @@ PYTHONPATH=src python scripts/train_l1.py \
   --output runs/l1-attention-20m
 ```
 
+For a managed Kaggle GPU, `notebooks/kaggle_l1_training.ipynb` automates pinned data
+reconstruction, GPU precision selection, resume, evaluation and export; see
+[`docs/kaggle-l1.md`](kaggle-l1.md).
+
 The edge control changes only `--model configs/l1_edge_20m.json`. A run must first measure
 throughput/VRAM and may be stopped early if validation does not improve. The current 31M
 unique-token corpus provides only about 1.6 tokens per model parameter; this is a scaling

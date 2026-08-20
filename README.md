@@ -95,6 +95,7 @@ MoE и GDN2/KDA остаются важными ветками, но не наз
 - [Reference generation, cache и checkpoint evaluation](docs/inference.md)
 - [Corpus v1: источники, policy, shards и tokenizer freeze](docs/data-v1.md)
 - [L1: matched screen и первый 20M training package](docs/l1-training.md)
+- [Запуск полного L1 на Kaggle GPU](docs/kaggle-l1.md)
 - [Карта исследований и проверенные факты](docs/research-landscape.md)
 - [Предлагаемая архитектура и система памяти](docs/architecture.md)
 - [План экспериментов и критерии остановки](docs/experiments.md)
