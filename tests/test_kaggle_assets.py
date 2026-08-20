@@ -56,6 +56,8 @@ def test_kaggle_notebook_is_clean_and_code_cells_compile() -> None:
     assert 'required_arch = f"sm_{major}{minor}"' in combined
     assert "cuda_smoke_value" in combined
     assert "precision = 'bf16' if capability[0] >= 8 else 'fp16'" in combined
+    assert 'BUNDLE_NAME = "l1-github-pilot-data-v1.tar.gz"' in combined
+    assert 'archive.extractall(destination, filter="data")' in combined
 
 
 def test_prepare_script_fully_validates_packed_hashes(
