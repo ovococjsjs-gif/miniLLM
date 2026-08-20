@@ -1,3 +1,4 @@
+import ast
 import hashlib
 import importlib.util
 import json
@@ -33,6 +34,16 @@ def test_kaggle_notebook_is_clean_and_code_cells_compile() -> None:
             assert cell["execution_count"] is None
             assert cell["outputs"] == []
             compile(source, f"notebook-cell-{index}", "exec")
+            for node in ast.walk(ast.parse(source)):
+                if isinstance(node, ast.Assign) and any(
+                    isinstance(target, ast.Name) and target.id == "probe_source"
+                    for target in node.targets
+                ):
+                    compile(
+                        ast.literal_eval(node.value),
+                        f"notebook-cell-{index}-cuda-probe",
+                        "exec",
+                    )
     combined = "\n".join(sources)
     assert "prepare_l1_data.py" in combined
     assert "scripts/train_l1.py" in combined
@@ -40,6 +51,11 @@ def test_kaggle_notebook_is_clean_and_code_cells_compile() -> None:
     assert "configs/l1_edge_20m.json" in combined
     assert "scripts/evaluate_completions.py" in combined
     assert 'VARIANTS = ["attention"]' in combined
+    assert "https://download.pytorch.org/whl/cu126" in combined
+    assert '"torch==2.7.1"' in combined
+    assert 'required_arch = f"sm_{major}{minor}"' in combined
+    assert "cuda_smoke_value" in combined
+    assert "precision = 'bf16' if capability[0] >= 8 else 'fp16'" in combined
 
 
 def test_prepare_script_fully_validates_packed_hashes(

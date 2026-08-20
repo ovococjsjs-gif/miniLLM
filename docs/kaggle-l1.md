@@ -17,8 +17,11 @@
 Notebook автоматически:
 
 - клонирует закреплённую ревизию miniLLM;
-- проверяет CUDA и выбирает BF16 на Ampere+ либо FP16 на T4/P100;
-- проверяет fused AdamW реальным CUDA smoke-test;
+- сравнивает compute capability GPU со списком kernels в установленном PyTorch;
+- для Pascal P100 (`sm_60`) заменяет несовместимый Kaggle wheel на официальный
+  `torch==2.7.1` с CUDA 12.6;
+- выбирает BF16 только на Ampere+, а на T4/P100 — FP16;
+- до обучения выполняет настоящую CUDA-операцию и fused AdamW smoke-test;
 - воспроизводит corpus из трёх GitHub-источников на exact SHA;
 - полностью проверяет SHA-256 всех token streams;
 - делает dry-run с ожидаемыми 949 optimizer steps;
@@ -69,6 +72,10 @@ RESUME_RUNS = {
 Notebook копирует его в writable storage и продолжает с checkpoint максимального шага.
 При resume нельзя менять precision, batch size, sequence length, accumulation, seed или
 training schedule: checkpoint v3 намеренно отвергает такое смешение экспериментов.
+
+Если CUDA завершилась до первого шага (например, старый Kaggle PyTorch не содержал
+`sm_60`), остаётся пустой `metrics.jsonl` без checkpoint. Notebook распознаёт этот случай,
+удаляет только пустой run и начинает заново после успешного CUDA smoke-test.
 
 ## Что сохранить
 
