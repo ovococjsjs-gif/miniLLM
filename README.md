@@ -48,6 +48,7 @@
 - importance-sampled predictable control stream с unbiased full-loss estimator;
 - hash-bound on-policy Top-K teacher records для точного student-generated prefix;
 - AI Babysit critique/correction/verifier/preference records с teacher/student identity;
+- project-owned `AIra Mentor v1`: 6K RU/EN verifier-first SFT records в 10 категориях;
 - deterministic event shards и resume-safe ≤300-step multi-head trainer;
 - строгая UTF-8 grammar mask и отдельная calibration на generated contexts до разрешения bypass;
 - request-level `AIraCascade`: accepted explicit fact возвращается напрямую, unknown/conflict падает в shelf→neural;
@@ -87,6 +88,9 @@ minillm smoke-train configs/toy.json --steps 8
 
 # Тесты
 pytest
+
+# Воспроизвести project-owned AIra Mentor v1 (6K verifier-first SFT)
+python scripts/build_aira_mentor_dataset.py --overwrite
 
 # Проверить найденный JSONL-датасет по AIra handoff contract
 python scripts/audit_aira_dataset.py /path/to/candidate.jsonl
@@ -215,6 +219,7 @@ quality-adjusted active compute.
 - [Канонический аудит и план AIra-v2](docs/aira-v2-audit.md)
 - [Контракт данных и готовность AIra base training](docs/aira-training-readiness.md)
 - [Аудит synthetic SFT-кандидатов и AI Babysit](docs/aira-synthetic-sft-audit.md)
+- [AIra Mentor v1: 6K verifier-first RU/EN SFT](docs/aira-mentor-v1.md)
 - [Исторический разбор AIra (superseded)](docs/aira-review.md)
 - [Аннотированные первоисточники](docs/sources.md)
 

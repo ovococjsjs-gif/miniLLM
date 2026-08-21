@@ -134,3 +134,9 @@ accuracy с 23.12% до 23.88% без дополнительных optimizer ste
 **Решение:** `angrygiraffe/claude-opus-4.6-4.7-reasoning-8.7k` и `Roman1111111/claude-opus-4.6-10000x` не входят в weights до отдельного разрешения upstream service terms, source provenance и ручного quality audit. `WithinUsAI/claude_mythos_distilled_25k` отклонён как training target. AI Babysit принимается как собственный процесс только с legally usable teacher, exact student-prefix labels и deterministic verifier observations.
 
 **Причина:** uploader Apache/MIT license не устраняет ограничения сервиса, которым были созданы outputs. Angrygiraffe не проверялся вручную и default config дублирует overlapping subsets; Roman содержит неверные category labels, benchmark contamination и encoding damage; Mythos set прямо не является output заявленного teacher и демонстрирует повторяющиеся templates. Babysit напрямую решает observed generated-state drift, но feedback должен превращаться в SFT/preference/process/KL targets, а не просто добавляться как текст.
+
+## D-016 — Собственный synthetic seed называется AIra Mentor, а не имитирует Opus
+
+**Решение:** проект выпускает `AIra Mentor v1` как CC0 verifier-first RU/EN SFT seed. Он содержит 6,000 conversations, 10 balanced categories и 23 deterministic template families. Внутренние reasoning traces не публикуются и не имитируются; targets состоят из коротких проверяемых объяснений, tool/memory actions, grounding, uncertainty и corrections. Dataset используется только после base pretraining с assistant-only loss.
+
+**Причина:** собственный reproducible generator устраняет unclear upstream terms и позволяет привязать каждый target к verifier. При этом 0.7M tokens и шаблонная природа не могут создать Gemma-level base. Рост v2 разрешён через новые task families и реальные on-policy Babysit failures, а не простое размножение текущих templates.

@@ -63,6 +63,12 @@ from .residual import (
     residual_training_weights,
     sample_residual_positions,
 )
+from .synthetic import (
+    SyntheticMessage,
+    SyntheticRecord,
+    generate_aira_mentor_records,
+    validate_synthetic_record,
+)
 from .trigger import (
     CompactShelfLevel,
     ShelfEvaluation,
@@ -111,6 +117,8 @@ __all__ = [
     "ShelfRoutes",
     "SourceCopyIndex",
     "StructuredKeyEncoder",
+    "SyntheticMessage",
+    "SyntheticRecord",
     "VerifierObservation",
     "backprop_gradients",
     "build_compact_shelf",
@@ -118,6 +126,7 @@ __all__ = [
     "calibrate_reliability_threshold",
     "collect_on_policy_records",
     "evaluate_hierarchical_shelf",
+    "generate_aira_mentor_records",
     "generate_byte_events",
     "gradient_cosine",
     "importance_sampled_residual_loss",
@@ -139,6 +148,7 @@ __all__ = [
     "save_compact_shelf",
     "shelf_distribution",
     "utf8_allowed_next_bytes",
+    "validate_synthetic_record",
     "write_babysit_dataset",
     "write_on_policy_dataset",
 ]
