@@ -27,9 +27,12 @@
 - Получены реальные full recurrent states 18 Gated DeltaNet layers, conv caches, hidden outputs и full logits.
 - Public partial-state API умеет возвращать изменённый recurrent state в Qwen.
 - Stale-state и oracle-interpolation controls показывают, что updater должен быть очень точным.
-- Projected state patcher доказал только learnability; он не разрешает ускорение.
-- **Injectible learned full-state updater ещё не обучен.**
-- **Recurrent skipping и production neural acceleration выключены.**
+- Projected state patcher доказал только learnability и заменён full-state направлением.
+- Первый 5.65M-parameter Gated Delta updater обучен на реальных состояниях за 300 шагов.
+- Held-out full-state MSE снизился до `0.8428×` copy baseline.
+- После train-only calibration native state injection снизила held-out mean future KL `0.005605 → 0.003898`; learned argmax совпал с oracle на 4/4 prompts против 3/4 у copy.
+- Один из четырёх prompts всё ещё ухудшился; convolution, free-generation и speed gates не пройдены.
+- **Recurrent skipping и production neural acceleration остаются выключены.**
 
 AIra One сохранён как controller для tools, memory, documents и запуска donor. Из него удалены stored-answer Babysit routes. Feedback записывается только как будущий training material.
 
@@ -46,19 +49,19 @@ AIra One сохранён как controller для tools, memory, documents и �
 
 ## Ближайший gate
 
-Первый реальный архитектурный milestone:
+Текущий архитектурный путь:
 
 ```text
-full Qwen state_before + emitted event
+attention-anchor hidden + token event
                  ↓
-       learned low-rank updater
-                 ↓
+ learned key/value/gate/beta predictor
+                 ↓ exact Qwen Gated Delta algebra
  predicted full state_after
                  ↓ public llama.cpp state injection
-       future logits / generation
+             future logits
 ```
 
-Только если learned state проходит held-out reconstruction, injected-logit и generated-quality controls, будет разрешён benchmark фактического пропуска recurrent compute.
+Full-state reconstruction и mean injected-logit gate пройдены впервые, но запас пока мал и один validation prompt регрессирует. Следующий gate — предсказать новую строку convolution cache, обучаться по future-KL/rollout objective и проверить свободную генерацию. Benchmark фактического пропуска compute разрешается только после generated-quality non-regression.
 
 ## Быстрый старт
 

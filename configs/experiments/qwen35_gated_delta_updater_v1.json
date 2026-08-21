@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "name": "qwen35-gated-delta-updater-v1",
+  "purpose": "predict stable key/value/gate/beta parameters and reconstruct injectible full recurrent states",
+  "source_pairs": "artifacts/qwen35-real-state-pairs-v1",
+  "raw_state_work_dir": ".cache/qwen35-full-state-work",
+  "transition_probe_build": "results/qwen35_transition_probe_build.json",
+  "candidate_recurrent_layers": [4, 8, 12, 16, 20],
+  "conditioning": "token features plus exact output of the preceding attention anchor",
+  "anchor_hidden_dim": 1024,
+  "state_width": 128,
+  "heads": 16,
+  "hidden_dim": 256,
+  "identity_dim": 16,
+  "steps": 300,
+  "batch_size": 8,
+  "learning_rate": 0.002,
+  "weight_decay": 0.01,
+  "state_loss_weight": 0.5,
+  "key_loss_weight": 1.0,
+  "value_loss_weight": 1.0,
+  "gate_loss_weight": 0.5,
+  "beta_loss_weight": 0.5,
+  "seed": 829,
+  "threads": 2,
+  "acceptance": {
+    "validation_state_mse_ratio_below": 0.95,
+    "exact_formula_max_abs_below": 0.00001,
+    "injected_future_kl_below_copy": true,
+    "generated_quality_nonregression": true,
+    "speedup_required_before_deployment": true
+  },
+  "provenance": {
+    "teacher_answers_used": false,
+    "stored_answer_routes_used": false,
+    "protected_evaluation_used": false,
+    "model_sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517"
+  }
+}

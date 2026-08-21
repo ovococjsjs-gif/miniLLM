@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "experiment": "qwen35-learned-state-replay-v1",
+  "role": "native injection gate for learned full recurrent states",
+  "checkpoint_sha256": "eccf3060467ed1edaf907319ba397d04a053a31ea66b01806f7c280a2b3bb7ae",
+  "binary_build": "results/qwen35_learned_state_replay_build.json",
+  "binary_sha256": "1c65d810271c011f35888774b40b98cf72f600d1e15fcf85f7c0d7922372e34b",
+  "prompts": 4,
+  "train_calibrated_alpha": 0.01,
+  "mean_candidate_copy_kl": 0.005605295717090482,
+  "mean_learned_kl": 0.003898009003981343,
+  "learned_over_copy_kl_ratio": 0.6954154072721549,
+  "learned_improvements": 3,
+  "argmax_preserved": 4,
+  "records": [
+    {
+      "prompt_id": "validation-en-arithmetic",
+      "prompt_sha256": "93f6d519d6b2aebbe5c9c00e6bb81b4d90e32b014cf8c5fc0c5022ee10515f05",
+      "state_mse_ratio": 0.9905946814221366,
+      "candidate_copy_kl": 0.00029273194765253653,
+      "learned_kl": 0.00026644807421800535,
+      "learned_kl_improvement": 2.6283873434531182e-05,
+      "oracle_argmax": 25,
+      "candidate_copy_argmax": 25,
+      "learned_argmax": 25,
+      "serialization_control_exact": true
+    },
+    {
+      "prompt_id": "validation-ru-grounding",
+      "prompt_sha256": "6a2e4a17e6e71b3b20b6dad1eae923367f47a6e501e4f796b6e797cee750c277",
+      "state_mse_ratio": 0.9937085128147558,
+      "candidate_copy_kl": 0.0005384375174770011,
+      "learned_kl": 0.009197862310636183,
+      "learned_kl_improvement": -0.008659424793159181,
+      "oracle_argmax": 61628,
+      "candidate_copy_argmax": 61628,
+      "learned_argmax": 61628,
+      "serialization_control_exact": true
+    },
+    {
+      "prompt_id": "validation-en-memory",
+      "prompt_sha256": "185e70c58ec9b9c48a196e91671e37bf6298679d6a248c9a79c1093b09cb81eb",
+      "state_mse_ratio": 0.9926697223643489,
+      "candidate_copy_kl": 0.00023546585107561384,
+      "learned_kl": 0.00012457491781715246,
+      "learned_kl_improvement": 0.00011089093325846139,
+      "oracle_argmax": 279,
+      "candidate_copy_argmax": 279,
+      "learned_argmax": 279,
+      "serialization_control_exact": true
+    },
+    {
+      "prompt_id": "validation-ru-logic",
+      "prompt_sha256": "9ec290ba93a15a177d3a5b1f4aee974248d7161333fe955b9521870885c78967",
+      "state_mse_ratio": 0.9943121901540275,
+      "candidate_copy_kl": 0.021354547552156777,
+      "learned_kl": 0.00600315071325403,
+      "learned_kl_improvement": 0.015351396838902746,
+      "oracle_argmax": 198,
+      "candidate_copy_argmax": 271,
+      "learned_argmax": 198,
+      "serialization_control_exact": true
+    }
+  ],
+  "elapsed_seconds": 14.377644889000294,
+  "acceptance": {
+    "all_serialization_controls_exact": true,
+    "learned_mean_kl_below_candidate_copy": true,
+    "learned_improves_every_prompt": false,
+    "generated_quality_gate_passed": false,
+    "speedup_gate_passed": false,
+    "deployment_allowed": false
+  },
+  "interpretation": "Injection is the binding test. The alpha is selected only on train prompts; held-out mean KL must beat the matched candidate-layer copy baseline before generated-quality or speed work can open."
+}

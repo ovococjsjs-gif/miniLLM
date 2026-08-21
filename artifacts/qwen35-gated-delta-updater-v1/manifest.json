@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "name": "qwen35-gated-delta-updater-v1",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 807,
+      "sha256": "fb8ce221fe7ee80ab99a1eaee1c6943e24d352fab3d2e46e6af9ba9291e2dfbc"
+    },
+    {
+      "path": "model.pt",
+      "bytes": 22595650,
+      "sha256": "eccf3060467ed1edaf907319ba397d04a053a31ea66b01806f7c280a2b3bb7ae"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "configs/experiments/qwen35_gated_delta_updater_v1.json",
+      "sha256": "9fcf7e449da148f92f5652be4bafa540eb3aeebe80c990e1f437d92a242b884d"
+    },
+    {
+      "path": "results/qwen35_gated_delta_updater_v1.json",
+      "sha256": "f97e6e54a8225a284396607c18277e5ed9d434602d6f6861a0e27c348a45c8ef"
+    },
+    {
+      "path": "results/qwen35_learned_state_alpha_calibration_v1.json",
+      "sha256": "8e58b05ef49050c877e12738744e3a4cf158b796af134654db427aaa619a4639"
+    },
+    {
+      "path": "results/qwen35_learned_state_replay_v1.json",
+      "sha256": "12ab61465a61b5c5ca00cbc4a96e6185bb1850acd64a60ec0e99da4f6f5da40b"
+    }
+  ],
+  "raw_full_states_in_git": false,
+  "deployment_allowed": false
+}

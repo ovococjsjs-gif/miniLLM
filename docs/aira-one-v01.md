@@ -46,4 +46,4 @@ python scripts/serve_aira_one.py --host 0.0.0.0 --port 8000
 
 ## Активная работа
 
-Главная ветка исследований теперь строит **AIra-Qwen**, где обучаемые ускоряющие модули входят в neural computation graph Qwen. Первый обязательный gate — предсказать полный recurrent state, инъецировать его обратно через публичный llama.cpp API и измерить будущие logits/generation. Только после этого начинается настоящий Babysit SFT + preference/constitutional fine-tuning.
+Главная ветка исследований теперь строит **AIra-Qwen**, где обучаемые ускоряющие модули входят в neural computation graph Qwen. Первый full-state predictor уже обучен и через публичный llama.cpp API снизил средний held-out future KL относительно matched copy, но один prompt регрессировал. До реального recurrent skip ещё обязательны convolution, free-generation и speed gates. Только после архитектурной стабилизации начинается настоящий Babysit SFT + preference/constitutional fine-tuning.

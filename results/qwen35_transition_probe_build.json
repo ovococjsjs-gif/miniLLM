@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "source": "native/qwen35_transition_probe.cpp",
+  "source_sha256": "b29324542135ba78d24a120d154c3eb93393dbf4ad724e146117bfe757119f56",
+  "binary": ".cache/qwen35-transition-probe/qwen35-transition-probe",
+  "binary_sha256": "64c08feacc8d12c9aacc6d4bf3f938622dead81955b590c333573c1838dee7ac",
+  "llama_cpp_revision": "9a532ae4bab1b164052ce60a738f78538b421c66",
+  "compiler": "c++ (Debian 12.2.0-14+deb12u1) 12.2.0",
+  "libraries": [
+    "libllama.so.0.0.1",
+    "libggml.so.0.12.0",
+    "libggml-base.so.0.12.0",
+    "libggml-cpu.so.0.12.0"
+  ]
+}

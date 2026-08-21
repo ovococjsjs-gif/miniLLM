@@ -139,10 +139,32 @@ Now enabled:
 
 Still not demonstrated:
 
-- reconstruction of the 18 full recurrent states after an omitted event;
-- acceptable future KL from patched states;
-- calibrated fallback confidence;
+- prediction of the convolution cache's new row;
+- lower injected KL on every prompt;
+- calibrated per-event fallback confidence;
 - generated-quality parity;
 - any wall-clock or active-block acceleration.
 
-The projected control now passes state learnability against both copy and mean-delta baselines. The next experiment must predict an injectible low-rank/full-state update, replay it through the donor, and measure true vocabulary KL and generated behavior. Actual skipped-layer execution comes only after that replay passes.
+## First injectible learned transition
+
+The projected patcher is no longer the active target. `qwen35-gated-delta-updater-v1` captures Qwen's stable normalized key, value, decay gate, and beta. For one token, the exact state update is:
+
+```text
+S_decay = exp(gate) * S_before
+innovation = beta * (value - S_decay @ key)
+S_after = S_decay + outer(innovation, key)
+```
+
+Across 62,914,560 checked float elements, this equation reconstructed captured Qwen states with MSE `1.00e-18` and maximum absolute error `9.54e-7`. Convolution history had an exact shift structure in all `480/480` checked rows.
+
+A 5,647,184-parameter predictor was trained for 300 steps on 32 transitions. It targets recurrent layers `4, 8, 12, 16, 20`, each immediately after an attention anchor, and conditions on that computed anchor output plus token features. Held-out full-state MSE improved from `2.03574e-5` copy to `1.71568e-5`, ratio `0.842777`.
+
+MSE is not the binding gate. A native replay binary injects learned full matrices through `llama_state_seq_set_data_ext(..., PARTIAL_ONLY)` while preserving matched oracle convolution, other recurrent layers, attention KV, and position. Patch strength was selected on eight train prompts only: alpha `0.01` minimized mean true-vocabulary KL (`0.007908 → 0.005098`). On four untouched validation prompts:
+
+| metric | candidate-layer copy | learned patch |
+|---|---:|---:|
+| mean true-vocabulary KL | 0.005605 | **0.003898** |
+| oracle argmax preserved | 3/4 | **4/4** |
+| prompts with lower KL | — | 3/4 |
+
+This opens the **mean injected-logit gate**, not acceleration. One grounding prompt regressed, only one percent of the predicted delta was safe, convolution's new row is still oracle, no recurrent layer has actually been skipped, and free generation is untested. Deployment remains disabled.

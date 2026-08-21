@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "experiment": "qwen35-gated-delta-updater-v1",
+  "role": "learned stable-parameter updater producing full injectible Qwen recurrent states; not yet an acceleration claim",
+  "config": "configs/experiments/qwen35_gated_delta_updater_v1.json",
+  "config_sha256": "9fcf7e449da148f92f5652be4bafa540eb3aeebe80c990e1f437d92a242b884d",
+  "source_manifest_sha256": "93ec537ac4d2732068c6fe0359abceb6346f11b950c1ac971afe983462432fde",
+  "transition_probe_build": "results/qwen35_transition_probe_build.json",
+  "transition_probe_source_sha256": "b29324542135ba78d24a120d154c3eb93393dbf4ad724e146117bfe757119f56",
+  "raw_state_bytes": 2691190272,
+  "candidate_recurrent_layers": [
+    4,
+    8,
+    12,
+    16,
+    20
+  ],
+  "conditioning": "token features plus exact output of the preceding attention anchor",
+  "parameters": 5647184,
+  "steps": 300,
+  "training_seconds": 20.268495033999898,
+  "structure": {
+    "exact_formula_max_abs": 9.5367431640625e-07,
+    "exact_formula_mse": 1.0047216718062213e-18,
+    "exact_formula_elements": 62914560,
+    "conv_shift_matches": 480,
+    "conv_shift_comparisons": 480,
+    "sampled_delta_residual_energy": {
+      "rank_1": 0.0853582404277177,
+      "rank_2": 0.011625851440702547,
+      "rank_4": 0.001543625546479344,
+      "rank_8": 0.00019464511475891395
+    },
+    "seconds": 4.464147541999409
+  },
+  "loss_samples": [
+    {
+      "step": 1,
+      "loss": 30.271663665771484,
+      "state_ratio": 39.225433349609375,
+      "key_cosine": 0.9966578483581543,
+      "value_ratio": 1.220651626586914,
+      "gate_ratio": 16.8219051361084,
+      "beta_mse": 0.06137126684188843,
+      "gradient_norm": 28.667861938476562
+    },
+    {
+      "step": 76,
+      "loss": 1.6107521057128906,
+      "state_ratio": 1.092185139656067,
+      "key_cosine": 0.3647400438785553,
+      "value_ratio": 0.5090481042861938,
+      "gate_ratio": 0.22227473556995392,
+      "beta_mse": 0.15946799516677856,
+      "gradient_norm": 1.4991025924682617
+    },
+    {
+      "step": 151,
+      "loss": 1.0103733539581299,
+      "state_ratio": 0.7453230619430542,
+      "key_cosine": 0.2083420753479004,
+      "value_ratio": 0.282356321811676,
+      "gate_ratio": 0.14023186266422272,
+      "beta_mse": 0.15379483997821808,
+      "gradient_norm": 1.0799851417541504
+    },
+    {
+      "step": 226,
+      "loss": 0.5699301362037659,
+      "state_ratio": 0.47802475094795227,
+      "key_cosine": 0.13341963291168213,
+      "value_ratio": 0.13320684432983398,
+      "gate_ratio": 0.07974031567573547,
+      "beta_mse": 0.048842255026102066,
+      "gradient_norm": 0.7580685615539551
+    },
+    {
+      "step": 300,
+      "loss": 0.7227590680122375,
+      "state_ratio": 0.5831663608551025,
+      "key_cosine": 0.10487963259220123,
+      "value_ratio": 0.2244345098733902,
+      "gate_ratio": 0.11482410132884979,
+      "beta_mse": 0.0888993889093399,
+      "gradient_norm": 1.926329255104065
+    }
+  ],
+  "train": {
+    "transitions": 32.0,
+    "layer_transitions": 160.0,
+    "copy_state_mse": 1.6623064882992367e-05,
+    "patch_state_mse": 9.515641671242748e-06,
+    "state_mse_ratio": 0.5724360542548643,
+    "key_cosine": 0.11142588981892913,
+    "value_ratio": 0.22983992276713253,
+    "gate_ratio": 0.0926875260018278,
+    "beta_mse": 0.0829514357901644
+  },
+  "validation": {
+    "transitions": 16.0,
+    "layer_transitions": 80.0,
+    "copy_state_mse": 2.0357421381334006e-05,
+    "patch_state_mse": 1.7156765369463756e-05,
+    "state_mse_ratio": 0.842776943507935,
+    "key_cosine": 0.22934210686944426,
+    "value_ratio": 0.3145857688039541,
+    "gate_ratio": 0.25734634376131,
+    "beta_mse": 0.08617718822788448
+  },
+  "checkpoint": "artifacts/qwen35-gated-delta-updater-v1/model.pt",
+  "checkpoint_sha256": "eccf3060467ed1edaf907319ba397d04a053a31ea66b01806f7c280a2b3bb7ae",
+  "acceptance": {
+    "full_state_formula_verified": true,
+    "conv_shift_structure_exact": true,
+    "beats_copy_state_mse": true,
+    "injected_future_logit_gate_passed": false,
+    "generated_quality_gate_passed": false,
+    "measured_speedup_gate_passed": false,
+    "deployment_allowed": false
+  },
+  "limitations": "The updater uses a computed attention-anchor hidden state and predicts exact Gated DeltaNet parameters. Native injection, convolution new-row prediction, future logits, free generation, and measured skip speed remain mandatory."
+}

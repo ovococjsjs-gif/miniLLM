@@ -52,6 +52,7 @@ from .foundry import (
     write_skill_patches,
     write_teacher_packet,
 )
+from .full_state import GatedDeltaParameters, GatedDeltaParameterUpdater
 from .local_runtime import LocalDonorRuntime
 from .memory import (
     BoundedAssociativeMemory,
@@ -146,6 +147,8 @@ __all__ = [
     "ExactDecision",
     "ExactRouter",
     "FailureFingerprint",
+    "GatedDeltaParameterUpdater",
+    "GatedDeltaParameters",
     "LocalDonorRuntime",
     "MemoryHit",
     "MultiByteEventLM",

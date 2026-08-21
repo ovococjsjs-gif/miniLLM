@@ -42,9 +42,12 @@
   },
   "experimental_acceleration": {
     "projected_state_patcher_available": true,
-    "injectible_full_state_updater_trained": false,
+    "injectible_full_state_updater_trained": true,
+    "mean_injected_future_kl_gate_passed": true,
+    "every_prompt_injected_kl_gate_passed": false,
+    "generated_quality_gate_passed": false,
     "recurrent_layer_skipping_enabled": false,
-    "reason": "full-state reconstruction, injected-logit, generated-quality, and speed gates are not passed"
+    "reason": "one prompt regresses and convolution, generated-quality, and speed gates are not passed"
   },
   "measured": {
     "protected_exact_controller_contract": "174/174",
