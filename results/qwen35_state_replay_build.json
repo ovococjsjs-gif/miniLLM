@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "source": "native/qwen35_state_replay.cpp",
+  "source_sha256": "f696effda30378154f943582810d057fdacd1965a5e7dc6c720f6c5d790c6da8",
+  "binary": ".cache/qwen35-state-probe/qwen35-state-replay",
+  "binary_sha256": "bc68beb28de27fb5216fa4bab716cce8f184490025bf07668ddbed45ee9aae60",
+  "llama_cpp_revision": "9a532ae4bab1b164052ce60a738f78538b421c66",
+  "compiler": "c++ (Debian 12.2.0-14+deb12u1) 12.2.0",
+  "libraries": [
+    "libllama.so.0.0.1",
+    "libggml.so.0.12.0",
+    "libggml-base.so.0.12.0",
+    "libggml-cpu.so.0.12.0"
+  ]
+}

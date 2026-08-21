@@ -77,6 +77,30 @@ The patcher reduces held-out projected state MSE by 25.8% versus copy and also b
 
 This passes only the projected learnability control. CountSketch cannot reconstruct or inject the full 18 × 262,144 state values, so full-state, generated-quality and acceleration gates remain closed. Machine-readable evidence is `results/qwen35_real_state_patcher_proxy.json`.
 
+## True-vocabulary recurrent-state replay
+
+The public sequence-state API provides a stronger control. `LLAMA_STATE_SEQ_FLAGS_PARTIAL_ONLY` serializes just the recurrent and convolution caches of the hybrid model. The replay tool now:
+
+1. runs an event normally and saves the complete post-event state, including attention KV;
+2. restores that complete state;
+3. replaces only recurrent/conv tensors with a candidate partial state while preserving post-event positions and oracle attention KV;
+4. consumes the same next token and compares the complete 248,320-way future distribution.
+
+All 12 unchanged-state serialization controls reproduced oracle logits byte-for-byte. Replacing only the recurrent/conv tensors is therefore isolated and injectible without a llama.cpp fork.
+
+True-vocabulary results over the 12 prompt groups:
+
+| injected recurrent update | mean KL | median KL | max KL | oracle argmax matches |
+|---|---:|---:|---:|---:|
+| stale/copy, 0% oracle Δ | 1.294531 | 1.085536 | 3.365710 | 8/12 |
+| 25% oracle Δ | 0.481561 | 0.400748 | 1.059195 | 12/12 |
+| 50% oracle Δ | 0.153329 | 0.057762 | 0.963296 | 11/12 |
+| 75% oracle Δ | 0.007913 | 0.006820 | 0.027906 | 11/12 |
+
+Eleven of twelve KL curves decreased monotonically. The stale-state baseline is decisively unsafe. Even a 50% oracle interpolation leaves a severe worst case. Roughly 75% of the exact state delta is needed in this smoke to bring mean KL below 0.01, and its worst case still exceeds 0.02.
+
+These interpolation states use the known oracle post-event tensor and are not deployable predictions. Their purpose is to establish a quantitative reconstruction target for a learned low-rank/full-state updater. Evidence is in `results/qwen35_state_replay_baseline.json`.
+
 ## Reproduction
 
 Build the pinned llama.cpp runtime first, then compile the probe:
@@ -94,6 +118,10 @@ python scripts/run_qwen35_state_probe.py --overwrite
 # Collect 48 projected transitions and run the bounded 300-step control
 python scripts/collect_qwen35_state_pairs.py --overwrite
 python scripts/train_qwen35_projected_state_patcher.py
+
+# Inject stale/oracle-interpolated recurrent states and measure true-vocabulary KL
+python scripts/build_qwen35_state_replay.py
+python scripts/benchmark_qwen35_state_replay.py
 ```
 
 The runner verifies the model and probe binary hashes, writes into a temporary directory, atomically publishes raw captures, independently audits dimensions and cache continuity, and then writes the compact committed report. The pair collector processes prompts one at a time and removes large raw captures unless `--keep-raw` is explicitly requested.

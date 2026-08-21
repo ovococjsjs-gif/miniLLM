@@ -74,3 +74,30 @@ def test_real_state_probe_evidence_keeps_acceleration_gate_closed() -> None:
     assert gate["full_logits_captured"] is True
     assert gate["state_patcher_trained_on_real_states"] is False
     assert gate["acceleration_claim_allowed"] is False
+
+
+def test_true_vocabulary_replay_rejects_stale_state() -> None:
+    report = json.loads(
+        (ROOT / "results/qwen35_state_replay_baseline.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    build = json.loads(
+        (ROOT / "results/qwen35_state_replay_build.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    source = ROOT / "native/qwen35_state_replay.cpp"
+
+    assert hashlib.sha256(source.read_bytes()).hexdigest() == build["source_sha256"]
+    assert report["replay_source_sha256"] == build["source_sha256"]
+    assert report["records"] == 12
+    assert report["serialization_controls_exact"] == 12
+    assert report["aggregates"]["stale_0"]["mean_kl"] > 1.0
+    assert report["aggregates"]["stale_0"]["argmax_matches"] < 12
+    assert report["aggregates"]["oracle_blend_75"]["mean_kl"] < 0.01
+    interpretation = report["interpretation"]
+    assert interpretation["stale_state_is_safe"] is False
+    assert interpretation["oracle_interpolation_is_deployable"] is False
+    assert interpretation["learned_full_state_update_tested"] is False
+    assert interpretation["acceleration_claim_allowed"] is False

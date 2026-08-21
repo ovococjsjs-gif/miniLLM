@@ -63,6 +63,10 @@
     "projected_state_pairs": 48,
     "projected_validation_mse_ratio": 0.7420594692230225,
     "projected_state_patcher_trained": true,
+    "partial_state_injection_verified": true,
+    "partial_state_serialization_exact_controls": 12,
+    "stale_state_true_vocabulary_mean_kl": 1.2945308023946032,
+    "oracle_75pct_delta_true_vocabulary_mean_kl": 0.0079134486773789,
     "injectible_full_state_patcher_trained": false
   },
   "acceptance": {

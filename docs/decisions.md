@@ -182,3 +182,9 @@ accuracy с 23.12% до 23.88% без дополнительных optimizer ste
 **Решение:** `qwen35-real-state-pairs-v1` принимается как compact real-dynamics control: 48 transitions, disjoint prompt-group validation, recurrent+conv CountSketch state и probability-bucket future target. 69.6K patcher обучается state-first; future buckets остаются diagnostic. Этот результат разрешает разработку low-rank/full-state updater, но не layer skipping.
 
 **Причина:** все 864 recurrent и 864 conv links прошли exact continuity до projection. На 16 held-out events copy-state MSE = 0.619321, mean-delta = 0.606894, learned patcher = 0.459573 (ratio 0.7421); cosine error снизился 0.244699 → 0.186590. Bucketed future KL также снизился 3.462925 → 3.334973, но coarse readout floor на true target state равен 3.298733. Projection lossy, state не инъецирован обратно в Qwen, generated quality не измерена — acceleration gate остаётся закрыт.
+
+## D-024 — Partial-state replay sets a high true-vocabulary reconstruction target
+
+**Решение:** `llama_state_seq_*_ext(..., PARTIAL_ONLY)` используется как fork-free injection gate. Attention KV и post-event position берутся из полного oracle event, после чего заменяются только recurrent+conv tensors. Copy/stale является обязательным нижним baseline; oracle interpolation — только sensitivity curve, не deployable method.
+
+**Причина:** 12/12 full+partial serialization controls воспроизвели logits byte-exact. Stale recurrent state дал mean/median/max true-vocabulary KL `1.2945/1.0855/3.3657` и сохранил argmax лишь 8/12. При 25/50/75% oracle delta mean KL составил `0.4816/0.1533/0.00791`; даже 50% delta оставляет max KL 0.9633. Следовательно, bypass требует очень точного injectible updater и fallback; projected MSE improvement сам по себе недостаточен.

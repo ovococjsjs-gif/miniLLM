@@ -164,7 +164,7 @@ Teacher-forced packing ratios and oracle copy spans are upper bounds, not speed 
 
 ## Remaining blockers outside dataset collection
 
-- move from the passed projected Qwen-state control to an injectible low-rank/full-state update, replay it through the donor, and validate true-vocabulary future KL on held-out events;
+- train a learned low-rank/full-state Qwen updater, inject it through the now-verified partial-state replay path, and beat the stale/mean-delta true-vocabulary KL baselines on held-out events;
 - bind the completed 1,017-record Qwen Foundry cycle to an AIra route/state training recipe without using the protected 50-task sample for training;
 - implement a source-pointer head before training document-copy actions end to end;
 - choose/freeze the tokenizer after the new corpus mixture audit or prove a safe donor-token bridge/vocabulary reduction;

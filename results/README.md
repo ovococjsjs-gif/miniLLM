@@ -32,6 +32,8 @@
 - `qwen35_state_probe_build.json` — pinned llama.cpp/public-API native probe build provenance;
 - `qwen35_08b_real_state_probe.json` — exact 18-layer recurrent/conv cache chains, hidden outputs and full logits;
 - `qwen35_real_state_patcher_proxy.json` — 48-pair projected real-state control versus copy and mean-delta baselines;
+- `qwen35_state_replay_build.json` — fork-free partial recurrent-state injection build provenance;
+- `qwen35_state_replay_baseline.json` — true-vocabulary stale-state and oracle-interpolation sensitivity curve;
 - `qwen35_08b_donor_baseline.json` — balanced 50-task protected strict/content/protocol/source baseline;
 - `pc_alm_proxy.json` — old finite PC versus PC-ALM BP-gradient alignment.
 
