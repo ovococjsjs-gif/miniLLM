@@ -1,5 +1,11 @@
 """AIra-v2 event-triggered language substrate primitives."""
 
+from .babysit import (
+    BabysitRecord,
+    VerifierObservation,
+    read_babysit_dataset,
+    write_babysit_dataset,
+)
 from .bridge import BridgedShelfPrediction, ByteBPEBridge
 from .calibration import ReliabilityThreshold, calibrate_reliability_threshold
 from .cascade import (
@@ -74,6 +80,7 @@ from .trigger import (
 __all__ = [
     "AIraCascade",
     "AttentionByteEventLM",
+    "BabysitRecord",
     "BoundedAssociativeMemory",
     "BridgedShelfPrediction",
     "ByteBPEBridge",
@@ -104,6 +111,7 @@ __all__ = [
     "ShelfRoutes",
     "SourceCopyIndex",
     "StructuredKeyEncoder",
+    "VerifierObservation",
     "backprop_gradients",
     "build_compact_shelf",
     "build_event_training_batch",
@@ -121,6 +129,7 @@ __all__ = [
     "normalized_shelf_neural_mixture",
     "pack_event_stream",
     "predict_shelf_next",
+    "read_babysit_dataset",
     "read_event_shards",
     "read_on_policy_dataset",
     "records_to_teacher_topk",
@@ -130,5 +139,6 @@ __all__ = [
     "save_compact_shelf",
     "shelf_distribution",
     "utf8_allowed_next_bytes",
+    "write_babysit_dataset",
     "write_on_policy_dataset",
 ]

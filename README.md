@@ -47,6 +47,7 @@
 - lossless event packer для literal/shelf/source-copy spans и multi-byte head до 8 байтов;
 - importance-sampled predictable control stream с unbiased full-loss estimator;
 - hash-bound on-policy Top-K teacher records для точного student-generated prefix;
+- AI Babysit critique/correction/verifier/preference records с teacher/student identity;
 - deterministic event shards и resume-safe ≤300-step multi-head trainer;
 - строгая UTF-8 grammar mask и отдельная calibration на generated contexts до разрешения bypass;
 - request-level `AIraCascade`: accepted explicit fact возвращается напрямую, unknown/conflict падает в shelf→neural;
@@ -213,6 +214,7 @@ quality-adjusted active compute.
 - [Результат первого MQAR-скрининга](docs/toy-mqar-result.md)
 - [Канонический аудит и план AIra-v2](docs/aira-v2-audit.md)
 - [Контракт данных и готовность AIra base training](docs/aira-training-readiness.md)
+- [Аудит synthetic SFT-кандидатов и AI Babysit](docs/aira-synthetic-sft-audit.md)
 - [Исторический разбор AIra (superseded)](docs/aira-review.md)
 - [Аннотированные первоисточники](docs/sources.md)
 

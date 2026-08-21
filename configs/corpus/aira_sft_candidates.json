@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-08-21",
+  "default_policy": "exclude-from-all-weights-until-cleared",
+  "candidates": [
+    {
+      "id": "angrygiraffe-claude-opus-46-47-reasoning",
+      "url": "https://huggingface.co/datasets/angrygiraffe/claude-opus-4.6-4.7-reasoning-8.7k",
+      "revision": "f0330e0ca46469b3928adef18c2b55f9476d6bd3",
+      "declared_license": "Apache-2.0",
+      "language": ["en"],
+      "status": "quarantine",
+      "allowed_role": "manual audit only",
+      "canonical_file_if_cleared": "instruct_train_no_reasoning.jsonl",
+      "canonical_file_if_cleared_lfs_sha256": "5320008b4cab2cb91323b92c55121d9da269c136a75ea0b64ff8d91ef4a70af8",
+      "blockers": [
+        "anthropic-service-terms-clearance",
+        "no-manual-review",
+        "overlapping-default-config",
+        "synthetic-visible-reasoning-not-hidden-cot",
+        "medical-legal-finance-factual-verification",
+        "roleplay-and-named-author-style-removal"
+      ]
+    },
+    {
+      "id": "roman-claude-opus-46-10000x",
+      "url": "https://huggingface.co/datasets/Roman1111111/claude-opus-4.6-10000x",
+      "revision": "d6fe6aafcf5db8141153a0828c791eeee512b171",
+      "declared_license": "MIT",
+      "language": ["en"],
+      "status": "quarantine",
+      "allowed_role": "independently verified math-SFT research candidate only",
+      "canonical_file": "opus46_final.jsonl",
+      "canonical_file_lfs_sha256": "f2282f16d0fc225e03b6f0485b9eb5eef1a0b9ff55157a13c02cb6a7eefa5ea2",
+      "blockers": [
+        "anthropic-service-terms-clearance",
+        "missing-per-row-upstream-provenance",
+        "protected-eval-contamination",
+        "incorrect-category-metadata",
+        "encoding-damage",
+        "stored-token-count-claim-inconsistent-with-file-size",
+        "independent-answer-verification"
+      ]
+    },
+    {
+      "id": "withinusai-claude-mythos-distilled-25k",
+      "url": "https://huggingface.co/datasets/WithinUsAI/claude_mythos_distilled_25k",
+      "revision": "2c5e638c51a22b8b883def51bab685ae7e282c72",
+      "declared_license": "Apache-2.0",
+      "language": ["en"],
+      "status": "rejected",
+      "allowed_role": "synthetic-slop and unsupported-claim evaluation only",
+      "canonical_file": "claude_mythos_distilled_25k.jsonl",
+      "canonical_file_lfs_sha256": "5e94ca487977c43f1c5c5dfda06b1d4a9ba4ac6591bc69b48202c7b44455be51",
+      "blockers": [
+        "not-actual-claimed-teacher-output",
+        "template-repetition",
+        "branded-persona-imitation",
+        "unsupported-metrics-and-formal-verification-risk",
+        "cybersecurity-domain-overweight",
+        "claimed-generator-script-absent-from-pinned-tree"
+      ]
+    }
+  ]
+}

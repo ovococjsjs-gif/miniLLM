@@ -54,6 +54,12 @@ The important result is negative as well as positive. Current shelf spans are sh
 
 `prepare_aira_event_data.py` and `train_aira_event_proxy.py` were executed end to end on a small frozen pilot. They produced deterministic event shards, trained the 4.68M-parameter configured core for five steps, validated it, saved a hash-bound checkpoint and resumed from step five to seven with config/dataset identity checks. `results/aira_event_training_smoke.json` records the initial smoke. This proves plumbing, not language quality.
 
+## Synthetic SFT and mentor data
+
+Synthetic chat datasets are not base-pretraining replacements. The first three user-proposed candidates are pinned and audited in [`aira-synthetic-sft-audit.md`](aira-synthetic-sft-audit.md), with machine status in `configs/corpus/aira_sft_candidates.json`. None is currently admitted to weights: two contain claimed Claude outputs with unresolved upstream service-term/provenance issues, and the third is repetitive imitation-of-imitation data.
+
+The project-owned alternative is AI Babysit: student rollouts are verified, critiqued and corrected on their exact generated states. `aira/babysit.py` now provides hashed critique/correction/rubric/verifier/preference records; `aira/on_policy.py` stores sparse teacher distributions for the exact same prefixes. Teacher-service rights must still be checked before generated labels enter training.
+
 ## Dataset handoff format
 
 Preferred source format is one UTF-8 JSON object per line:
