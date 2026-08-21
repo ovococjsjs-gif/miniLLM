@@ -5,13 +5,13 @@
   "files": [
     {
       "path": "configs/aira-one/v01.json",
-      "bytes": 2367,
-      "sha256": "709925eb9402e4bd3c882ef686ec319176849a11fa207a17385be75e7b9b958f"
+      "bytes": 2465,
+      "sha256": "08cfaa951ba68939893f9b9544848893323f6fb6dc41d860072e29e5b445cb8f"
     },
     {
       "path": "configs/donors/qwen35_08b.json",
-      "bytes": 3441,
-      "sha256": "ad01b4495e48632cc0a91fed89e0bb78d0a9cccc3c74c7931b310b8714e102ec"
+      "bytes": 3666,
+      "sha256": "50a40a2e4f3268b9f1ac43a0dfb3338c4d475451250c863290caf418b14bf085"
     },
     {
       "path": "docs/aira-one-v01.md",
@@ -64,7 +64,7 @@
       "sha256": "6b9d14a7b3ed637330462ab2ff82f4cad902cdc0cc32f6a6e5c065f0c09c6c99"
     }
   ],
-  "package_source_bytes": 262325,
+  "package_source_bytes": 262648,
   "external_runtime_artifact": {
     "path": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf",
     "bytes": 532517120,

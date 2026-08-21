@@ -30,8 +30,10 @@
 - Projected state patcher доказал только learnability и заменён full-state направлением.
 - Первый 5.65M-parameter Gated Delta updater обучен на реальных состояниях за 300 шагов.
 - Held-out full-state MSE снизился до `0.8428×` copy baseline.
-- После train-only calibration native state injection снизила held-out mean future KL `0.005605 → 0.003898`; learned argmax совпал с oracle на 4/4 prompts против 3/4 у copy.
-- Один из четырёх prompts всё ещё ухудшился; convolution, free-generation и speed gates не пройдены.
+- После train-only calibration state-only injection снизила held-out mean future KL `0.005605 → 0.003898`.
+- Новый 2.42M-parameter convolution-row updater получил held-out MSE ratio `0.5581`.
+- Без oracle convolution строгий full-cache replay снизил mean KL `0.040465 → 0.028344`, сохранив oracle argmax на 4/4 prompts.
+- Один из четырёх prompts всё ещё ухудшился; free-generation и speed gates не пройдены.
 - **Recurrent skipping и production neural acceleration остаются выключены.**
 
 AIra One сохранён как controller для tools, memory, documents и запуска donor. Из него удалены stored-answer Babysit routes. Feedback записывается только как будущий training material.
@@ -53,15 +55,15 @@ AIra One сохранён как controller для tools, memory, documents и �
 
 ```text
 attention-anchor hidden + token event
-                 ↓
- learned key/value/gate/beta predictor
-                 ↓ exact Qwen Gated Delta algebra
- predicted full state_after
-                 ↓ public llama.cpp state injection
-             future logits
+        ↓                         ↓
+key/value/gate/beta predictor   conv newest-row predictor
+        ↓ exact state algebra     ↓ exact two-row shift
+        └──────── full recurrent + conv cache ────────┘
+                          ↓ public state injection
+                       future logits
 ```
 
-Full-state reconstruction и mean injected-logit gate пройдены впервые, но запас пока мал и один validation prompt регрессирует. Следующий gate — предсказать новую строку convolution cache, обучаться по future-KL/rollout objective и проверить свободную генерацию. Benchmark фактического пропуска compute разрешается только после generated-quality non-regression.
+Full recurrent state и convolution cache теперь предсказываются без oracle для пяти слоёв; mean injected-logit gate пройден и в строгом full-cache control. Запас всё ещё мал, один validation prompt регрессирует, а вычисления слоя пока только заменяются post-hoc. Следующий gate — свободная многотокенная генерация и native benchmark физического пропуска compute. Speed claim разрешается только после generated-quality non-regression.
 
 ## Быстрый старт
 

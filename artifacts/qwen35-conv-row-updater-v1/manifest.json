@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "name": "qwen35-conv-row-updater-v1",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 627,
+      "sha256": "6a1b1ab7e35aac556ab8390c78f7213e4c1cd2bc84e8e42ab2bb0c2a7bb99416"
+    },
+    {
+      "path": "model.pt",
+      "bytes": 9697734,
+      "sha256": "27ff118a118e4545dffc28e6c6ee58750d301d74a16c2dce190bb1ebc62b81f1"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "configs/experiments/qwen35_conv_row_updater_v1.json",
+      "sha256": "f4475c9b8da9e0238c0404e4471abe87ce0bfd2c7a21fc975d53d816f9193e8d"
+    },
+    {
+      "path": "results/qwen35_conv_row_updater_v1.json",
+      "sha256": "94439b728b93c48dfc67372b51f07c0481835c6f42fef9807715a07df7492f92"
+    },
+    {
+      "path": "results/qwen35_learned_state_replay_v1.json",
+      "sha256": "cbf0aba7d21eb3b2fb9673805a1458ebd7a6f34f4266690f6920cb3e7df36ca6"
+    }
+  ],
+  "deployment_allowed": false
+}

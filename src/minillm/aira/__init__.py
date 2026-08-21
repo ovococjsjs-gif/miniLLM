@@ -52,7 +52,12 @@ from .foundry import (
     write_skill_patches,
     write_teacher_packet,
 )
-from .full_state import GatedDeltaParameters, GatedDeltaParameterUpdater
+from .full_state import (
+    ConvRowUpdate,
+    ConvRowUpdater,
+    GatedDeltaParameters,
+    GatedDeltaParameterUpdater,
+)
 from .local_runtime import LocalDonorRuntime
 from .memory import (
     BoundedAssociativeMemory,
@@ -136,6 +141,8 @@ __all__ = [
     "CompactShelfLevel",
     "ContrastiveExample",
     "ConvByteEventLM",
+    "ConvRowUpdate",
+    "ConvRowUpdater",
     "CurriculumRecord",
     "EpisodicFactStore",
     "EventContextLM",

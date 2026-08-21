@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "experiment": "qwen35-conv-row-updater-v1",
+  "role": "learned newest-row cache updater; not an acceleration claim",
+  "config": "configs/experiments/qwen35_conv_row_updater_v1.json",
+  "config_sha256": "f4475c9b8da9e0238c0404e4471abe87ce0bfd2c7a21fc975d53d816f9193e8d",
+  "source_manifest_sha256": "93ec537ac4d2732068c6fe0359abceb6346f11b950c1ac971afe983462432fde",
+  "candidate_recurrent_layers": [
+    4,
+    8,
+    12,
+    16,
+    20
+  ],
+  "parameters": 2422001,
+  "steps": 300,
+  "training_seconds": 6.051213315999917,
+  "loss_samples": [
+    {
+      "step": 1,
+      "loss": 1.0345029830932617,
+      "mse_ratio": 1.0,
+      "copy_mse": 0.7700190544128418,
+      "patch_mse": 0.7700190544128418,
+      "confidence_bce": 0.690058708190918,
+      "gradient_norm": 0.01648206077516079
+    },
+    {
+      "step": 76,
+      "loss": 0.5706839561462402,
+      "mse_ratio": 0.538926362991333,
+      "copy_mse": 1.3072404861450195,
+      "patch_mse": 0.6450952291488647,
+      "confidence_bce": 0.6351521015167236,
+      "gradient_norm": 0.16221508383750916
+    },
+    {
+      "step": 151,
+      "loss": 0.2915060222148895,
+      "mse_ratio": 0.26401203870773315,
+      "copy_mse": 1.2925031185150146,
+      "patch_mse": 0.30205750465393066,
+      "confidence_bce": 0.549879789352417,
+      "gradient_norm": 0.3434089720249176
+    },
+    {
+      "step": 226,
+      "loss": 0.1522528976202011,
+      "mse_ratio": 0.13485227525234222,
+      "copy_mse": 1.011873483657837,
+      "patch_mse": 0.14676685631275177,
+      "confidence_bce": 0.3480125665664673,
+      "gradient_norm": 0.2546127140522003
+    },
+    {
+      "step": 300,
+      "loss": 0.07475122064352036,
+      "mse_ratio": 0.06323101371526718,
+      "copy_mse": 1.287405014038086,
+      "patch_mse": 0.09644998610019684,
+      "confidence_bce": 0.2304040789604187,
+      "gradient_norm": 0.16777287423610687
+    }
+  ],
+  "train": {
+    "transitions": 32.0,
+    "layer_rows": 160.0,
+    "copy_new_row_mse": 1.1353295683860778,
+    "patch_new_row_mse": 0.09781660530716181,
+    "new_row_mse_ratio": 0.0861570138142465,
+    "copy_cosine_error": 0.1890947014093399,
+    "patch_cosine_error": 0.015380080044269561,
+    "mean_confidence": 0.9144923742860556
+  },
+  "validation": {
+    "transitions": 16.0,
+    "layer_rows": 80.0,
+    "copy_new_row_mse": 1.3139655828475951,
+    "patch_new_row_mse": 0.7332877874374389,
+    "new_row_mse_ratio": 0.5580722942896837,
+    "copy_cosine_error": 0.22064486667513847,
+    "patch_cosine_error": 0.12046499401330948,
+    "mean_confidence": 0.7773950107395649
+  },
+  "checkpoint": "artifacts/qwen35-conv-row-updater-v1/model.pt",
+  "checkpoint_sha256": "27ff118a118e4545dffc28e6c6ee58750d301d74a16c2dce190bb1ebc62b81f1",
+  "acceptance": {
+    "older_rows_shift_exact": true,
+    "beats_copy_new_row_mse": true,
+    "injected_future_kl_gate_passed": false,
+    "deployment_allowed": false
+  },
+  "limitations": "The result must be combined with learned full recurrent states and replayed through Qwen before any layer-skip or speed claim."
+}

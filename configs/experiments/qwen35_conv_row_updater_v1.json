@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "name": "qwen35-conv-row-updater-v1",
+  "purpose": "predict the non-shifted newest convolution-cache row for five candidate recurrent layers",
+  "source_pairs": "artifacts/qwen35-real-state-pairs-v1",
+  "raw_state_work_dir": ".cache/qwen35-full-state-work",
+  "candidate_recurrent_layers": [4, 8, 12, 16, 20],
+  "conditioning": "token features plus exact output of the preceding attention anchor",
+  "anchor_hidden_dim": 1024,
+  "row_width": 6144,
+  "hidden_dim": 256,
+  "bottleneck_dim": 64,
+  "identity_dim": 16,
+  "steps": 300,
+  "batch_size": 16,
+  "learning_rate": 0.002,
+  "weight_decay": 0.01,
+  "confidence_weight": 0.05,
+  "seed": 839,
+  "threads": 2,
+  "acceptance": {
+    "validation_new_row_mse_ratio_below": 0.95,
+    "all_shifted_rows_exact": true,
+    "injected_future_kl_below_state_only": true
+  },
+  "provenance": {
+    "teacher_answers_used": false,
+    "stored_answer_routes_used": false,
+    "protected_evaluation_used": false,
+    "model_sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517"
+  }
+}

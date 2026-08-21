@@ -197,6 +197,7 @@ struct learned_state_patch {
     uint32_t width;
     std::vector<int32_t> layers;
     std::vector<std::vector<float>> states;
+    std::vector<std::vector<float>> conv_states;
 };
 
 static learned_state_patch read_learned_patch(const fs::path & path) {
@@ -206,7 +207,7 @@ static learned_state_patch read_learned_patch(const fs::path & path) {
     }
     char magic[8];
     input.read(magic, sizeof(magic));
-    if (!input || std::memcmp(magic, "AIRASTP1", 8) != 0) {
+    if (!input || std::memcmp(magic, "AIRASTP2", 8) != 0) {
         throw std::runtime_error("invalid learned state patch magic");
     }
     uint32_t count = 0;
@@ -227,11 +228,16 @@ static learned_state_patch read_learned_patch(const fs::path & path) {
         input.read(
             reinterpret_cast<char *>(state.data()),
             static_cast<std::streamsize>(state.size() * sizeof(float)));
+        std::vector<float> conv_state(3 * 6144);
+        input.read(
+            reinterpret_cast<char *>(conv_state.data()),
+            static_cast<std::streamsize>(conv_state.size() * sizeof(float)));
         if (!input) {
             throw std::runtime_error("learned state patch is truncated");
         }
         patch.layers.push_back(layer);
         patch.states.push_back(std::move(state));
+        patch.conv_states.push_back(std::move(conv_state));
     }
     return patch;
 }
@@ -249,7 +255,8 @@ static int recurrent_position(int32_t layer) {
 
 static std::vector<uint8_t> patch_candidate_states(
     const std::vector<uint8_t> & after,
-    const learned_state_patch & patch) {
+    const learned_state_patch & patch,
+    bool include_convolution) {
     const size_t data_offset = recurrent_data_offset(after);
     const auto segments = recurrent_tensor_segments(after, data_offset);
     constexpr size_t recurrent_layers = 18;
@@ -266,6 +273,17 @@ static std::vector<uint8_t> patch_candidate_states(
         }
         std::memcpy(
             output.data() + segment.offset, values.data(), segment.bytes);
+        if (include_convolution) {
+            const auto & conv_segment = segments[static_cast<size_t>(position)];
+            const auto & conv_values = patch.conv_states[index];
+            if (conv_segment.bytes != conv_values.size() * sizeof(float)) {
+                throw std::runtime_error("learned convolution row has wrong serialized size");
+            }
+            std::memcpy(
+                output.data() + conv_segment.offset,
+                conv_values.data(),
+                conv_segment.bytes);
+        }
     }
     return output;
 }
@@ -273,7 +291,8 @@ static std::vector<uint8_t> patch_candidate_states(
 static std::vector<uint8_t> copy_candidate_states(
     const std::vector<uint8_t> & before,
     const std::vector<uint8_t> & after,
-    const learned_state_patch & patch) {
+    const learned_state_patch & patch,
+    bool include_convolution) {
     const auto before_segments = recurrent_tensor_segments(
         before, recurrent_data_offset(before));
     const auto after_segments = recurrent_tensor_segments(
@@ -291,6 +310,17 @@ static std::vector<uint8_t> copy_candidate_states(
             output.data() + target.offset,
             before.data() + source.offset,
             source.bytes);
+        if (include_convolution) {
+            const auto & conv_source = before_segments[static_cast<size_t>(position)];
+            const auto & conv_target = after_segments[static_cast<size_t>(position)];
+            if (conv_source.bytes != conv_target.bytes) {
+                throw std::runtime_error("candidate convolution rows differ in size");
+            }
+            std::memcpy(
+                output.data() + conv_target.offset,
+                before.data() + conv_source.offset,
+                conv_source.bytes);
+        }
     }
     return output;
 }
@@ -454,9 +484,13 @@ int main(int argc, char ** argv) {
     const std::vector<uint8_t> stale_partial = stale_recurrent_state(
         partial_before, partial_after, before_offset, after_offset);
     const std::vector<uint8_t> candidate_copy_partial = copy_candidate_states(
-        partial_before, partial_after, learned_patch);
+        partial_before, partial_after, learned_patch, false);
+    const std::vector<uint8_t> candidate_full_copy_partial = copy_candidate_states(
+        partial_before, partial_after, learned_patch, true);
     const std::vector<uint8_t> learned_partial = patch_candidate_states(
-        partial_after, learned_patch);
+        partial_after, learned_patch, false);
+    const std::vector<uint8_t> learned_full_partial = patch_candidate_states(
+        partial_after, learned_patch, true);
 
     // Oracle path: consume the same second token from the true post-event cache.
     decode_one(context, second_token);
@@ -487,6 +521,16 @@ int main(int argc, char ** argv) {
     decode_one(context, second_token);
     const std::vector<float> learned_logits = current_logits(context, vocabulary);
 
+    restore_sequence(context, full_after, LLAMA_STATE_SEQ_FLAGS_NONE);
+    restore_sequence(context, candidate_full_copy_partial, LLAMA_STATE_SEQ_FLAGS_PARTIAL_ONLY);
+    decode_one(context, second_token);
+    const std::vector<float> candidate_full_copy_logits = current_logits(context, vocabulary);
+
+    restore_sequence(context, full_after, LLAMA_STATE_SEQ_FLAGS_NONE);
+    restore_sequence(context, learned_full_partial, LLAMA_STATE_SEQ_FLAGS_PARTIAL_ONLY);
+    decode_one(context, second_token);
+    const std::vector<float> learned_full_logits = current_logits(context, vocabulary);
+
     std::vector<double> blend_alphas = {0.25, 0.50, 0.75};
     std::vector<std::vector<float>> blend_logits;
     std::vector<comparison> blend_comparisons;
@@ -504,11 +548,17 @@ int main(int argc, char ** argv) {
     const comparison candidate_copy = compare_logits(
         oracle_logits, candidate_copy_logits);
     const comparison learned = compare_logits(oracle_logits, learned_logits);
+    const comparison candidate_full_copy = compare_logits(
+        oracle_logits, candidate_full_copy_logits);
+    const comparison learned_full = compare_logits(oracle_logits, learned_full_logits);
     write_logits(output_dir / "oracle.logits.f32.bin", oracle_logits);
     write_logits(output_dir / "control.logits.f32.bin", control_logits);
     write_logits(output_dir / "stale.logits.f32.bin", stale_logits);
     write_logits(output_dir / "candidate-copy.logits.f32.bin", candidate_copy_logits);
     write_logits(output_dir / "learned.logits.f32.bin", learned_logits);
+    write_logits(
+        output_dir / "candidate-full-copy.logits.f32.bin", candidate_full_copy_logits);
+    write_logits(output_dir / "learned-full.logits.f32.bin", learned_full_logits);
     for (size_t index = 0; index < blend_logits.size(); ++index) {
         const int percent = static_cast<int>(std::round(blend_alphas[index] * 100));
         write_logits(
@@ -551,6 +601,14 @@ int main(int argc, char ** argv) {
     metrics << "learned_max_abs\t" << learned.max_abs << '\n';
     metrics << "learned_argmax\t" << learned.argmax << '\n';
     metrics << "learned_kl_improvement\t" << candidate_copy.kl - learned.kl << '\n';
+    metrics << "candidate_full_copy_kl\t" << candidate_full_copy.kl << '\n';
+    metrics << "candidate_full_copy_rms\t" << candidate_full_copy.rms << '\n';
+    metrics << "candidate_full_copy_argmax\t" << candidate_full_copy.argmax << '\n';
+    metrics << "learned_full_kl\t" << learned_full.kl << '\n';
+    metrics << "learned_full_rms\t" << learned_full.rms << '\n';
+    metrics << "learned_full_argmax\t" << learned_full.argmax << '\n';
+    metrics << "learned_full_kl_improvement\t"
+            << candidate_full_copy.kl - learned_full.kl << '\n';
     for (size_t index = 0; index < blend_comparisons.size(); ++index) {
         const int percent = static_cast<int>(std::round(blend_alphas[index] * 100));
         const std::string prefix = "blend_" + std::to_string(percent);
@@ -565,8 +623,9 @@ int main(int argc, char ** argv) {
     llama_free(context);
     llama_model_free(model);
     llama_backend_free();
-    std::cout << "candidate copy KL = " << candidate_copy.kl
-              << ", learned KL = " << learned.kl
+    std::cout << "state-only copy/learned KL = " << candidate_copy.kl << "/"
+              << learned.kl << ", full copy/learned KL = " << candidate_full_copy.kl
+              << "/" << learned_full.kl
               << ", serialization control exact = " << control.exact << '\n';
     return control.exact ? 0 : 3;
 }

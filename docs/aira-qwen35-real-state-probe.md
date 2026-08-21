@@ -139,7 +139,6 @@ Now enabled:
 
 Still not demonstrated:
 
-- prediction of the convolution cache's new row;
 - lower injected KL on every prompt;
 - calibrated per-event fallback confidence;
 - generated-quality parity;
@@ -167,4 +166,12 @@ MSE is not the binding gate. A native replay binary injects learned full matrice
 | oracle argmax preserved | 3/4 | **4/4** |
 | prompts with lower KL | — | 3/4 |
 
-This opens the **mean injected-logit gate**, not acceleration. One grounding prompt regressed, only one percent of the predicted delta was safe, convolution's new row is still oracle, no recurrent layer has actually been skipped, and free generation is untested. Deployment remains disabled.
+A separate 2,422,001-parameter model predicts the newest 6,144-wide convolution row; the two older rows shift exactly. Held-out newest-row MSE ratio is `0.558072` versus repeating the previous newest row. Native `AIRASTP2` patches now contain both learned recurrent matrices and learned convolution caches, removing oracle convolution from the strict replay:
+
+| strict full-cache metric | stale candidate cache | learned recurrent + conv |
+|---|---:|---:|
+| mean true-vocabulary KL | 0.040465 | **0.028344** |
+| oracle argmax preserved | 4/4 | **4/4** |
+| prompts with lower KL | — | 3/4 |
+
+This opens the **mean full-cache injected-logit gate**, not acceleration. One prompt still regresses, only one percent of the predicted recurrent delta is calibrated safe, no layer has yet been physically skipped, and free generation is untested. Deployment remains disabled.

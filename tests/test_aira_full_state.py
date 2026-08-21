@@ -4,9 +4,29 @@ import pytest
 import torch
 
 from minillm.aira.full_state import (
+    ConvRowUpdater,
     GatedDeltaParameters,
     GatedDeltaParameterUpdater,
 )
+
+
+def test_conv_row_updater_starts_as_copy_and_learns_residual() -> None:
+    model = ConvRowUpdater(
+        event_dim=12,
+        layers=2,
+        row_width=32,
+        hidden_dim=16,
+        bottleneck_dim=4,
+        identity_dim=3,
+    )
+    previous = torch.randn(5, 32)
+    output = model(previous, torch.randn(5, 12), torch.tensor([0, 1, 0, 1, 0]))
+
+    assert torch.equal(output.row, previous)
+    assert torch.equal(output.delta, torch.zeros_like(previous))
+    loss = (output.row - torch.randn_like(output.row)).square().mean()
+    loss.backward()
+    assert model.delta_heads[0][-1].weight.grad is not None
 
 
 def test_gated_delta_application_matches_explicit_transition() -> None:

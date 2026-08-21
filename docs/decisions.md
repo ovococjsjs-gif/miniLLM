@@ -212,3 +212,9 @@ accuracy с 23.12% до 23.88% без дополнительных optimizer ste
 **Решение:** первый active full-state updater предсказывает не SVD-факторы матрицы, а внутренние Qwen `key/value/gate/beta`, после чего применяет точную Gated Delta algebra. Кандидаты ограничены слоями `4/8/12/16/20` сразу после attention anchors. Patch strength `0.01` фиксируется только по train prompts; validation не участвует в calibration.
 
 **Причина:** произвольный low-rank matrix predictor практически совпал с copy (`~1.000×`) и удалён как dead end. Stable-parameter model за 300 шагов получил held-out full-state MSE ratio `0.842777`. Public partial-state replay подтвердил byte-exact serialization controls и снизил validation mean true-vocabulary KL с candidate-copy `0.005605` до `0.003898`; oracle argmax сохранён `4/4` против `3/4`. Но один prompt регрессировал, alpha очень мал, conv new row остаётся oracle и реального skip ещё нет, поэтому generated-quality/speed/deployment gates закрыты.
+
+## D-029 — Learned convolution cache removes the last oracle from full-cache replay
+
+**Решение:** convolution cache для candidate layers обновляется как exact shift двух старых строк плюс learned newest-row residual. 2.42M-parameter updater обучается отдельно за 300 шагов и объединяется с Gated Delta state patch в формате `AIRASTP2`. Binding baseline оставляет stale и recurrent state, и convolution candidate layers; attention KV, position и остальные layers остаются matched oracle controls.
+
+**Причина:** held-out newest-row MSE ratio равен `0.558072`. Без oracle convolution strict full-cache native replay снижает mean true-vocabulary KL `0.040465 → 0.028344` (ratio `0.700446`), сохраняет oracle argmax `4/4` и улучшает 3/4 prompts. Один prompt регрессирует, свободная генерация и физический skip не выполнены — deployment и speed claims закрыты.

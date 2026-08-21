@@ -117,17 +117,27 @@ def main() -> None:
                 "prompt_id": prompt["id"],
                 "prompt_sha256": hashlib.sha256(prompt["text"].encode()).hexdigest(),
                 "state_mse_ratio": patch_metadata["state_mse_ratio"],
+                "conv_new_row_mse_ratio": patch_metadata["conv_new_row_mse_ratio"],
                 "candidate_copy_kl": metrics["candidate_copy_kl"],
                 "learned_kl": metrics["learned_kl"],
                 "learned_kl_improvement": metrics["learned_kl_improvement"],
                 "oracle_argmax": metrics["oracle_argmax"],
                 "candidate_copy_argmax": metrics["candidate_copy_argmax"],
                 "learned_argmax": metrics["learned_argmax"],
+                "candidate_full_copy_kl": metrics["candidate_full_copy_kl"],
+                "learned_full_kl": metrics["learned_full_kl"],
+                "learned_full_kl_improvement": metrics["learned_full_kl_improvement"],
+                "candidate_full_copy_argmax": metrics["candidate_full_copy_argmax"],
+                "learned_full_argmax": metrics["learned_full_argmax"],
                 "serialization_control_exact": bool(metrics["control_exact"]),
             }
         )
     mean_copy = sum(item["candidate_copy_kl"] for item in records) / len(records)
     mean_learned = sum(item["learned_kl"] for item in records) / len(records)
+    mean_full_copy = sum(item["candidate_full_copy_kl"] for item in records) / len(
+        records
+    )
+    mean_learned_full = sum(item["learned_full_kl"] for item in records) / len(records)
     report = {
         "schema_version": 1,
         "experiment": "qwen35-learned-state-replay-v1",
@@ -146,6 +156,15 @@ def main() -> None:
         "argmax_preserved": sum(
             item["learned_argmax"] == item["oracle_argmax"] for item in records
         ),
+        "mean_candidate_full_copy_kl": mean_full_copy,
+        "mean_learned_full_kl": mean_learned_full,
+        "learned_full_over_copy_kl_ratio": mean_learned_full / mean_full_copy,
+        "learned_full_improvements": sum(
+            item["learned_full_kl_improvement"] > 0 for item in records
+        ),
+        "learned_full_argmax_preserved": sum(
+            item["learned_full_argmax"] == item["oracle_argmax"] for item in records
+        ),
         "records": records,
         "elapsed_seconds": time.perf_counter() - started,
         "acceptance": {
@@ -156,14 +175,20 @@ def main() -> None:
             "learned_improves_every_prompt": all(
                 item["learned_kl_improvement"] > 0 for item in records
             ),
+            "oracle_convolution_removed": True,
+            "learned_full_mean_kl_below_full_copy": mean_learned_full < mean_full_copy,
+            "learned_full_improves_every_prompt": all(
+                item["learned_full_kl_improvement"] > 0 for item in records
+            ),
             "generated_quality_gate_passed": False,
             "speedup_gate_passed": False,
             "deployment_allowed": False,
         },
         "interpretation": (
-            "Injection is the binding test. The alpha is selected only on train prompts; "
-            "held-out mean KL must beat the matched candidate-layer copy baseline before "
-            "generated-quality or speed work can open."
+            "Injection is the binding test. State alpha is selected only on train "
+            "prompts. The strict full baseline leaves both candidate recurrent and "
+            "convolution states stale; learned full patches replace both without oracle "
+            "convolution. Generated-quality and speed gates remain separate."
         ),
     }
     output = Path(args.output)

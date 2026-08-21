@@ -72,6 +72,10 @@
     "learned_full_state_validation_mse_ratio": 0.842776943507935,
     "train_calibrated_state_delta_alpha": 0.01,
     "learned_injected_mean_kl_copy_to_patch": "0.005605 -> 0.003898",
+    "conv_new_row_updater_trained": true,
+    "conv_new_row_validation_mse_ratio": 0.5580722942896837,
+    "full_cache_injected_mean_kl_copy_to_patch": "0.040465 -> 0.028344",
+    "full_cache_oracle_convolution_used": false,
     "learned_injected_every_prompt_gate_passed": false,
     "generated_quality_gate_passed": false,
     "acceleration_enabled": false

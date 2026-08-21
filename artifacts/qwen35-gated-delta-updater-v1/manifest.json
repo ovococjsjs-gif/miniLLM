@@ -4,8 +4,8 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 807,
-      "sha256": "fb8ce221fe7ee80ab99a1eaee1c6943e24d352fab3d2e46e6af9ba9291e2dfbc"
+      "bytes": 781,
+      "sha256": "ece25903588f2bbdab8c044cf3ea21946078e6b5fc9b313f8c122c3537bc72dd"
     },
     {
       "path": "model.pt",
@@ -28,9 +28,8 @@
     },
     {
       "path": "results/qwen35_learned_state_replay_v1.json",
-      "sha256": "12ab61465a61b5c5ca00cbc4a96e6185bb1850acd64a60ec0e99da4f6f5da40b"
+      "sha256": "cbf0aba7d21eb3b2fb9673805a1458ebd7a6f34f4266690f6920cb3e7df36ca6"
     }
   ],
-  "raw_full_states_in_git": false,
   "deployment_allowed": false
 }

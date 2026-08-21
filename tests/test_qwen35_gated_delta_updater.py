@@ -56,16 +56,38 @@ def test_native_learned_state_injection_improves_mean_future_kl() -> None:
     assert replay["acceptance"]["all_serialization_controls_exact"]
     assert replay["acceptance"]["learned_mean_kl_below_candidate_copy"]
     assert not replay["acceptance"]["learned_improves_every_prompt"]
+    assert replay["acceptance"]["oracle_convolution_removed"]
+    assert replay["learned_full_over_copy_kl_ratio"] < 0.71
+    assert replay["learned_full_improvements"] == 3
+    assert replay["learned_full_argmax_preserved"] == 4
+    assert replay["acceptance"]["learned_full_mean_kl_below_full_copy"]
     assert not replay["acceptance"]["deployment_allowed"]
 
 
+def test_convolution_new_row_predictor_beats_stale_row() -> None:
+    result = json.loads(
+        (ROOT / "results/qwen35_conv_row_updater_v1.json").read_text(encoding="utf-8")
+    )
+
+    assert result["steps"] == 300
+    assert result["parameters"] == 2_422_001
+    assert result["validation"]["new_row_mse_ratio"] < 0.56
+    assert result["acceptance"]["older_rows_shift_exact"]
+    assert result["acceptance"]["beats_copy_new_row_mse"]
+    assert not result["acceptance"]["deployment_allowed"]
+
+
 def test_updater_checkpoint_and_native_sources_are_hash_bound() -> None:
-    artifact = ROOT / "artifacts/qwen35-gated-delta-updater-v1"
-    manifest = json.loads((artifact / "manifest.json").read_text(encoding="utf-8"))
-    for item in manifest["files"]:
-        path = artifact / item["path"]
-        assert path.stat().st_size == item["bytes"]
-        assert hashlib.sha256(path.read_bytes()).hexdigest() == item["sha256"]
+    for artifact_name in (
+        "qwen35-gated-delta-updater-v1",
+        "qwen35-conv-row-updater-v1",
+    ):
+        artifact = ROOT / "artifacts" / artifact_name
+        manifest = json.loads((artifact / "manifest.json").read_text(encoding="utf-8"))
+        for item in manifest["files"]:
+            path = artifact / item["path"]
+            assert path.stat().st_size == item["bytes"]
+            assert hashlib.sha256(path.read_bytes()).hexdigest() == item["sha256"]
 
     for result_name, source_name in (
         ("qwen35_transition_probe_build.json", "qwen35_transition_probe.cpp"),

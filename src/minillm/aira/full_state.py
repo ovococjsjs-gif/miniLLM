@@ -10,6 +10,93 @@ from torch.nn import functional as F
 
 
 @dataclass(frozen=True)
+class ConvRowUpdate:
+    row: torch.Tensor
+    delta: torch.Tensor
+    confidence: torch.Tensor
+
+
+class ConvRowUpdater(nn.Module):
+    """Predict the newest 6144-wide Qwen convolution-cache row.
+
+    The two older rows advance by an exact shift. This module learns only the
+    unknown newest row as a residual over the previous newest row.
+    """
+
+    def __init__(
+        self,
+        *,
+        event_dim: int,
+        layers: int,
+        row_width: int = 6144,
+        hidden_dim: int = 256,
+        bottleneck_dim: int = 64,
+        identity_dim: int = 16,
+    ) -> None:
+        super().__init__()
+        if (
+            min(
+                event_dim,
+                layers,
+                row_width,
+                hidden_dim,
+                bottleneck_dim,
+                identity_dim,
+            )
+            < 1
+        ):
+            raise ValueError("convolution updater dimensions must be positive")
+        self.event_dim = event_dim
+        self.layers = layers
+        self.row_width = row_width
+        self.layer_embedding = nn.Embedding(layers, identity_dim)
+        self.trunk = nn.Sequential(
+            nn.LayerNorm(event_dim + identity_dim),
+            nn.Linear(event_dim + identity_dim, hidden_dim),
+            nn.SiLU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.SiLU(),
+        )
+        self.delta_heads = nn.ModuleList(
+            nn.Sequential(
+                nn.Linear(hidden_dim, bottleneck_dim),
+                nn.SiLU(),
+                nn.Linear(bottleneck_dim, row_width),
+            )
+            for _ in range(layers)
+        )
+        self.confidence_head = nn.Linear(hidden_dim, 1)
+        for head in self.delta_heads:
+            nn.init.zeros_(head[-1].weight)
+            nn.init.zeros_(head[-1].bias)
+
+    def forward(
+        self,
+        previous_newest: torch.Tensor,
+        event_features: torch.Tensor,
+        layer_ids: torch.Tensor,
+    ) -> ConvRowUpdate:
+        if previous_newest.ndim != 2 or previous_newest.shape[1] != self.row_width:
+            raise ValueError("previous convolution row has the wrong shape")
+        batch = previous_newest.shape[0]
+        if event_features.shape != (batch, self.event_dim):
+            raise ValueError("event features have the wrong shape")
+        if layer_ids.shape != (batch,) or layer_ids.dtype != torch.long:
+            raise ValueError("layer ids must use shape [batch] and torch.long")
+        if torch.any((layer_ids < 0) | (layer_ids >= self.layers)):
+            raise ValueError("layer id is outside the configured updater")
+        hidden = self.trunk(
+            torch.cat((event_features, self.layer_embedding(layer_ids)), dim=-1)
+        )
+        all_deltas = torch.stack(
+            tuple(head(hidden) for head in self.delta_heads), dim=1
+        )
+        delta = all_deltas[torch.arange(batch, device=event_features.device), layer_ids]
+        confidence = torch.sigmoid(self.confidence_head(hidden).squeeze(-1))
+        return ConvRowUpdate(previous_newest + delta, delta, confidence)
+
+
+@dataclass(frozen=True)
 class GatedDeltaParameters:
     key: torch.Tensor
     value: torch.Tensor
