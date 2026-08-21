@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "name": "AIra One v0.1",
+  "kind": "integrated local assistant code/config/evidence package",
+  "files": [
+    {
+      "path": "configs/aira-one/v01.json",
+      "bytes": 2033,
+      "sha256": "84b6680c725f8d5e2378b19d785cc0b1dad85d095cdce98c62578218fd2567f0"
+    },
+    {
+      "path": "configs/donors/qwen35_08b.json",
+      "bytes": 3068,
+      "sha256": "fbb122d92bedde7a9d74ae61c712f2371dafd40b40154435cd972bfd955b631f"
+    },
+    {
+      "path": "docs/aira-one-v01.md",
+      "bytes": 7292,
+      "sha256": "495f3fd57c5da9aa025a7e8235b50c07eb15bddcd2bdf1c4cc3294140b3b3456"
+    },
+    {
+      "path": "src/minillm/aira/one.py",
+      "bytes": 41030,
+      "sha256": "8dbdd29c95ec4470bda3bd710e085df135d416c99617e082e5259036e906ebe7"
+    },
+    {
+      "path": "src/minillm/aira/local_runtime.py",
+      "bytes": 4070,
+      "sha256": "f571a60e65fbcd2c0972414e9ca068879e518215bfbba95266e3688df9a87323"
+    },
+    {
+      "path": "scripts/run_aira_one.py",
+      "bytes": 5979,
+      "sha256": "6724e35b638fd7674beb185a26c2ad2f25ed9bcc1c27d623b2d8d13002c340d8"
+    },
+    {
+      "path": "scripts/serve_aira_one.py",
+      "bytes": 8004,
+      "sha256": "30fbffca21fdb807c6913c77a2bac8fc0b83e23f6624b2c58ce72b487841efdc"
+    },
+    {
+      "path": "scripts/evaluate_aira_one.py",
+      "bytes": 6265,
+      "sha256": "c64ff3a00520d7e2430b68b667c54937da7e98bb95076b8aae243ed1afcb8c54"
+    },
+    {
+      "path": "scripts/smoke_aira_one.py",
+      "bytes": 4620,
+      "sha256": "52cd8d835ec7c08d0b3b8d11da1b59a09568a957d955d9f8e937d7f8cf39ff5c"
+    },
+    {
+      "path": "scripts/build_aira_one_babysit_v01.py",
+      "bytes": 5152,
+      "sha256": "310e3e9d1c81ccc5a298d10272b39e301f611ca83b57dd3dd87b2a05653924a8"
+    },
+    {
+      "path": "scripts/package_aira_one_v01.py",
+      "bytes": 3420,
+      "sha256": "1f3f800c9e41837191c87eab07bb555fb2b226d8e1f4e94014b4dfcf830946dc"
+    },
+    {
+      "path": "artifacts/aira-one-babysit-v01/records.jsonl",
+      "bytes": 5457,
+      "sha256": "280fab98ab56bba4d7c687f69c86d881109f570f950e665862ba87ce4ca490c4"
+    },
+    {
+      "path": "artifacts/aira-one-babysit-v01/records.jsonl.manifest.json",
+      "bytes": 545,
+      "sha256": "a530ba97a537ea41ec6fcfe2fa8ba6dfd2b301a87713cc54dc993f2e3d6d72ae"
+    },
+    {
+      "path": "results/aira_one_v01_evaluation.json",
+      "bytes": 115321,
+      "sha256": "a8827c1d43c58ef719b1460ae518af505492a9b8784c722fcbf3eceb63e4ff35"
+    },
+    {
+      "path": "results/aira_one_v01_fresh_evaluation.json",
+      "bytes": 67130,
+      "sha256": "6b9d14a7b3ed637330462ab2ff82f4cad902cdc0cc32f6a6e5c065f0c09c6c99"
+    },
+    {
+      "path": "results/aira_one_v01_prepatch_runtime_smoke.json",
+      "bytes": 6612,
+      "sha256": "58f8c949dfcdec8ab701bb557afce920262c0a3b3706e22a922e887ac0903cec"
+    },
+    {
+      "path": "results/aira_one_v01_runtime_smoke.json",
+      "bytes": 5432,
+      "sha256": "7d5fa06e62537399aedd78a72206a15bb5389cfe13c0ff4afc83bdeaa48d0fff"
+    }
+  ],
+  "package_source_bytes": 291430,
+  "external_runtime_artifact": {
+    "path": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf",
+    "bytes": 532517120,
+    "sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+    "included_in_git": false,
+    "bootstrap": "python scripts/bootstrap_qwen35_donor.py --build-runtime --source github"
+  },
+  "entry_points": {
+    "chat": "python scripts/run_aira_one.py",
+    "api": "python scripts/serve_aira_one.py --host 0.0.0.0 --port 8000",
+    "offline_exact": "python scripts/run_aira_one.py --offline --prompt \"\u0412\u044b\u0447\u0438\u0441\u043b\u0438: 12 * (7 + 3)\""
+  },
+  "experimental_recurrent_bypass_enabled": false
+}

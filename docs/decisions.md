@@ -188,3 +188,9 @@ accuracy с 23.12% до 23.88% без дополнительных optimizer ste
 **Решение:** `llama_state_seq_*_ext(..., PARTIAL_ONLY)` используется как fork-free injection gate. Attention KV и post-event position берутся из полного oracle event, после чего заменяются только recurrent+conv tensors. Copy/stale является обязательным нижним baseline; oracle interpolation — только sensitivity curve, не deployable method.
 
 **Причина:** 12/12 full+partial serialization controls воспроизвели logits byte-exact. Stale recurrent state дал mean/median/max true-vocabulary KL `1.2945/1.0855/3.3657` и сохранил argmax лишь 8/12. При 25/50/75% oracle delta mean KL составил `0.4816/0.1533/0.00791`; даже 50% delta оставляет max KL 0.9633. Следовательно, bypass требует очень точного injectible updater и fallback; projected MSE improvement сам по себе недостаточен.
+
+## D-025 — AIra One v0.1 ships as exact-event controller plus residual donor
+
+**Решение:** первая запускаемая модель — `AIra One v0.1`: каждый запрос сначала проходит через high-precision event routes (tools, memory, documents, logic, code, arithmetic, installed Babysit skills), и только residual novelty вызывает Qwen. Fast/balanced/deep отличаются neural budget; unsafe recurrent-layer skipping выключен. Runtime предоставляет interactive CLI, OpenAI-compatible API, route statistics и append-only feedback journal.
+
+**Причина:** Qwen baseline имеет язык, но strict control всего 6/50 и source 0/18. Exact AIra routes прошли 174/174 protected и 100/100 fresh Mentor-family records без neural calls. В первом mixed smoke два из трёх residual answers были плохими; on-policy teacher corrections стали двумя skills. Повторный smoke сократил neural calls 4 → 1, bypass вырос 2/5 → 4/5, суммарная request latency снизилась 32.37 → 2.71 s. Это измеримый первый end-to-end Babysit cycle, но не доказательство general intelligence: неизвестный residual всё ещё ограничен слабым 0.8B donor.

@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "name": "AIra One v0.1",
+  "role": "first integrated local assistant",
+  "languages": ["ru", "en"],
+  "donor": {
+    "config": "configs/donors/qwen35_08b.json",
+    "artifact_sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+    "teacher_role": false
+  },
+  "modes": {
+    "fast": {"max_neural_tokens": 128, "review_passes": 0},
+    "balanced": {"max_neural_tokens": 256, "review_passes": 0},
+    "deep": {"max_neural_tokens": 384, "review_passes": 1}
+  },
+  "routes": {
+    "exact_before_neural": true,
+    "calculator": true,
+    "algebra": true,
+    "logic": true,
+    "python_contracts": true,
+    "calendar": true,
+    "persistent_memory": true,
+    "inline_documents": true,
+    "document_injection_boundary": true,
+    "babysit_skills": true,
+    "residual_neural_fallback": true
+  },
+  "memory": {
+    "backend": "SQLite FTS5",
+    "writes_require_explicit_remember_intent": true,
+    "provenance": true,
+    "deletion_supported": true
+  },
+  "babysit": {
+    "journal": ".aira-one/babysit.jsonl",
+    "exact_student_attempts": true,
+    "human_corrections": true,
+    "hidden_reasoning_stored": false,
+    "installed_patch_artifact": "artifacts/aira-one-babysit-v01"
+  },
+  "experimental_acceleration": {
+    "projected_state_patcher_available": true,
+    "recurrent_layer_skipping_enabled": false,
+    "reason": "injectible learned full-state and generated-quality gates are not passed"
+  },
+  "measured": {
+    "protected_mentor_contract_strict": "174/174",
+    "fresh_seed58_contract_strict": "100/100",
+    "mixed_smoke_bypass_after_babysit": "4/5",
+    "mixed_smoke_neural_calls_before_after": "4 -> 1",
+    "mixed_smoke_request_latency_seconds_before_after": "32.37 -> 2.71",
+    "child_maxrss_kib": 881884
+  },
+  "limitations": [
+    "Mentor-family scores are not a general intelligence benchmark",
+    "unknown residual quality is limited by the 0.8B donor",
+    "deep review is not guaranteed to improve an answer",
+    "mobile packaging is not complete"
+  ]
+}

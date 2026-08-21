@@ -26,6 +26,10 @@
 - `aira_mentor_tiny_training.json` — 1.7M random-init, 300-step SFT smoke and strict generated failures;
 - `aira_mentor_tiny_foundry_finetune.json` — matched 300-step Foundry intervention: lower PPL but unchanged 0/10 fresh strict passes;
 - `aira_state_patcher_proxy.json` — 200-step synthetic state catch-up, future-KL and exact-anchor control;
+- `aira_one_v01_evaluation.json` — protected 174-record exact-route contract and bypass audit;
+- `aira_one_v01_fresh_evaluation.json` — fresh seed-58 100-record exact-route control;
+- `aira_one_v01_prepatch_runtime_smoke.json` — first mixed runtime attempts before Babysit patches;
+- `aira_one_v01_runtime_smoke.json` — repeated mixed runtime after two installed Babysit skills;
 - `qwen35_donor_bootstrap.json` — exact recovered donor and pinned llama.cpp verification;
 - `qwen35_08b_model_audit.json` — embedded GGUF architecture, license, tensor and quantization inventory;
 - `qwen35_08b_runtime_smoke.json` — bounded 2-thread RSS and prompt/generation throughput;

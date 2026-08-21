@@ -66,7 +66,8 @@
 - математический autograd-референс finite PC/PC-ALM и gradient-alignment benchmark;
 - автономный stress test полки с oracle fallback, отдельно от teacher-forced coverage;
 - generated и real-text proxy experiments;
-- тесты causal-инвариантности, памяти, tools, distillation, QAT и учёта параметров.
+- тесты causal-инвариантности, памяти, tools, distillation, QAT и учёта параметров;
+- **AIra One v0.1**: запускаемый RU/EN чат и API, exact event routes, persistent memory, three modes и on-policy Babysit skills.
 
 Референсный PyTorch-код нужен для проверки идей. Он **не является мобильным
 runtime**: для реального устройства понадобятся llama.cpp/ExecuTorch/MLX и fused
@@ -77,6 +78,15 @@ kernels.
 ```bash
 python -m venv .venv
 .venv/bin/pip install -e '.[dev]'
+
+# Первая запускаемая модель: локальный интерактивный AIra One
+python scripts/run_aira_one.py
+
+# Только точные offline-маршруты, без запуска Qwen
+python scripts/run_aira_one.py --offline --prompt "Вычисли: 12 * (7 + 3)"
+
+# OpenAI-compatible API на порту 8000
+python scripts/serve_aira_one.py --host 0.0.0.0 --port 8000
 
 # Сравнить четыре архитектурных бюджета на контексте 8K
 minillm compare \
@@ -238,6 +248,7 @@ quality-adjusted active compute.
 
 ## Документы
 
+- [AIra One v0.1: первая запускаемая модель, чат, API и измерения](docs/aira-one-v01.md)
 - [Ускоренная карта до реально обученной модели](docs/roadmap.md)
 - [Reference generation, cache и checkpoint evaluation](docs/inference.md)
 - [Corpus v1: источники, policy, shards и tokenizer freeze](docs/data-v1.md)

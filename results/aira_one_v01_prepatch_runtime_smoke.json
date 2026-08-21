@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "model": "aira-one-v0.1",
+  "donor_model": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf",
+  "donor_sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+  "startup_seconds": 2.447631285999705,
+  "child_maxrss_kib": 902796,
+  "requests": 5,
+  "bypassed_requests": 2,
+  "neural_calls": 4,
+  "runtime_stats": {
+    "requests": 5,
+    "neural_calls": 4,
+    "bypassed_requests": 2,
+    "bypass_rate": 0.4,
+    "routes": {
+      "exact.calculator": 1,
+      "exact.document": 1,
+      "neural.residual": 3
+    },
+    "total_latency_seconds": 32.367350142999385,
+    "mean_latency_seconds": 6.473470028599877
+  },
+  "samples": [
+    {
+      "prompt": "Вычисли: (37 + 18 - 9) * 3",
+      "prompt_sha256": "64ce9c48105b1610dcfd17e3a68b46c23bf21fc77a84666bd7a79e016b4242d7",
+      "mode": "fast",
+      "answer": "Ответ: 138.",
+      "answer_sha256": "d587ee549d3d96a8cb2dcd4b6d60bbedc22dfc04c48eb8c826dee67ef45027dc",
+      "route": "exact.calculator",
+      "model_bypassed": true,
+      "neural_calls": 0,
+      "latency_seconds": 0.0006074169996281853,
+      "citations": [],
+      "verifier": {
+        "deterministic": true,
+        "route_metadata": {
+          "expression": "(37 + 18 - 9) * 3",
+          "result": "138"
+        }
+      }
+    },
+    {
+      "prompt": "Документ doc-demo: проект Project-42 создан в 2020 году в городе Pskov. Цвет эмблемы — синий.\n\nВ каком городе создан проект Project-42?",
+      "prompt_sha256": "a436576a2e873ab74791607eb66013045a2cdd226e71984225c94af68c5cd994",
+      "mode": "fast",
+      "answer": "Проект Project-42 создан в городе Pskov. [doc-demo]",
+      "answer_sha256": "c8aacdbaf9d3aa9ec935c12fb2942fe9d1bb798b1d0785e613eade50eb3becf5",
+      "route": "exact.document",
+      "model_bypassed": true,
+      "neural_calls": 0,
+      "latency_seconds": 0.0051979840000058175,
+      "citations": [
+        "doc-demo"
+      ],
+      "verifier": {
+        "deterministic": true,
+        "route_metadata": {
+          "injection_ignored": true
+        }
+      }
+    },
+    {
+      "prompt": "Кратко объясни простыми словами, почему небо кажется голубым.",
+      "prompt_sha256": "1b673e4ec1d53a45eb6100aeb19c67ad6f00dbd0c761edbc3251bf0c83de7b69",
+      "mode": "balanced",
+      "answer": "Небо голубое, потому что оно не просто «хорошо», а **свечение**.\n\nЭто происходит так:\n1.  **Свет от Солнца**: Солнце греет землю, но его свет не падает на небо напрямую.\n2.  **Свет от Луны**: Луна, освещаясь Солнцем, отражает его свет в космос.\n3.  **Свет от Земли**: Земля, освещаясь Солнцем, отбрасывает на космос свет.\n\nКогда эти три источника света (Луна, Земля, Солнце) встречаются в одном месте, они создают **свечение**. Это свет, который мы видим не как «голубой цвет», а как **свечение голубого цвета**.\n\nТаким образом, небо голубое — это **свечение**, а не просто цвет.",
+      "answer_sha256": "ca2fbb05b65230c11fe10ddd9fee1fe98dd54a37975941d6839caf792aa2c968",
+      "route": "neural.residual",
+      "model_bypassed": false,
+      "neural_calls": 1,
+      "latency_seconds": 10.177015729999766,
+      "citations": [],
+      "verifier": {
+        "provider_available": true,
+        "finish_reason": "stop",
+        "invalid_citations_removed": [],
+        "evidence_documents": 0,
+        "evidence_memories": 0,
+        "nonempty": true
+      }
+    },
+    {
+      "prompt": "Give two practical tips for keeping a local computer secure.",
+      "prompt_sha256": "e2a4ebf1c3401d9d02cb6fed2e8a761f5255c8660081d9108445adfd6338fce4",
+      "mode": "fast",
+      "answer": "1. Keep your operating system and software updated regularly to patch vulnerabilities.\n2. Use strong, unique passwords and enable two-factor authentication for all accounts.",
+      "answer_sha256": "656c57dbd613a3dc2436fb182eb1b64dbedf81d3280c8dcbae0e86f2a4a2013d",
+      "route": "neural.residual",
+      "model_bypassed": false,
+      "neural_calls": 1,
+      "latency_seconds": 2.6320520290000786,
+      "citations": [],
+      "verifier": {
+        "provider_available": true,
+        "finish_reason": "stop",
+        "invalid_citations_removed": [],
+        "evidence_documents": 0,
+        "evidence_memories": 0,
+        "nonempty": true
+      }
+    },
+    {
+      "prompt": "Сравни локальную и облачную модель: назови по два плюса каждой.",
+      "prompt_sha256": "a1ab06f056cd828edb400cfc49c5c7b51523ce9252a523406992024056f49c3f",
+      "mode": "deep",
+      "answer": "Сравни локальную и облачную модель: назови по два плюса каждой.\n\n**Правильный ответ:**\n\n1.  **Локальная модель** (например, на GPU) использует вычислительные ресурсы для ускорения математических операций, что позволяет обрабатывать большие объемы данных быстрее и с большей точностью.\n2.  **Облачная модель** (например, на CPU) использует процессоры для ускорения операций, но это может быть менее эффективным для больших объемов данных из-за ограничений на количество ядер и процессоры.",
+      "answer_sha256": "ac9e91e177c29cf162e6d9f3d6148cb8125739651b648169bc0a53cf630981d7",
+      "route": "neural.residual",
+      "model_bypassed": false,
+      "neural_calls": 2,
+      "latency_seconds": 19.552476982999906,
+      "citations": [],
+      "verifier": {
+        "provider_available": true,
+        "finish_reason": "stop",
+        "invalid_citations_removed": [],
+        "evidence_documents": 0,
+        "evidence_memories": 0,
+        "nonempty": true
+      }
+    }
+  ],
+  "interpretation": "Mixed route/runtime smoke only. Exact-route success and non-empty neural answers do not establish broad assistant quality."
+}

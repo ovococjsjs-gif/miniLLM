@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "records": 2,
+  "sha256": "280fab98ab56bba4d7c687f69c86d881109f570f950e665862ba87ce4ca490c4",
+  "student_checkpoints": [
+    "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517"
+  ],
+  "teacher_ids": [
+    "arena-agent-teacher-v1"
+  ],
+  "verdicts": {
+    "incorrect": 2
+  },
+  "metadata": {
+    "source": "results/aira_one_v01_prepatch_runtime_smoke.json",
+    "model": "aira-one-v0.1-pre-patch",
+    "on_policy": true,
+    "hidden_reasoning_stored": false,
+    "protected_evaluation_used": false
+  }
+}
