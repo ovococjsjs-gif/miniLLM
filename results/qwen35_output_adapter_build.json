@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "role": "neural-output-adapter-runtime-build",
+  "source": "native/qwen35_output_adapter.cpp",
+  "source_sha256": "d4c26827814d88b9436705b907d722a66b2cc1d1eb27ba06f7d26bac807a1ec7",
+  "binary": ".cache/qwen35-output-adapter/qwen35-output-adapter",
+  "binary_sha256": "8d81189303fddab54513974de577c588d719ef75864d835e4a2804567e8ea541",
+  "llama_cpp_revision": "9a532ae4bab1b164052ce60a738f78538b421c66",
+  "compiler": "c++ (Debian 12.2.0-14+deb12u1) 12.2.0",
+  "libraries": [
+    "libllama.so.0.0.1",
+    "libggml.so.0.12.0",
+    "libggml-base.so.0.12.0",
+    "libggml-cpu.so.0.12.0"
+  ]
+}

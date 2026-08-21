@@ -41,6 +41,31 @@ PACKAGE_FILES = (
     "artifacts/aira-one-broad-babysit-v1/audited_report.json",
     "results/aira_one_broad_babysit_v1.json",
     "results/aira_one_broad_babysit_v1_audited.json",
+    "configs/aira-one/neural_babysit_v1.json",
+    "configs/aira-one/neural_adapter_controls_v1.json",
+    "configs/aira-one/neural_babysit_manual_review_v1.json",
+    "docs/aira-neural-babysit-v1.md",
+    "native/qwen35_output_adapter.cpp",
+    "scripts/build_qwen35_output_adapter.py",
+    "scripts/run_aira_neural_babysit.py",
+    "scripts/audit_aira_neural_babysit.py",
+    "scripts/verify_aira_neural_adapter_independence.py",
+    "results/qwen35_output_adapter_build.json",
+    "results/aira_neural_babysit_v1.json",
+    "results/aira_neural_babysit_v1_audited.json",
+    "results/aira_neural_adapter_independence_v1.json",
+    "artifacts/aira-neural-babysit-v1/README.md",
+    "artifacts/aira-neural-babysit-v1/adapter.bin",
+    "artifacts/aira-neural-babysit-v1/audited_report.json",
+    "artifacts/aira-neural-babysit-v1/control_generation.jsonl",
+    "artifacts/aira-neural-babysit-v1/controls.tsv",
+    "artifacts/aira-neural-babysit-v1/controls_validation.tsv",
+    "artifacts/aira-neural-babysit-v1/manifest.json",
+    "artifacts/aira-neural-babysit-v1/model.pt",
+    "artifacts/aira-neural-babysit-v1/train.tsv",
+    "artifacts/aira-neural-babysit-v1/validation.tsv",
+    "artifacts/aira-neural-babysit-v1/validation_generation.jsonl",
+    "artifacts/aira-neural-babysit-v1/validation_inference.tsv",
 )
 
 
@@ -86,6 +111,8 @@ def main() -> None:
             "api": "python scripts/serve_aira_one.py --host 0.0.0.0 --port 8000",
             "broad_babysit": "python scripts/run_aira_one_broad_babysit.py",
             "broad_manual_review": "python scripts/apply_aira_one_broad_review.py",
+            "neural_babysit": "python scripts/run_aira_neural_babysit.py",
+            "neural_babysit_audit": "python scripts/audit_aira_neural_babysit.py",
             "offline_exact": (
                 "python scripts/run_aira_one.py --offline --prompt "
                 '"Вычисли: 12 * (7 + 3)"'
@@ -98,12 +125,13 @@ def main() -> None:
     (output / "README.md").write_text(
         "# AIra One v0.1 package\n\n"
         "The first integrated local AIra assistant. The Git package contains source, "
-        "configuration, Babysit patches and measured evidence, including three broad "
-        "cycles plus manual remediation over 24 topics; the verified 532.5 MB GGUF is restored separately by "
-        "the pinned bootstrap process.\n\n"
+        "configuration and measured evidence. Reviewed SkillShelf entries are packaged "
+        "as deterministic cache, not learning. Neural Babysit v1 adds a real 264K-parameter "
+        "logit residual experiment; its production gate remains closed. The verified "
+        "532.5 MB GGUF is restored separately by the pinned bootstrap process.\n\n"
         "Run `python scripts/run_aira_one.py` for chat, "
         "`python scripts/serve_aira_one.py` for the local API, or "
-        "`python scripts/run_aira_one_broad_babysit.py` to reproduce broad cycles.\n",
+        "`python scripts/run_aira_neural_babysit.py` for parameter learning.\n",
         encoding="utf-8",
     )
     print(json.dumps(manifest, indent=2))

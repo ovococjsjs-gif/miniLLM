@@ -23,7 +23,8 @@
     "persistent_memory": true,
     "inline_documents": true,
     "document_injection_boundary": true,
-    "babysit_skills": true,
+    "reviewed_answer_cache": true,
+    "answer_cache_is_parametric_learning": false,
     "residual_neural_fallback": true
   },
   "memory": {
@@ -58,10 +59,15 @@
     "broad_manual_validation_passes_before_after": "2/24 -> 24/24",
     "broad_validation_neural_calls_before_after": "24 -> 0",
     "broad_summed_request_latency_seconds_before_after": "249.65 -> 0.0057",
+    "neural_babysit_manual_quality_before_after": "1/24 -> 13/24",
+    "neural_babysit_parameters_changed": 264137,
+    "neural_babysit_deployed": false,
     "child_maxrss_kib": 881884
   },
   "limitations": [
     "Mentor-family scores are not a general intelligence benchmark",
+    "reviewed SkillShelf entries are deterministic cache routes, not model learning",
+    "neural Babysit v1 is experimental and blocked by out-of-scope gate failures",
     "unknown residual quality is limited by the 0.8B donor",
     "deep review is not guaranteed to improve an answer",
     "mobile packaging is not complete"

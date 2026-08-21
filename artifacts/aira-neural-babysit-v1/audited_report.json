@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "experiment": "aira-neural-babysit-output-adapter-v1-manually-audited",
+  "raw_result": "results/aira_neural_babysit_v1.json",
+  "raw_result_sha256": "dd0328200bbbc77d818434ba9667b12f3cf2152e0ea6218dd19b1c9401348689",
+  "manual_review": "configs/aira-one/neural_babysit_manual_review_v1.json",
+  "manual_review_sha256": "9a7efeff34d55b239c25a4978ac446c83c9030b8c2184a3597d398f6de84d4fa",
+  "architecture": {
+    "base": "frozen Qwen3.5-0.8B Q4_K_M",
+    "learned_component": "prompt-gated hidden-to-logit residual MLP",
+    "parameters_changed": 264137,
+    "training_steps": 300,
+    "stored_answer_routes_used": false,
+    "keyword_routes_used": false,
+    "adapter_checkpoint": "artifacts/aira-neural-babysit-v1/adapter.bin",
+    "adapter_sha256": "179e38f0eb641fab30568c83133bc327f9702b041b806ffd18c2260fed9cfbbc"
+  },
+  "manual_quality": {
+    "tasks": 24,
+    "base_passes": 1,
+    "adapted_passes": 13,
+    "absolute_improvement": 12,
+    "accepted": {
+      "base": [
+        "science:photosynthesis-input-output"
+      ],
+      "adapted": [
+        "computing-ai:compiler-interpreter",
+        "computing-ai:llm-hallucinations",
+        "computing-ai:ram-vs-storage",
+        "computing-ai:sql-injection-parameters",
+        "practical-safety:carbon-monoxide",
+        "practical-safety:password-manager",
+        "practical-safety:phishing-signs",
+        "practical-safety:public-wifi",
+        "practical-safety:suspicious-link",
+        "science:antibiotics-viruses",
+        "science:greenhouse-infrared",
+        "science:seasons-axis-tilt",
+        "science:vaccines-immune-memory"
+      ]
+    },
+    "overrides": [
+      {
+        "side": "adapted",
+        "id": "science:photosynthesis-input-output",
+        "automated_passed": true,
+        "manual_passed": false,
+        "kind": "false-positive",
+        "rationale": "The answer states the correct inputs and outputs once but then repeats the same sentence until the token limit; this is not acceptable generated quality."
+      }
+    ]
+  },
+  "teacher_forced_validation": {
+    "tokens": 1154.0,
+    "base_nll": 3.02363920211792,
+    "adapted_nll": 0.09941104799509048,
+    "base_top1_accuracy": 0.410745233297348,
+    "adapted_top1_accuracy": 0.9722703695297241,
+    "delta_rms": 2.3988962173461914,
+    "delta_max_abs": 23.86907958984375
+  },
+  "out_of_scope_controls": {
+    "tasks": 8,
+    "byte_exact_preserved": 6,
+    "adapter_activations": 2,
+    "failed_ids": [
+      "opposite",
+      "evaporation"
+    ]
+  },
+  "decision": {
+    "parameter_learning_demonstrated": true,
+    "held_out_free_generation_improved": true,
+    "stored_answer_or_keyword_route_explanation_rejected": true,
+    "production_deployment_allowed": false
+  },
+  "rationale": "The 264137 learned parameters change Qwen logits and improve manually reviewed held-out paraphrases from 1/24 to 13/24 with no shelf lookup. This is real parametric adaptation. It is not deployable because 11/24 target answers still fail and the learned gate corrupts 2/8 unrelated held-out controls.",
+  "limitations": "One held-out paraphrase per topic and eight unrelated controls are bounded evidence. The adapter can memorize training trajectories, and this experiment does not prove broad intelligence or safe unrestricted use."
+}

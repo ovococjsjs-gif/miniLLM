@@ -151,7 +151,12 @@ class ShelfSkill:
 
 
 class SkillShelf:
-    """Auditable high-precision skills compiled from reviewed Babysit failures."""
+    """Reviewed high-precision answer cache, not parametric model learning.
+
+    Entries are explicit prompt matchers plus stored answers. They are useful for
+    latency and safety, but are intentionally classified as deterministic cache
+    routes rather than evidence that AI Babysit changed neural behavior.
+    """
 
     def __init__(self, skills: Sequence[ShelfSkill] = ()) -> None:
         self.skills = tuple(skills)

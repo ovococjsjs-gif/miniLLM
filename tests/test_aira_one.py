@@ -265,7 +265,7 @@ def test_aira_one_package_manifest_hashes_every_source_file() -> None:
 
     assert manifest["name"] == "AIra One v0.1"
     assert manifest["experimental_recurrent_bypass_enabled"] is False
-    assert len(manifest["files"]) == 32
+    assert len(manifest["files"]) == 57
     for item in manifest["files"]:
         path = root / item["path"]
         assert path.stat().st_size == item["bytes"]

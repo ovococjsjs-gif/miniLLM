@@ -67,8 +67,9 @@
 - автономный stress test полки с oracle fallback, отдельно от teacher-forced coverage;
 - generated и real-text proxy experiments;
 - тесты causal-инвариантности, памяти, tools, distillation, QAT и учёта параметров;
-- **AIra One v0.1**: запускаемый RU/EN чат и API, exact event routes, persistent memory, three modes и on-policy Babysit skills;
-- три широких AI Babysit цикла и manual-remediation на 24 темах: строго проверенные independent routes 2/24→24/24, вызовы Qwen 24→0 после 24 reviewed corrections.
+- **AIra One v0.1**: запускаемый RU/EN чат и API, exact event routes, persistent memory и three modes;
+- reviewed `SkillShelf` ускоряет известные запросы, но честно классифицируется как кэш/набор `IF`, а не обучение интеллекта;
+- **Neural Babysit v1** обучает 264,137 параметров hidden-to-logit residual без shelf: ручное качество на невиденных формулировках выросло 1/24→13/24; production закрыт из-за 2/8 gate false positives.
 
 Референсный PyTorch-код нужен для проверки идей. Он **не является мобильным
 runtime**: для реального устройства понадобятся llama.cpp/ExecuTorch/MLX и fused
@@ -90,6 +91,11 @@ python scripts/run_aira_one.py --offline --prompt "Вычисли: 12 * (7 + 3)"
 python scripts/run_aira_one_broad_babysit.py
 # Применить зафиксированный ручной аудит и отдельный remediation holdout
 python scripts/apply_aira_one_broad_review.py
+
+# Настоящее параметрическое обучение: shelf отключён, corrections меняют logits
+python scripts/build_qwen35_output_adapter.py
+python scripts/run_aira_neural_babysit.py
+python scripts/audit_aira_neural_babysit.py
 
 # OpenAI-compatible API на порту 8000
 python scripts/serve_aira_one.py --host 0.0.0.0 --port 8000
