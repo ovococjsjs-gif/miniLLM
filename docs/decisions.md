@@ -140,3 +140,9 @@ accuracy с 23.12% до 23.88% без дополнительных optimizer ste
 **Решение:** проект выпускает `AIra Mentor v1` как CC0 verifier-first RU/EN SFT seed. Он содержит 6,000 conversations, 10 balanced categories и 23 deterministic template families. Внутренние reasoning traces не публикуются и не имитируются; targets состоят из коротких проверяемых объяснений, tool/memory actions, grounding, uncertainty и corrections. Dataset используется только после base pretraining с assistant-only loss.
 
 **Причина:** собственный reproducible generator устраняет unclear upstream terms и позволяет привязать каждый target к verifier. При этом 0.7M tokens и шаблонная природа не могут создать Gemma-level base. Рост v2 разрешён через новые task families и реальные on-policy Babysit failures, а не простое размножение текущих templates.
+
+## D-017 — Tiny random-init Mentor checkpoint is a failure collector, not the base
+
+**Решение:** 1.7M `AIra Mentor Tiny v1` сохраняется только для локального interaction plumbing и AI Babysit rollouts. Он не продвигается в base model и не используется для quality claims, несмотря на validation ppl 2.43.
+
+**Причина:** после 300 assistant-only steps teacher-forced NLL упал с 9.42 до 0.887, но strict autonomous verification прошёл лишь 1/10 category demonstrations. На 200 свежих seed-43 задачах прошли 7, все из memory-control; 193 failures стали первым Babysit correction set. Модель выучила формы ответов, но не научилась связывать новые числа, document IDs и code payloads. Base pretraining или pretrained initialization обязательны до полезного SFT.

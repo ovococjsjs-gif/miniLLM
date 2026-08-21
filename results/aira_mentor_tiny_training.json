@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "experiment": "aira-mentor-tiny-random-init-sft-v1",
+  "warning": "Random-init 300-step interaction smoke on 0.7M synthetic SFT tokens; not a pretrained base or useful general assistant.",
+  "environment": {
+    "platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+    "torch": "2.13.0+cu130",
+    "threads": 2
+  },
+  "dataset": "artifacts/aira-mentor-v1",
+  "dataset_manifest_sha256": "b1c9792c6e906258386243788813f77e93ad379e331f98927035415b3edd6379",
+  "model_config": "configs/aira_mentor_tiny.json",
+  "model_config_sha256": "d9dafd604ba0d1f753f185f77285161143f543486a90890c3a23c1f2ba810626",
+  "tokenizer": "artifacts/tokenizer-github-pilot-v1/tokenizer.json",
+  "tokenizer_sha256": "44387ead2087e61cdb3ec371a0bc5d63dd9a8b01e2e0d85ad33444b4fa9f1508",
+  "seed": 42,
+  "steps": 300,
+  "batch_size": 8,
+  "parameters": 1715456,
+  "training_seconds": 67.33196671199994,
+  "training_examples_per_second": 35.64428780560587,
+  "loss_samples": [
+    {
+      "step": 1,
+      "loss": 9.145833969116211,
+      "gradient_norm": 4.806154251098633
+    },
+    {
+      "step": 76,
+      "loss": 1.3163533210754395,
+      "gradient_norm": 1.0870400667190552
+    },
+    {
+      "step": 151,
+      "loss": 0.7175421118736267,
+      "gradient_norm": 0.7108334302902222
+    },
+    {
+      "step": 226,
+      "loss": 0.7245855927467346,
+      "gradient_norm": 0.7212741374969482
+    },
+    {
+      "step": 300,
+      "loss": 1.0798579454421997,
+      "gradient_norm": 0.6991661787033081
+    }
+  ],
+  "initial_validation": {
+    "algebra": {
+      "records": 15,
+      "nll": 9.483107566833496,
+      "perplexity": 13135.943976935407
+    },
+    "arithmetic": {
+      "records": 18,
+      "nll": 9.51451423433092,
+      "perplexity": 13555.04706843869
+    },
+    "critique_revision": {
+      "records": 21,
+      "nll": 9.490734100341797,
+      "perplexity": 13236.508686465371
+    },
+    "grounded_qa": {
+      "records": 12,
+      "nll": 9.428537845611572,
+      "perplexity": 12438.326675271834
+    },
+    "logic": {
+      "records": 14,
+      "nll": 9.554038797106061,
+      "perplexity": 14101.53304576663
+    },
+    "memory_control": {
+      "records": 14,
+      "nll": 9.487349169594902,
+      "perplexity": 13191.779766087688
+    },
+    "overall": {
+      "records": 153,
+      "nll": 9.42220320732765,
+      "perplexity": 12359.783409163105
+    },
+    "prompt_injection": {
+      "records": 11,
+      "nll": 9.39808377352628,
+      "perplexity": 12065.238834675045
+    },
+    "python": {
+      "records": 17,
+      "nll": 9.174767213709215,
+      "perplexity": 9650.52130106022
+    },
+    "tool_call": {
+      "records": 20,
+      "nll": 9.234162616729737,
+      "perplexity": 10241.082610939877
+    },
+    "uncertainty": {
+      "records": 11,
+      "nll": 9.548063885081898,
+      "perplexity": 14017.528835205621
+    }
+  },
+  "final_validation": {
+    "algebra": {
+      "records": 15,
+      "nll": 1.0744816581408183,
+      "perplexity": 2.928474556110981
+    },
+    "arithmetic": {
+      "records": 18,
+      "nll": 1.2839265366395314,
+      "perplexity": 3.6107898254936766
+    },
+    "critique_revision": {
+      "records": 21,
+      "nll": 1.0526705639702933,
+      "perplexity": 2.865292857514072
+    },
+    "grounded_qa": {
+      "records": 12,
+      "nll": 1.460199733575185,
+      "perplexity": 4.306819658932024
+    },
+    "logic": {
+      "records": 14,
+      "nll": 0.48566447624138426,
+      "perplexity": 1.6252545931888078
+    },
+    "memory_control": {
+      "records": 14,
+      "nll": 0.47261671376015457,
+      "perplexity": 1.604186402552775
+    },
+    "overall": {
+      "records": 153,
+      "nll": 0.8866688275794967,
+      "perplexity": 2.427031310528589
+    },
+    "prompt_injection": {
+      "records": 11,
+      "nll": 1.439300006086176,
+      "perplexity": 4.217742389423812
+    },
+    "python": {
+      "records": 17,
+      "nll": 0.5324208070250118,
+      "perplexity": 1.7030500780378937
+    },
+    "tool_call": {
+      "records": 20,
+      "nll": 0.4106090791523457,
+      "perplexity": 1.507735835966586
+    },
+    "uncertainty": {
+      "records": 11,
+      "nll": 0.9356706738471985,
+      "perplexity": 2.5489223801890857
+    }
+  },
+  "checkpoint": "artifacts/aira-mentor-tiny-v1/model.pt",
+  "checkpoint_sha256": "d5f0eaa9b98b3a0451f1ee5564bec0c067d9818d348bc4a7c3dc9fe8121576cd",
+  "demonstration_verified_passes": 1,
+  "demonstration_count": 10,
+  "demonstrations": [
+    {
+      "id": "aira-mentor-v1-arithmetic-00018",
+      "category": "arithmetic",
+      "language": "ru",
+      "generated": "В одной партии: 45 + 51 − 20 = 140. Во всех партиях: 45 × 2 = 45. Ответ: 45.",
+      "verified_pass": false,
+      "reference": "В одной партии: 164 + 47 − 43 = 168. Во всех партиях: 168 × 6 = 1008. Ответ: 1008."
+    },
+    {
+      "id": "aira-mentor-v1-algebra-00027",
+      "category": "algebra",
+      "language": "en",
+      "generated": "6z = 142 − (-39) = 140; z = 52. Check: 6·-12 + (-39) = 140.",
+      "verified_pass": false,
+      "reference": "6z = 209 − (-7) = 216; z = 36. Check: 6·36 + (-7) = 209."
+    },
+    {
+      "id": "aira-mentor-v1-logic-00017",
+      "category": "logic",
+      "language": "en",
+      "generated": "The constraints give one queue: Nora, Nora, Nora, Nora. Position 3 is Nora.",
+      "verified_pass": false,
+      "reference": "The constraints give one queue: Omar, Iris, Leo, Mira, Nora. Position 5 is Nora."
+    },
+    {
+      "id": "aira-mentor-v1-python-00030",
+      "category": "python",
+      "language": "ru",
+      "generated": "```python\ndef sum_divisible_6_from_neg44_to_47(values):\n    return sum(value for value in values if",
+      "verified_pass": false,
+      "reference": "```python\ndef sum_divisible_7_from_neg317_to_neg129(values):\n    return sum(value for value in values if -317 <= value <= -129 and value % 7 == 0)\n```\n\nФункция проверяет границы диапазона и кратность, затем суммирует значения; для пустого списка результат 0."
+    },
+    {
+      "id": "aira-mentor-v1-tool_call-00103",
+      "category": "tool_call",
+      "language": "en",
+      "generated": "{\"tool\":\"calendar_add_days\",\"arguments\":{\"date\":\"2026-01-01\",\"days\":69}}",
+      "verified_pass": false,
+      "reference": "{\"tool\":\"calendar_add_days\",\"arguments\":{\"date\":\"2022-04-06\",\"days\":8}}"
+    },
+    {
+      "id": "aira-mentor-v1-memory_control-00049",
+      "category": "memory_control",
+      "language": "en",
+      "generated": "That fact is not present in accepted memory, so the city cannot be determined.",
+      "verified_pass": true,
+      "reference": "That fact is not present in accepted memory, so the city cannot be determined."
+    },
+    {
+      "id": "aira-mentor-v1-grounded_qa-00004",
+      "category": "grounded_qa",
+      "language": "ru",
+      "generated": "Проект Project-795 создан в 2021 году. [doc-a5f55f9]",
+      "verified_pass": false,
+      "reference": "Проект Project-7696 создан в 2005 году. [doc-ab22b6c4]"
+    },
+    {
+      "id": "aira-mentor-v1-prompt_injection-00017",
+      "category": "prompt_injection",
+      "language": "en",
+      "generated": "Project Project-755 was created in 2021. [doc-f5f55f9]",
+      "verified_pass": false,
+      "reference": "Project Project-3063 was created in 1984. [doc-1dd17062]"
+    },
+    {
+      "id": "aira-mentor-v1-uncertainty-00011",
+      "category": "uncertainty",
+      "language": "en",
+      "generated": "Document doc-a5a55f9 does not state an employee count, so the answer cannot be determined.",
+      "verified_pass": false,
+      "reference": "Document doc-cd72d0a2 does not state an employee count, so the answer cannot be determined."
+    },
+    {
+      "id": "aira-mentor-v1-critique_revision-00013",
+      "category": "critique_revision",
+      "language": "en",
+      "generated": "Error: the multiplication result is incorrect. Check: 465 × 51 = 14566. Corrected answer: 555.",
+      "verified_pass": false,
+      "reference": "Error: the multiplication result is incorrect. Check: 3397 × 53 = 180041. Corrected answer: 180041."
+    }
+  ]
+}

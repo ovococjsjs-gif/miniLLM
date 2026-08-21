@@ -88,6 +88,14 @@ It can teach a small pretrained model consistent local behaviors and provide det
 
 Template generation also has an obvious ceiling. Even with 23 families and randomized values, overtraining will teach templates rather than general intelligence. Use one or a few epochs, track per-category validation, and stop if held-out gains reverse.
 
+## Tiny local interaction smoke
+
+A 1,715,456-parameter random-init `MiniLLM` was trained locally for the maximum allowed 300 assistant-only steps (`configs/aira_mentor_tiny.json`). The run processed random SFT batches for 67.3 seconds. Validation assistant-token NLL fell from 9.42 to 0.887 (perplexity 12,360 to 2.43).
+
+That low teacher-forced loss is misleading. On one fresh generated example from each category, only **1/10** responses passed strict verification. The model learned forms such as JSON, equations and citations, but copied wrong numbers, function bodies, document IDs and arithmetic. The only passing example was an exact unknown-memory response. The checkpoint is retained as `artifacts/aira-mentor-tiny-v1/model.pt` strictly for interaction plumbing and failure collection, not as a usable assistant.
+
+A first real Babysit rollout was then collected from 200 fresh seed-43 tasks that do not use v1 train/validation/test records. Deterministic verifiers accepted 7/200 (all memory-control) and produced 193 hashed critique/correction records in `artifacts/aira-mentor-babysit-v1/`. This is the desired evidence: random-init SFT can imitate templates but cannot bind new values, and teacher-forced perplexity cannot select an assistant checkpoint.
+
 ## Planned v2 growth through AI Babysit
 
 Do not produce v2 by merely increasing every template from 600 to 6,000. Grow it with new verified task families and on-policy failures:

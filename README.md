@@ -49,6 +49,7 @@
 - hash-bound on-policy Top-K teacher records для точного student-generated prefix;
 - AI Babysit critique/correction/verifier/preference records с teacher/student identity;
 - project-owned `AIra Mentor v1`: 6K RU/EN verifier-first SFT records в 10 категориях;
+- 1.7M-parameter/300-step local interaction smoke и первый 200-task Babysit failure set;
 - deterministic event shards и resume-safe ≤300-step multi-head trainer;
 - строгая UTF-8 grammar mask и отдельная calibration на generated contexts до разрешения bypass;
 - request-level `AIraCascade`: accepted explicit fact возвращается напрямую, unknown/conflict падает в shelf→neural;
@@ -91,6 +92,10 @@ pytest
 
 # Воспроизвести project-owned AIra Mentor v1 (6K verifier-first SFT)
 python scripts/build_aira_mentor_dataset.py --overwrite
+
+# Tiny interaction smoke и сбор свежих AI Babysit ошибок (оба capped at 300)
+python scripts/train_aira_mentor_tiny.py --steps 300
+python scripts/collect_aira_mentor_babysit.py
 
 # Проверить найденный JSONL-датасет по AIra handoff contract
 python scripts/audit_aira_dataset.py /path/to/candidate.jsonl

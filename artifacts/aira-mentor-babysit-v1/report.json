@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "records": 200,
+  "passed": 7,
+  "failed": 193,
+  "category_passes": {
+    "algebra": 0,
+    "arithmetic": 0,
+    "critique_revision": 0,
+    "grounded_qa": 0,
+    "logic": 0,
+    "memory_control": 7,
+    "prompt_injection": 0,
+    "python": 0,
+    "tool_call": 0,
+    "uncertainty": 0
+  },
+  "category_totals": {
+    "algebra": 20,
+    "arithmetic": 20,
+    "critique_revision": 20,
+    "grounded_qa": 20,
+    "logic": 20,
+    "memory_control": 20,
+    "prompt_injection": 20,
+    "python": 20,
+    "tool_call": 20,
+    "uncertainty": 20
+  },
+  "student_checkpoint_sha256": "d5f0eaa9b98b3a0451f1ee5564bec0c067d9818d348bc4a7c3dc9fe8121576cd",
+  "task_seed": 43,
+  "manifest": "artifacts/aira-mentor-babysit-v1/records.jsonl.manifest.json"
+}

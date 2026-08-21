@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "records": 200,
+  "sha256": "9b2ab76b38c10323c281b6a578a72ef422c8055da1464a3187de96a67a076528",
+  "student_checkpoints": [
+    "d5f0eaa9b98b3a0451f1ee5564bec0c067d9818d348bc4a7c3dc9fe8121576cd"
+  ],
+  "teacher_ids": [
+    "aira-deterministic-reference-v1"
+  ],
+  "verdicts": {
+    "correct": 7,
+    "incorrect": 193
+  },
+  "metadata": {
+    "task_generator": "aira-mentor-v1",
+    "task_seed": 43,
+    "examples_per_category": 20,
+    "student_checkpoint_sha256": "d5f0eaa9b98b3a0451f1ee5564bec0c067d9818d348bc4a7c3dc9fe8121576cd",
+    "tokenizer_sha256": "44387ead2087e61cdb3ec371a0bc5d63dd9a8b01e2e0d85ad33444b4fa9f1508",
+    "protected_v1_splits_used": false
+  }
+}

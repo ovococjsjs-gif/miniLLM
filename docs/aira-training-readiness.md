@@ -60,7 +60,7 @@ Synthetic chat datasets are not base-pretraining replacements. The first three u
 
 The project-owned alternative is AI Babysit: student rollouts are verified, critiqued and corrected on their exact generated states. `aira/babysit.py` now provides hashed critique/correction/rubric/verifier/preference records; `aira/on_policy.py` stores sparse teacher distributions for the exact same prefixes. Teacher-service rights must still be checked before generated labels enter training.
 
-The first owned seed, [`AIra Mentor v1`](aira-mentor-v1.md), is now materialized: 6,000 verifier-approved RU/EN conversations across arithmetic, algebra, logic, Python, tools, explicit memory, grounded QA, prompt injection, unknown rejection and critique/revision. It is only ~0.7M pilot-tokenizer tokens and must be used as later assistant-only SFT, never as a base-corpus substitute.
+The first owned seed, [`AIra Mentor v1`](aira-mentor-v1.md), is now materialized: 6,000 verifier-approved RU/EN conversations across arithmetic, algebra, logic, Python, tools, explicit memory, grounded QA, prompt injection, unknown rejection and critique/revision. It is only ~0.7M pilot-tokenizer tokens and must be used as later assistant-only SFT, never as a base-corpus substitute. A 1.7M random-init 300-step smoke reached validation ppl 2.43 but passed only 1/10 strict generated demonstrations; the first fresh 200-task Babysit rollout produced 193 corrections. This confirms that useful SFT must start from a pretrained base and be selected by autonomous verifiers, not teacher-forced loss.
 
 ## Dataset handoff format
 
