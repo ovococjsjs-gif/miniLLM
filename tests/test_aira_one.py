@@ -5,7 +5,12 @@ import json
 from pathlib import Path
 
 from minillm.aira.babysit import read_babysit_dataset
-from minillm.aira.one import AIraBabysitJournal, AIraMode, AIraOne
+from minillm.aira.one import (
+    AIraBabysitJournal,
+    AIraMode,
+    AIraOne,
+    SkillShelf,
+)
 from minillm.aira.provider import ProviderResponse
 from minillm.aira.synthetic import generate_aira_mentor_records
 from minillm.aira.verification import verify_synthetic_generation
@@ -71,6 +76,38 @@ def test_neural_residual_and_deep_review_are_explicit() -> None:
     assert response.neural_calls == 2
     assert len(provider.calls) == 2
     assert assistant.stats.neural_calls == 2
+
+
+def test_external_babysit_skill_shelf_requires_all_topic_groups(tmp_path: Path) -> None:
+    path = tmp_path / "skills.json"
+    path.write_text(
+        json.dumps(
+            {
+                "skills": [
+                    {
+                        "skill_id": "science.test",
+                        "required_groups": {
+                            "ru": [["небо"], ["голуб"]],
+                            "en": [["sky"], ["blue"]],
+                        },
+                        "answers": {"ru": "Проверенный ответ.", "en": "Verified answer."},
+                        "provenance": "test",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    shelf = SkillShelf.load(path)
+    assistant = AIraOne(None, skill_shelf=shelf)
+
+    matched = assistant.answer("Почему небо голубое?")
+    unmatched = assistant.answer("Почему море голубое?")
+
+    assert matched.answer == "Проверенный ответ."
+    assert matched.route == "babysit.broad.science.test"
+    assert unmatched.route == "neural.residual"
+    assert unmatched.model_bypassed
 
 
 def test_confirmed_memory_and_babysit_feedback_are_persistent(tmp_path: Path) -> None:

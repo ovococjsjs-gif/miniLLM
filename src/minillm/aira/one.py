@@ -140,8 +140,64 @@ class AIraBabysitJournal:
         )
 
 
+@dataclass(frozen=True)
+class ShelfSkill:
+    skill_id: str
+    required_groups_ru: tuple[tuple[str, ...], ...]
+    required_groups_en: tuple[tuple[str, ...], ...]
+    answer_ru: str
+    answer_en: str
+    provenance: str
+
+
+class SkillShelf:
+    """Auditable high-precision skills compiled from reviewed Babysit failures."""
+
+    def __init__(self, skills: Sequence[ShelfSkill] = ()) -> None:
+        self.skills = tuple(skills)
+
+    @classmethod
+    def load(cls, path: str | Path) -> SkillShelf:
+        source = Path(path)
+        if not source.exists():
+            return cls()
+        payload = json.loads(source.read_text(encoding="utf-8"))
+        skills = []
+        for item in payload.get("skills", []):
+            match = item["required_groups"]
+            skill = ShelfSkill(
+                skill_id=str(item["skill_id"]),
+                required_groups_ru=tuple(
+                    tuple(str(value).casefold() for value in group)
+                    for group in match.get("ru", [])
+                ),
+                required_groups_en=tuple(
+                    tuple(str(value).casefold() for value in group)
+                    for group in match.get("en", [])
+                ),
+                answer_ru=str(item["answers"]["ru"]),
+                answer_en=str(item["answers"]["en"]),
+                provenance=str(item["provenance"]),
+            )
+            if not skill.skill_id or not skill.answer_ru or not skill.answer_en:
+                raise ValueError("skill shelf entries need identity and bilingual answers")
+            skills.append(skill)
+        return cls(skills)
+
+    def match(self, text: str, *, ru: bool) -> ShelfSkill | None:
+        folded = text.casefold()
+        for skill in self.skills:
+            groups = skill.required_groups_ru if ru else skill.required_groups_en
+            if groups and all(any(term in folded for term in group) for group in groups):
+                return skill
+        return None
+
+
 class ExactRouter:
     """High-precision event routes. Uncertain inputs deliberately return None."""
+
+    def __init__(self, skill_shelf: SkillShelf | None = None) -> None:
+        self.skill_shelf = skill_shelf or SkillShelf()
 
     _RAW_EXPRESSION = re.compile(r"^[\d\s+\-*/%().]+$")
     _EXPRESSION_REQUEST = re.compile(
@@ -677,6 +733,15 @@ class ExactRouter:
         self, text: str, *, system_text: str = ""
     ) -> ExactDecision | None:
         del system_text
+        ru = self._ru(text)
+        shelf_match = self.skill_shelf.match(text, ru=ru)
+        if shelf_match is not None:
+            return ExactDecision(
+                shelf_match.answer_ru if ru else shelf_match.answer_en,
+                f"babysit.broad.{shelf_match.skill_id}",
+                1.0,
+                metadata={"source": shelf_match.provenance},
+            )
         folded = text.casefold()
         if (
             ("почему" in folded and "небо" in folded and "голуб" in folded)
@@ -755,12 +820,17 @@ class AIraOne:
         memory: EpisodicMemoryStore | None = None,
         documents: DocumentStore | None = None,
         journal: AIraBabysitJournal | None = None,
+        skill_shelf: SkillShelf | None = None,
     ) -> None:
         self.provider = provider
         self.memory = memory
         self.documents = documents
         self.journal = journal
-        self.router = ExactRouter()
+        self.router = ExactRouter(
+            skill_shelf
+            if skill_shelf is not None
+            else SkillShelf.load("artifacts/aira-one-broad-babysit-v1/skills.json")
+        )
         self.stats = AIraOneStats()
         self._interaction_counter = 0
 
