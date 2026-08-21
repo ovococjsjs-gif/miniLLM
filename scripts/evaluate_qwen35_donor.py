@@ -5,14 +5,39 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
+import sys
 import time
 from collections import Counter
 from pathlib import Path
+from types import ModuleType
 from typing import Any
 
-from minillm.aira.provider import OpenAIChatProvider, ProviderError
-from minillm.aira.verification import verify_synthetic_generation
+
+def load_lightweight_module(name: str, relative_path: str) -> ModuleType:
+    """Load stdlib-only donor helpers without importing the Torch AIra package."""
+
+    path = Path(__file__).resolve().parents[1] / relative_path
+    spec = importlib.util.spec_from_file_location(name, path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"cannot load {path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+_provider = load_lightweight_module(
+    "minillm_lightweight_provider", "src/minillm/aira/provider.py"
+)
+_verification = load_lightweight_module(
+    "minillm_lightweight_verification", "src/minillm/aira/verification.py"
+)
+OpenAIChatProvider = _provider.OpenAIChatProvider
+ProviderError = _provider.ProviderError
+synthetic_generation_components = _verification.synthetic_generation_components
+verify_synthetic_generation = _verification.verify_synthetic_generation
 
 
 def sha256(path: Path) -> str:
@@ -25,6 +50,40 @@ def load_records(path: Path) -> list[dict[str, Any]]:
         return [json.loads(line) for line in handle if line.strip()]
 
 
+def select_records(
+    records: list[dict[str, Any]],
+    *,
+    limit: int = 0,
+    examples_per_category: int = 0,
+) -> list[dict[str, Any]]:
+    """Select a bounded prefix or a deterministic category-balanced subset."""
+
+    if limit < 0 or examples_per_category < 0:
+        raise ValueError("evaluation limits cannot be negative")
+    if limit and examples_per_category:
+        raise ValueError("choose either a global limit or a per-category limit")
+    if examples_per_category:
+        selected: list[dict[str, Any]] = []
+        selected_counts: Counter[str] = Counter()
+        for record in records:
+            category = record["category"]
+            if selected_counts[category] < examples_per_category:
+                selected.append(record)
+                selected_counts[category] += 1
+        category_counts = Counter(record["category"] for record in records)
+        missing = {
+            category: examples_per_category - selected_counts[category]
+            for category in category_counts
+            if selected_counts[category] < examples_per_category
+        }
+        if missing:
+            raise ValueError(f"dataset cannot satisfy per-category selection: {missing}")
+        return selected
+    if limit:
+        return records[:limit]
+    return list(records)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--endpoint", default="http://127.0.0.1:8080")
@@ -33,16 +92,18 @@ def main() -> None:
         "--dataset", default="artifacts/aira-mentor-v1/test.jsonl"
     )
     parser.add_argument("--limit", type=int, default=0)
+    parser.add_argument("--examples-per-category", type=int, default=0)
     parser.add_argument("--max-tokens", type=int, default=256)
     parser.add_argument("--timeout", type=float, default=180)
     parser.add_argument("--output", default="results/qwen35_08b_donor_baseline.json")
     args = parser.parse_args()
-    if args.limit < 0:
-        raise ValueError("limit cannot be negative")
     dataset = Path(args.dataset)
-    records = load_records(dataset)
-    if args.limit:
-        records = records[: args.limit]
+    all_records = load_records(dataset)
+    records = select_records(
+        all_records,
+        limit=args.limit,
+        examples_per_category=args.examples_per_category,
+    )
     provider = OpenAIChatProvider(
         base_url=args.endpoint,
         model=args.provider_model,
@@ -50,6 +111,8 @@ def main() -> None:
     )
     category_totals: Counter[str] = Counter()
     category_passes: Counter[str] = Counter()
+    component_passes: Counter[str] = Counter()
+    component_applicable: Counter[str] = Counter()
     samples = []
     errors = []
     started = time.perf_counter()
@@ -74,15 +137,23 @@ def main() -> None:
             )
             continue
         latency = time.perf_counter() - request_started
-        passed = verify_synthetic_generation(record, response.content)
+        components = synthetic_generation_components(record, response.content)
+        passed = components["strict"]
         category_totals[record["category"]] += 1
         category_passes[record["category"]] += passed
+        for component in ("strict", "content", "protocol"):
+            component_applicable[component] += 1
+            component_passes[component] += components[component]
+        if components["source_required"]:
+            component_applicable["source"] += 1
+            component_passes["source"] += components["source"]
         samples.append(
             {
                 "id": record["id"],
                 "category": record["category"],
                 "language": record["language"],
                 "passed": passed,
+                "components": components,
                 "answer": response.content,
                 "answer_sha256": hashlib.sha256(response.content.encode()).hexdigest(),
                 "reasoning_content_present": bool(response.reasoning_content),
@@ -105,11 +176,22 @@ def main() -> None:
         "provider_model": args.provider_model,
         "dataset": str(dataset),
         "dataset_sha256": sha256(dataset),
+        "dataset_records": len(all_records),
+        "selection": {
+            "global_limit": args.limit,
+            "examples_per_category": args.examples_per_category,
+        },
         "requested_records": len(records),
         "completed_records": len(samples),
         "errors": errors,
         "passed": passed_total,
         "pass_rate": passed_total / len(samples) if samples else 0.0,
+        "component_passes": dict(sorted(component_passes.items())),
+        "component_applicable": dict(sorted(component_applicable.items())),
+        "component_pass_rates": {
+            key: component_passes[key] / applicable if applicable else 0.0
+            for key, applicable in sorted(component_applicable.items())
+        },
         "category_totals": dict(sorted(category_totals.items())),
         "category_passes": dict(sorted(category_passes.items())),
         "elapsed_seconds": elapsed,

@@ -104,7 +104,7 @@ from .trigger import (
     route_hierarchical_shelf,
     save_compact_shelf,
 )
-from .verification import verify_synthetic_generation
+from .verification import synthetic_generation_components, verify_synthetic_generation
 
 __all__ = [
     "AIraCascade",
@@ -187,6 +187,7 @@ __all__ = [
     "save_compact_shelf",
     "shelf_distribution",
     "state_patch_loss",
+    "synthetic_generation_components",
     "utf8_allowed_next_bytes",
     "validate_synthetic_record",
     "verify_synthetic_generation",

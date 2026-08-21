@@ -12,7 +12,10 @@ from minillm.aira.foundry import (
     write_curriculum_dataset,
 )
 from minillm.aira.synthetic import generate_aira_mentor_records
-from minillm.aira.verification import verify_synthetic_generation
+from minillm.aira.verification import (
+    synthetic_generation_components,
+    verify_synthetic_generation,
+)
 
 
 def failed_arithmetic() -> BabysitRecord:
@@ -91,3 +94,20 @@ def test_python_verifier_runs_restricted_unit_tests() -> None:
     assert verify_synthetic_generation(python_record, reference)
     assert not verify_synthetic_generation(python_record, wrong)
     assert not verify_synthetic_generation(python_record, unsafe)
+
+
+def test_component_diagnostics_do_not_promote_missing_citations() -> None:
+    records = generate_aira_mentor_records(examples_per_category=1, seed=93)
+    grounded = next(record for record in records if record.category == "grounded_qa")
+    expected = grounded.verification["expected"]
+    generated = f"The answer is {expected}."
+
+    components = synthetic_generation_components(grounded, generated)
+
+    assert components == {
+        "strict": False,
+        "content": True,
+        "source": False,
+        "source_required": True,
+        "protocol": True,
+    }

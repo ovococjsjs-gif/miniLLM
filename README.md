@@ -52,7 +52,7 @@
 - 1.7M-parameter/300-step local interaction smoke и первый 200-task Babysit failure set;
 - Teacher Foundry: 11 причинных failure clusters, 11 RU/EN skill patches и 1,193 contrastive curriculum records;
 - общий strict verifier с restricted-AST Python unit tests для training/Babysit/donor evaluation;
-- pinned 579.6MB Qwen3.5-0.8B Q4 language donor/control и OpenAI-compatible provider adapter;
+- recovered exact 532.5MB Unsloth Qwen3.5-0.8B Q4 donor/control, local llama.cpp runtime и OpenAI-compatible provider adapter;
 - masked recurrent-state patcher с future-KL/confidence objective и успешным 200-step synthetic dynamics proxy;
 - deterministic event shards и resume-safe ≤300-step multi-head trainer;
 - строгая UTF-8 grammar mask и отдельная calibration на generated contexts до разрешения bypass;
@@ -115,8 +115,9 @@ python scripts/run_aira_state_patcher_proxy.py --steps 200
 python scripts/bootstrap_qwen35_donor.py \
   --build-runtime --source github --download
 
-# После запуска llama-server — strict generated donor baseline
-python scripts/evaluate_qwen35_donor.py --endpoint http://127.0.0.1:8080
+# После запуска llama-server — bounded balanced donor baseline
+python scripts/evaluate_qwen35_donor.py \
+  --endpoint http://127.0.0.1:8080 --examples-per-category 5 --max-tokens 256
 
 # Проверить найденный JSONL-датасет по AIra handoff contract
 python scripts/audit_aira_dataset.py /path/to/candidate.jsonl
@@ -225,7 +226,7 @@ Prompt-copy покрывает 42% при min-2, но ухудшает event cou
 байтов не превосходят pure oracle 8-byte event count при включённой короткой shelf. Значит, главный следующий gate —
 не таблица и не copy сами по себе, а реально обученный и откалиброванный multi-byte head.
 
-Новая pretrained ветка не назначает маленькую open model учителем. Arena.ai agent формирует причинные `SkillPatch`, а solvers/verifiers размножают их в свежие задачи. Первый matched Foundry intervention снизил tiny validation ppl с 2.427 до 2.222, но на одинаковых свежих seed-45 задачах strict pass остался 0/10 → 0/10: curriculum исправляет supervision, но не заменяет pretrained capacity. Qwen3.5-0.8B принят только как 579.6MB языковой donor/control: его шесть групп `3×Gated DeltaNet + attention` дают конкретную точку для fast/balanced/deep exits и state catch-up. На synthetic dynamics 15.5K state patcher снизил MSE относительно zero-delta baseline до 6.07% и точно сохранил anchor layers; это plumbing evidence, а не доказательство реконструкции Qwen state. llama.cpp b9222 собран; найден GitHub LFS mirror с точным Unsloth SHA-256, но storage redirect `github-cloud.githubusercontent.com` также блокируется TLS текущего sandbox, поэтому donor quality numbers пока отсутствуют.
+Новая pretrained ветка не назначает маленькую open model учителем. Arena.ai agent формирует причинные `SkillPatch`, а solvers/verifiers размножают их в свежие задачи. Первый matched Foundry intervention снизил tiny validation ppl с 2.427 до 2.222, но на одинаковых свежих seed-45 задачах strict pass остался 0/10 → 0/10: curriculum исправляет supervision, но не заменяет pretrained capacity. Exact Unsloth Qwen3.5-0.8B Q4 восстановлен из 50 частей и принят только как 532.5MB language donor/control. На двух CPU threads он даёт около 21.4 generated token/s при ~852 MiB peak RSS. Balanced protected sample получает 6/50 strict, 31/50 content и 0/18 обязательных source attributions; fresh seed-46 rollout — 3/20 strict. Это подтверждает, что donor даёт язык, но не заменяет teacher/verifier. Его шесть групп `3×Gated DeltaNet + attention` остаются конкретной точкой для fast/balanced/deep exits и state catch-up. На synthetic dynamics 15.5K state patcher снизил MSE относительно zero-delta baseline до 6.07% и точно сохранил anchor layers; реальный Qwen-state gate ещё впереди.
 
 Плотные 350M, recurrent 209M, MoE и GDN2-конфигурации остаются контрольными ветками.
 Их обычное масштабирование приостановлено, пока end-to-end каскад не покажет лучший

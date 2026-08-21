@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "records": 20,
+  "passed": 3,
+  "failed": 17,
+  "categories": {
+    "algebra": 2,
+    "arithmetic": 2,
+    "critique_revision": 2,
+    "grounded_qa": 2,
+    "logic": 2,
+    "memory_control": 2,
+    "prompt_injection": 2,
+    "python": 2,
+    "tool_call": 2,
+    "uncertainty": 2
+  },
+  "failure_clusters": {
+    "content": 5,
+    "content+protocol": 3,
+    "source": 7,
+    "strict_surface": 2
+  },
+  "manifest": "artifacts/qwen35-donor-babysit-v1/records.jsonl.manifest.json"
+}

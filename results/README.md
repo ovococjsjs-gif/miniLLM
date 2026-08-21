@@ -26,7 +26,10 @@
 - `aira_mentor_tiny_training.json` — 1.7M random-init, 300-step SFT smoke and strict generated failures;
 - `aira_mentor_tiny_foundry_finetune.json` — matched 300-step Foundry intervention: lower PPL but unchanged 0/10 fresh strict passes;
 - `aira_state_patcher_proxy.json` — 200-step synthetic state catch-up, future-KL and exact-anchor control;
-- `qwen35_donor_bootstrap.json` — pinned donor/runtime verification and current binary-download blocker;
+- `qwen35_donor_bootstrap.json` — exact recovered donor and pinned llama.cpp verification;
+- `qwen35_08b_model_audit.json` — embedded GGUF architecture, license, tensor and quantization inventory;
+- `qwen35_08b_runtime_smoke.json` — bounded 2-thread RSS and prompt/generation throughput;
+- `qwen35_08b_donor_baseline.json` — balanced 50-task protected strict/content/protocol/source baseline;
 - `pc_alm_proxy.json` — old finite PC versus PC-ALM BP-gradient alignment.
 
 Каноническая интерпретация AIra-результатов находится в

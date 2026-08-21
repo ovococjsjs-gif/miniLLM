@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "role": "language-donor-and-control-not-teacher",
+  "model": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf",
+  "model_size_bytes": 532517120,
+  "model_sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+  "llama_cpp_revision": "9a532ae4bab1b164052ce60a738f78538b421c66",
+  "context_length": 2048,
+  "threads": 2,
+  "batch_size": 128,
+  "elapsed_seconds": 3.151011434000111,
+  "child_maxrss_kib": 852180,
+  "prompt_tokens_per_second": 79.5,
+  "generation_tokens_per_second": 21.4,
+  "correct_answer_present": true,
+  "transcript": "\nLoading model... \n\n\n▄▄ ▄▄\n██ ██\n██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄\n██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██\n██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀\n                                    ██    ██\n                                    ▀▀    ▀▀\n\nbuild      : b1-9a532ae4b\nmodel      : Qwen3.5-0.8B-Q4_K_M-github.gguf\nmodalities : text\nusing custom system prompt\n\navailable commands:\n  /exit or Ctrl+C     stop or exit\n  /regen              regenerate the last response\n  /clear              clear the chat history\n  /read <file>        add a text file\n  /glob <pattern>     add text files using globbing pattern\n\n\n> У Маши было 17 яблок, она купила ещё 8 и отдала 6. Сколько яблок осталось?\n\n17 + 8 - 6 = 19\n\n[ Prompt: 79.5 t/s | Generation: 21.4 t/s ]\n\nExiting...\n"
+}

@@ -117,8 +117,12 @@ The 1,000 generated task targets and all 193 corrections are deterministic proje
 
 ## Next Foundry cycle
 
-1. run the 0.8B language donor on the same protected and fresh suites;
-2. collect its exact failures rather than accepting it as a teacher;
-3. cluster new mechanisms and add patches only when the existing catalog cannot explain them;
+The recovered Qwen donor has now been run on a balanced protected sample and 20 fresh seed-46 tasks. The fresh rollout produced 17 corrections: 7 source failures, 5 content failures, 3 combined content/protocol failures and 2 strict-surface failures. They are stored under `artifacts/qwen35-donor-babysit-v1/`; the protected 50-task answers remain evaluation-only.
+
+Next:
+
+1. cluster the 17 fresh donor failures against the existing 11 patches;
+2. add a patch only when the existing catalog cannot explain a failure;
+3. emphasize exact citations, tool-call protocol and multi-operand arithmetic;
 4. train AIra routes/state patching on generated spans;
-5. retain protected tasks for evaluation only.
+5. keep every protected task out of weight-producing manifests.

@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "artifact": {
+    "path": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf",
+    "size_bytes": 532517120,
+    "sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+    "transfer_archive_size_bytes": 519209498,
+    "transfer_archive_sha256": "c96703cd1631f2d5849903142fe0088c7427fbbf09c5785d350a1c5ccda5ef7f",
+    "transfer_parts": 50
+  },
+  "embedded_metadata": {
+    "format": "GGUF V3",
+    "architecture": "qwen35",
+    "name": "Qwen3.5-0.8B",
+    "quantized_by": "Unsloth",
+    "license": "apache-2.0",
+    "file_type": 15,
+    "quantization_version": 2,
+    "block_count": 24,
+    "context_length": 262144,
+    "embedding_length": 1024,
+    "feed_forward_length": 3584,
+    "attention_heads": 8,
+    "kv_heads": 2,
+    "attention_key_length": 256,
+    "attention_value_length": 256,
+    "full_attention_interval": 4,
+    "ssm_conv_kernel": 4,
+    "ssm_state_size": 128,
+    "ssm_group_count": 16,
+    "ssm_time_step_rank": 16,
+    "ssm_inner_size": 2048
+  },
+  "tensor_inventory": {
+    "tensor_count": 320,
+    "parameter_elements": 752393024,
+    "types": {
+      "F32": 133,
+      "Q4_K": 98,
+      "Q5_K": 36,
+      "Q8_0": 36,
+      "Q6_K": 17
+    },
+    "mtp_named_tensors": 0
+  },
+  "audit_tool": {
+    "reader": "llama.cpp gguf-py",
+    "revision": "9a532ae4bab1b164052ce60a738f78538b421c66"
+  },
+  "interpretation": "The recovered file is the exact pinned Unsloth Q4_K_M language model. It contains no separately named MTP tensors; MTP must not be claimed for this artifact."
+}

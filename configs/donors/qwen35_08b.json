@@ -34,6 +34,9 @@
     "declared_quantization": "Q4_K_M",
     "declared_upstream": "unsloth/Qwen3.5-0.8B-GGUF",
     "upstream_sha256_match": true,
+    "parameter_elements": 752393024,
+    "tensor_count": 320,
+    "artifact_mtp_named_tensors": 0,
     "review_status": "exact Unsloth Q4_K_M hash mirror for internal baseline; model is Apache-2.0, mirror repository has no machine-readable license"
   },
   "runtime": {

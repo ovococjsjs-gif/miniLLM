@@ -11,21 +11,22 @@
     "declared_upstream": "unsloth/Qwen3.5-0.8B-GGUF",
     "review_status": "exact Unsloth Q4_K_M hash mirror for internal baseline; model is Apache-2.0, mirror repository has no machine-readable license"
   },
-  "runtime_build_attempted": false,
-  "download_attempted": true,
+  "runtime_build_attempted": true,
+  "download_attempted": false,
+  "runtime_build": {
+    "status": "completed",
+    "revision": "9a532ae4bab1b164052ce60a738f78538b421c66"
+  },
   "runtime": {
     "status": "verified",
     "path": ".cache/llama.cpp/build/bin/llama-cli",
-    "version": "version: 1 (9a532ae)\nbuilt with GNU 12.2.0 for Linux x86_64"
-  },
-  "download_error": {
-    "type": "github-lfs-transfer-failure",
-    "returncode": 35,
-    "storage_host": "github-cloud.githubusercontent.com",
-    "detail": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\ncurl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to github-cloud.githubusercontent.com:443 \n"
+    "version": "version: 1 (9a532ae4b)\nbuilt with GNU 12.2.0 for Linux x86_64"
   },
   "artifact": {
-    "status": "missing",
-    "path": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf"
+    "status": "verified",
+    "path": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf",
+    "size_bytes": 532517120,
+    "expected_sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+    "actual_sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517"
   }
 }
