@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "experiment": "aira-v2-event-pretrain-gate-v1",
+  "status": "ready-for-dataset-and-teacher-binding",
+  "model": {
+    "class": "MultiByteEventLM",
+    "vocab_size": 8000,
+    "dynamic_bpe_context_tokens": 16,
+    "raw_context_bytes": 128,
+    "d_model": 256,
+    "maximum_output_bytes": 8,
+    "route_actions": 5
+  },
+  "event_packing": {
+    "shelf_orders": [4, 8, 16],
+    "minimum_support": 5,
+    "wilson_z": 1.96,
+    "confidence_threshold": 0.95,
+    "cumulative_span_risk": 0.1,
+    "minimum_copy_bytes": 2,
+    "maximum_copy_bytes": 32,
+    "maximum_literal_bytes": 8,
+    "prompt_copy_minimum_bytes": 8
+  },
+  "training": {
+    "local_step_cap": 300,
+    "batch_size": 128,
+    "learning_rate": 0.002,
+    "weight_decay": 0.01,
+    "event_batch_fraction": 0.8,
+    "full_stream_anchor_fraction": 0.2,
+    "predictable_control_probability": 0.2,
+    "importance_weighted_control": true,
+    "multi_byte_continuation_weight": 0.25,
+    "route_weight": 0.25,
+    "on_policy_distillation_weight": 0.5,
+    "teacher_top_k": 32,
+    "teacher_temperature": 2.0
+  },
+  "required_bindings": {
+    "corpus_manifest": null,
+    "tokenizer_path": null,
+    "tokenizer_sha256": null,
+    "teacher_id": null,
+    "teacher_license": null,
+    "on_policy_dataset": null
+  },
+  "gates": {
+    "minimum_event_sequence_compression": 2.0,
+    "maximum_validation_regression": 0.02,
+    "minimum_generated_shelf_precision": 0.95,
+    "minimum_generated_shelf_coverage": 0.01,
+    "minimum_neural_call_reduction": 0.2,
+    "minimum_cpu_wall_speedup": 1.5,
+    "minimum_seeds": 3
+  }
+}

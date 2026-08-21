@@ -454,6 +454,39 @@ flat at 7.38%, and all generated-context calibrations still reject bypass. The b
 accepted as the new data default because it improves generalization without extra optimizer steps,
 but data diversity alone does not solve exposure drift.
 
+#### A3 pretraining infrastructure and event-compression upper bound
+
+The prerequisites that do not depend on the incoming corpus are now implemented:
+
+- lossless literal, shelf-copy and source-copy event packing with auditable payload/source identity;
+- a variable 1–8 byte neural head, continuation/stop head and five-way route head;
+- masked proper losses that do not pretend deterministic copy payloads are neural literals;
+- event training arrays, deterministic hash-bound NPZ shards and verified readers;
+- a resume-safe local trainer with config/dataset identity and exact Torch/NumPy RNG state;
+- unbiased importance-sampled predictable controls rather than dense low-weight pseudo-savings;
+- hash-bound on-policy Top-K records where the teacher labels the student's exact generated prefix;
+- a machine-readable frozen experiment contract and candidate-dataset audit script.
+
+`results/aira_event_packing_proxy.json` gives a lossless teacher-forced upper bound on 43,442 held-out
+bytes. A 4-byte/8-byte literal head labels exactly 4.00x/8.00x fewer events by construction. Current
+strict shelf spans copy only 3.17% of bytes and improve single-byte neural-invocation upper bound to
+just 1.03x. Combining them with an 8-byte head yields 7.15x event compression and 7.88x neural-call
+upper bound: the short shelf spans fragment fixed 8-byte patches rather than multiplying their gain.
+Prompt copies of at least 2 bytes cover 42.06% but reduce compression to 5.52x because most are short.
+With shelf still enabled, minimum-8/minimum-16 source copies give only 7.25x/7.24x event compression
+and 7.81x/7.97x neural-call upper bounds. Even long copies do not beat the pure oracle 8-byte event
+count in this proxy.
+
+Therefore the plausible large multiplier is the **unproved calibrated multi-byte head**, not the
+current shelf or short copy actions. These ratios are oracle labels and are not speed claims until an
+autonomous action model preserves quality. `results/aira_event_training_smoke.json` confirms that the
+prepared-data, 4.68M-parameter multi-head loss, atomic checkpoint and resume path execute end to end;
+it is only a five-step plumbing smoke.
+
+The remaining pretraining blockers are dataset/tokenizer/teacher binding, a source-pointer head for
+long document copy, and integration of full-stream anchor batches with sampled residual batches at
+large-data scale. The exact handoff is maintained in `docs/aira-training-readiness.md`.
+
 ### A4 PC-ALM: mathematical reference supports the repair, not an efficiency claim
 
 `pc_alm.py` follows the PC-ALM primal/dual schedule with autograd used only as a mathematical

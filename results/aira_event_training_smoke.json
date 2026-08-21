@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "experiment": "aira-v2-event-trainer-smoke-v1",
+  "warning": "Local <=300-step plumbing run; source-copy pointer quality and autonomous generation are separate gates.",
+  "config": "configs/experiments/aira_event_pretrain_v1.json",
+  "config_sha256": "cdfcf044b984846efa35e711ec5ca751fff08c05b62be7abc58544bbac67acbb",
+  "event_data": "/tmp/aira-event-data",
+  "event_manifest_sha256": "0d5c398c0e9db8f453a5b1a1d68ae4d8fcb4685671e1809f4fb45dbc64ab5609",
+  "seed": 42,
+  "steps": 5,
+  "train_events": 5433,
+  "validation_events": 2186,
+  "parameters": 4679692,
+  "training_seconds": 0.40982108499997594,
+  "events_per_second": 1561.65708262677,
+  "loss_samples": [
+    {
+      "step": 1,
+      "total": 6.433377265930176,
+      "byte": 5.645259857177734,
+      "continuation": 0.9945858716964722,
+      "route": 2.157883882522583
+    },
+    {
+      "step": 3,
+      "total": 4.750297546386719,
+      "byte": 4.725803852081299,
+      "continuation": 0.09797500818967819,
+      "route": 0.0
+    },
+    {
+      "step": 5,
+      "total": 3.933176040649414,
+      "byte": 3.890657424926758,
+      "continuation": 0.045062217861413956,
+      "route": 0.12501205503940582
+    }
+  ],
+  "validation": {
+    "total": 3.7200992428045807,
+    "byte": 3.712397611588376,
+    "continuation": 0.030806331333771607,
+    "route": 3.593728993332424e-07
+  }
+}

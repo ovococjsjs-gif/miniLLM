@@ -44,6 +44,10 @@
 - два decode-контроля: exact KV catch-up (не экономит весь active compute) и настоящий bounded byte-event core без скрытого state catch-up;
 - deterministic byte↔ByteLevel-BPE bridge, включая dynamic BPE patches на произвольной byte boundary;
 - bounded byte-event neural cores: matched gated-MLP, conv и attention patch controls, byte-output без обязательного прохода по shelf-позициям;
+- lossless event packer для literal/shelf/source-copy spans и multi-byte head до 8 байтов;
+- importance-sampled predictable control stream с unbiased full-loss estimator;
+- hash-bound on-policy Top-K teacher records для точного student-generated prefix;
+- deterministic event shards и resume-safe ≤300-step multi-head trainer;
 - строгая UTF-8 grammar mask и отдельная calibration на generated contexts до разрешения bypass;
 - request-level `AIraCascade`: accepted explicit fact возвращается напрямую, unknown/conflict падает в shelf→neural;
 - bounded bipolar associative memory с explicit structured keys, unknown/conflict rejection, provenance, overwrite и удалением;
@@ -82,6 +86,20 @@ minillm smoke-train configs/toy.json --steps 8
 
 # Тесты
 pytest
+
+# Проверить найденный JSONL-датасет по AIra handoff contract
+python scripts/audit_aira_dataset.py /path/to/candidate.jsonl
+
+# Измерить event-packing upper bound до обучения
+python scripts/benchmark_aira_event_packing.py \
+  --train /path/to/train.txt --validation /path/to/validation.txt
+
+# Подготовить hash-bound event shards и проверить trainer (локально <=300 шагов)
+python scripts/prepare_aira_event_data.py \
+  --shelf-text /path/to/shelf.txt --train-text /path/to/train.txt \
+  --validation-text /path/to/validation.txt --tokenizer /path/to/tokenizer.json \
+  --output /path/to/event-data
+python scripts/train_aira_event_proxy.py --event-data /path/to/event-data --steps 300
 
 # AIra-v2: собрать tokenizer-bound UTF-8 shelf для bridge-control decode
 # (перед применением нужен отдельный frozen/domain calibration report)
@@ -169,6 +187,13 @@ threshold, поэтому gated-MLP остаётся быстрым baseline, а
 разнообразные данные приняты как новый training default, но сами по себе exposure drift
 не исправляют.
 
+Offline event packer показывает до 8.00× сокращения только как oracle upper bound для
+8-byte head. Текущая строгая shelf копирует лишь 3.17% байтов и сама по себе даёт около
+1.03× upper bound neural-call reduction; короткие shelf spans даже дробят 8-byte events.
+Prompt-copy покрывает 42% при min-2, но ухудшает event count; даже copy spans от 16
+байтов не превосходят pure oracle 8-byte event count при включённой короткой shelf. Значит, главный следующий gate —
+не таблица и не copy сами по себе, а реально обученный и откалиброванный multi-byte head.
+
 Плотные 350M, recurrent 209M, MoE и GDN2-конфигурации остаются контрольными ветками.
 Их обычное масштабирование приостановлено, пока end-to-end каскад не покажет лучший
 quality-adjusted active compute.
@@ -187,6 +212,7 @@ quality-adjusted active compute.
 - [Данные, distillation и post-training](docs/training.md)
 - [Результат первого MQAR-скрининга](docs/toy-mqar-result.md)
 - [Канонический аудит и план AIra-v2](docs/aira-v2-audit.md)
+- [Контракт данных и готовность AIra base training](docs/aira-training-readiness.md)
 - [Исторический разбор AIra (superseded)](docs/aira-review.md)
 - [Аннотированные первоисточники](docs/sources.md)
 

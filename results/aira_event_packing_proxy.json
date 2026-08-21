@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "experiment": "aira-v2-offline-event-packing-upper-bound-v1",
+  "warning": "Lossless teacher-forced event labels. Multi-byte and copy compression are upper bounds until an action model passes generated-context calibration.",
+  "source": {
+    "train": "/tmp/aira_train.txt",
+    "train_sha256": "c011e375196e3895db54c72a2e46ca7bb2d2f59ec692963c4ba1bf23dad20d74",
+    "validation": "/tmp/aira_validation.txt",
+    "validation_sha256": "84125f8e022a6c1e7ab237f0305cb4ec2c5057a73dd22f46e6e2850f6094d6a2"
+  },
+  "environment": {
+    "platform": "Linux-6.1.158+-x86_64-with-glibc2.36",
+    "numpy": "2.4.6"
+  },
+  "protocol": {
+    "train_characters": 2000000,
+    "validation_characters": 50000,
+    "validation_bytes": 50098,
+    "chunk_bytes": 4096,
+    "prompt_bytes_per_chunk": 512,
+    "shelf_orders": [
+      4,
+      8,
+      16
+    ],
+    "gate": "support>=5 and per-byte Wilson95>=0.95, cumulative span risk<=0.10",
+    "minimum_copy_bytes_tested": [
+      2,
+      8,
+      16
+    ],
+    "maximum_copy_bytes": 32
+  },
+  "packed_shelf_bytes": 75233396,
+  "results": [
+    {
+      "name": "literal-byte",
+      "maximum_literal_bytes": 1,
+      "shelf": false,
+      "prompt_copy": false,
+      "minimum_copy_bytes": 2,
+      "seconds": 0.07794493300002614,
+      "metrics": {
+        "bytes": 43442,
+        "events": 43442,
+        "literal_events": 43442,
+        "shelf_copy_events": 0,
+        "source_copy_events": 0,
+        "literal_bytes": 43442,
+        "shelf_copy_bytes": 0,
+        "source_copy_bytes": 0,
+        "neural_output_events": 43442,
+        "event_sequence_compression": 1.0,
+        "neural_invocation_reduction_upper_bound": 1.0,
+        "shelf_copy_fraction": 0.0,
+        "source_copy_fraction": 0.0
+      }
+    },
+    {
+      "name": "literal-4byte-head",
+      "maximum_literal_bytes": 4,
+      "shelf": false,
+      "prompt_copy": false,
+      "minimum_copy_bytes": 2,
+      "seconds": 0.020661101000087,
+      "metrics": {
+        "bytes": 43442,
+        "events": 10861,
+        "literal_events": 10861,
+        "shelf_copy_events": 0,
+        "source_copy_events": 0,
+        "literal_bytes": 43442,
+        "shelf_copy_bytes": 0,
+        "source_copy_bytes": 0,
+        "neural_output_events": 10861,
+        "event_sequence_compression": 3.999815854893656,
+        "neural_invocation_reduction_upper_bound": 3.999815854893656,
+        "shelf_copy_fraction": 0.0,
+        "source_copy_fraction": 0.0
+      }
+    },
+    {
+      "name": "literal-8byte-head",
+      "maximum_literal_bytes": 8,
+      "shelf": false,
+      "prompt_copy": false,
+      "minimum_copy_bytes": 2,
+      "seconds": 0.01202979000004234,
+      "metrics": {
+        "bytes": 43442,
+        "events": 5431,
+        "literal_events": 5431,
+        "shelf_copy_events": 0,
+        "source_copy_events": 0,
+        "literal_bytes": 43442,
+        "shelf_copy_bytes": 0,
+        "source_copy_bytes": 0,
+        "neural_output_events": 5431,
+        "event_sequence_compression": 7.998895231080832,
+        "neural_invocation_reduction_upper_bound": 7.998895231080832,
+        "shelf_copy_fraction": 0.0,
+        "source_copy_fraction": 0.0
+      }
+    },
+    {
+      "name": "shelf-plus-byte",
+      "maximum_literal_bytes": 1,
+      "shelf": true,
+      "prompt_copy": false,
+      "minimum_copy_bytes": 2,
+      "seconds": 1.1616643439999734,
+      "metrics": {
+        "bytes": 43442,
+        "events": 42632,
+        "literal_events": 42067,
+        "shelf_copy_events": 565,
+        "source_copy_events": 0,
+        "literal_bytes": 42067,
+        "shelf_copy_bytes": 1375,
+        "source_copy_bytes": 0,
+        "neural_output_events": 42067,
+        "event_sequence_compression": 1.0189998123475323,
+        "neural_invocation_reduction_upper_bound": 1.032685953360116,
+        "shelf_copy_fraction": 0.03165139726531928,
+        "source_copy_fraction": 0.0
+      }
+    },
+    {
+      "name": "shelf-plus-8byte-head",
+      "maximum_literal_bytes": 8,
+      "shelf": true,
+      "prompt_copy": false,
+      "minimum_copy_bytes": 2,
+      "seconds": 1.0898552720000225,
+      "metrics": {
+        "bytes": 43442,
+        "events": 6078,
+        "literal_events": 5513,
+        "shelf_copy_events": 565,
+        "source_copy_events": 0,
+        "literal_bytes": 42067,
+        "shelf_copy_bytes": 1375,
+        "source_copy_bytes": 0,
+        "neural_output_events": 5513,
+        "event_sequence_compression": 7.1474169134583745,
+        "neural_invocation_reduction_upper_bound": 7.879920188645021,
+        "shelf_copy_fraction": 0.03165139726531928,
+        "source_copy_fraction": 0.0
+      }
+    },
+    {
+      "name": "shelf-prompt-copy-8byte-min2",
+      "maximum_literal_bytes": 8,
+      "shelf": true,
+      "prompt_copy": true,
+      "minimum_copy_bytes": 2,
+      "seconds": 0.8116221559998849,
+      "metrics": {
+        "bytes": 43442,
+        "events": 7873,
+        "literal_events": 4397,
+        "shelf_copy_events": 320,
+        "source_copy_events": 3156,
+        "literal_bytes": 24424,
+        "shelf_copy_bytes": 746,
+        "source_copy_bytes": 18272,
+        "neural_output_events": 7553,
+        "event_sequence_compression": 5.517845802108472,
+        "neural_invocation_reduction_upper_bound": 5.7516218721038,
+        "shelf_copy_fraction": 0.017172321716311403,
+        "source_copy_fraction": 0.4206067860595737
+      }
+    },
+    {
+      "name": "shelf-prompt-copy-8byte-min8",
+      "maximum_literal_bytes": 8,
+      "shelf": true,
+      "prompt_copy": true,
+      "minimum_copy_bytes": 8,
+      "seconds": 1.005185449999999,
+      "metrics": {
+        "bytes": 43442,
+        "events": 5994,
+        "literal_events": 4953,
+        "shelf_copy_events": 429,
+        "source_copy_events": 612,
+        "literal_bytes": 35898,
+        "shelf_copy_bytes": 1009,
+        "source_copy_bytes": 6535,
+        "neural_output_events": 5565,
+        "event_sequence_compression": 7.247580914247581,
+        "neural_invocation_reduction_upper_bound": 7.8062893081761,
+        "shelf_copy_fraction": 0.023226370793241562,
+        "source_copy_fraction": 0.15043045900280835
+      }
+    },
+    {
+      "name": "shelf-prompt-copy-8byte-min16",
+      "maximum_literal_bytes": 8,
+      "shelf": true,
+      "prompt_copy": true,
+      "minimum_copy_bytes": 16,
+      "seconds": 1.150974534999932,
+      "metrics": {
+        "bytes": 43442,
+        "events": 6000,
+        "literal_events": 5387,
+        "shelf_copy_events": 551,
+        "source_copy_events": 62,
+        "literal_bytes": 40886,
+        "shelf_copy_bytes": 1340,
+        "source_copy_bytes": 1216,
+        "neural_output_events": 5449,
+        "event_sequence_compression": 7.240333333333333,
+        "neural_invocation_reduction_upper_bound": 7.972472013213434,
+        "shelf_copy_fraction": 0.03084572533492933,
+        "source_copy_fraction": 0.02799134478154781
+      }
+    }
+  ]
+}

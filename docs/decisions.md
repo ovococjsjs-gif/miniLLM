@@ -122,3 +122,9 @@ frozen/distilled fallback, а не добавлять ещё один локал
 accuracy с 23.12% до 23.88% без дополнительных optimizer steps. Autonomous accuracy остаётся
 7.38%, и generated-context threshold по-прежнему отсутствует. Это исправление data coverage,
 не исправление переходной динамики.
+
+## D-014 — Multi-byte head is the next acceleration gate; copy is not assumed multiplicative
+
+**Решение:** первый base-training matrix проверяет 1/4/8-byte heads до масштабирования shelf и source-copy. Shelf/copy остаются отдельными calibrated actions; их theoretical coverage не перемножается с multi-byte compression. Predictable training positions сокращаются только через importance sampling с ненулевым unbiased control stream.
+
+**Причина:** lossless event packing даёт oracle 8.00x для 8-byte labels, но текущая shelf копирует лишь 3.17% байтов и вместе с 8-byte head даёт 7.15x event compression, то есть дробит patches. Prompt-copy min-2 покрывает 42.06%, но снижает compression до 5.52x из-за коротких spans. При включённой shelf min-8/min-16 source copies дают 7.25x/7.24x event compression и не превосходят pure oracle 8-byte stream. Главный неизвестный — сможет ли multi-byte action model сохранить качество и пройти generated-context calibration.

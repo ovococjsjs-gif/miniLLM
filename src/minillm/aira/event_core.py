@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import torch
 from torch import nn
 from torch.nn import functional as F
@@ -229,3 +231,135 @@ class AttentionByteEventLM(nn.Module):
             parameter.numel() * parameter.element_size()
             for parameter in self.parameters()
         )
+
+
+@dataclass(frozen=True)
+class MultiByteEventOutput:
+    byte_logits: torch.Tensor
+    continuation_logits: torch.Tensor
+    route_logits: torch.Tensor
+
+
+@dataclass(frozen=True)
+class MultiByteEventLoss:
+    total: torch.Tensor
+    byte: torch.Tensor
+    continuation: torch.Tensor
+    route: torch.Tensor
+
+
+class MultiByteEventLM(_BoundedContextEncoder):
+    """Bounded event core with calibrated variable-length byte and route heads."""
+
+    def __init__(
+        self,
+        vocab_size: int,
+        context_size: int = 16,
+        d_model: int = 48,
+        maximum_bytes: int = 8,
+        route_actions: int = 5,
+    ) -> None:
+        if maximum_bytes < 1 or route_actions < 2:
+            raise ValueError("invalid multi-byte event heads")
+        super().__init__(vocab_size, context_size, d_model)
+        self.maximum_bytes = maximum_bytes
+        self.route_actions = route_actions
+        self.byte_head = nn.Linear(d_model, maximum_bytes * 256)
+        self.continuation_head = nn.Linear(d_model, max(1, maximum_bytes - 1))
+        self.route_head = nn.Linear(d_model, route_actions)
+        self.reset_parameters()
+
+    def reset_parameters(self) -> None:
+        self.reset_encoder_parameters()
+        for layer in (self.byte_head, self.continuation_head, self.route_head):
+            nn.init.xavier_uniform_(layer.weight)
+            nn.init.zeros_(layer.bias)
+
+    def forward(self, context_ids: torch.Tensor) -> MultiByteEventOutput:
+        hidden = self.encode_context(context_ids)
+        byte_logits = self.byte_head(hidden).reshape(
+            len(context_ids), self.maximum_bytes, 256
+        )
+        if self.maximum_bytes == 1:
+            continuation_logits = hidden.new_empty((len(context_ids), 0))
+        else:
+            continuation_logits = self.continuation_head(hidden)[
+                :, : self.maximum_bytes - 1
+            ]
+        return MultiByteEventOutput(
+            byte_logits,
+            continuation_logits,
+            self.route_head(hidden),
+        )
+
+
+def multi_byte_event_loss(
+    output: MultiByteEventOutput,
+    byte_targets: torch.Tensor,
+    target_lengths: torch.Tensor,
+    route_targets: torch.Tensor,
+    *,
+    byte_supervised: torch.Tensor | None = None,
+    continuation_weight: float = 0.25,
+    route_weight: float = 0.25,
+) -> MultiByteEventLoss:
+    """Proper supervised loss for literal bytes, stop decisions, and event route."""
+
+    if output.byte_logits.ndim != 3 or output.byte_logits.shape[-1] != 256:
+        raise ValueError("byte logits must have shape [batch, positions, 256]")
+    batch, maximum_bytes, _ = output.byte_logits.shape
+    if byte_targets.shape != (batch, maximum_bytes):
+        raise ValueError("byte target shape differs from multi-byte head")
+    if target_lengths.shape != (batch,) or route_targets.shape != (batch,):
+        raise ValueError("length/route targets must have shape [batch]")
+    if torch.any((target_lengths < 1) | (target_lengths > maximum_bytes)):
+        raise ValueError("target lengths lie outside the multi-byte head")
+    if continuation_weight < 0 or route_weight < 0:
+        raise ValueError("loss weights cannot be negative")
+
+    if byte_supervised is None:
+        byte_supervised = torch.ones(
+            batch, dtype=torch.bool, device=byte_targets.device
+        )
+    if byte_supervised.shape != (batch,) or byte_supervised.dtype != torch.bool:
+        raise ValueError("byte_supervised must be a boolean [batch] mask")
+    positions = torch.arange(maximum_bytes, device=byte_targets.device)
+    byte_mask = (positions[None, :] < target_lengths[:, None]) & byte_supervised[
+        :, None
+    ]
+    token_losses = F.cross_entropy(
+        output.byte_logits.reshape(-1, 256),
+        byte_targets.reshape(-1),
+        reduction="none",
+    ).reshape(batch, maximum_bytes)
+    byte_loss = (
+        token_losses[byte_mask].mean()
+        if byte_mask.any()
+        else output.byte_logits.sum() * 0
+    )
+
+    if maximum_bytes == 1:
+        continuation_loss = byte_loss.new_zeros(())
+    else:
+        boundaries = torch.arange(maximum_bytes - 1, device=byte_targets.device)
+        continuation_mask = (
+            boundaries[None, :] < target_lengths[:, None]
+        ) & byte_supervised[:, None]
+        continuation_targets = (boundaries[None, :] + 1 < target_lengths[:, None]).to(
+            output.continuation_logits.dtype
+        )
+        continuation_terms = F.binary_cross_entropy_with_logits(
+            output.continuation_logits,
+            continuation_targets,
+            reduction="none",
+        )
+        continuation_loss = (
+            continuation_terms[continuation_mask].mean()
+            if continuation_mask.any()
+            else output.continuation_logits.sum() * 0
+        )
+    route_loss = F.cross_entropy(output.route_logits, route_targets)
+    total = (
+        byte_loss + continuation_weight * continuation_loss + route_weight * route_loss
+    )
+    return MultiByteEventLoss(total, byte_loss, continuation_loss, route_loss)
