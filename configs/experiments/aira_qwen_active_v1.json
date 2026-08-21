@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "name": "aira-qwen-active-v1",
+  "role": "single source of truth for the active in-model acceleration pipeline",
+  "donor_config": "configs/donors/qwen35_08b.json",
+  "model_path": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf",
+  "llama_source": ".cache/llama.cpp",
+  "source_pair_config": "configs/experiments/qwen35_real_state_pairs_v1.json",
+  "source_pairs": "artifacts/qwen35-real-state-pairs-v1",
+  "raw_state_work_dir": ".cache/qwen35-full-state-work",
+  "transition_probe_source": "native/qwen35_transition_probe.cpp",
+  "transition_probe_binary": ".cache/qwen35-transition-probe/qwen35-transition-probe",
+  "learned_replay_source": "native/qwen35_learned_state_replay.cpp",
+  "learned_replay_binary": ".cache/qwen35-transition-probe/qwen35-learned-state-replay",
+  "state_updater_config": "configs/experiments/qwen35_gated_delta_updater_v1.json",
+  "state_checkpoint": "artifacts/qwen35-gated-delta-updater-v1/model.pt",
+  "conv_updater_config": "configs/experiments/qwen35_conv_row_updater_v1.json",
+  "conv_checkpoint": "artifacts/qwen35-conv-row-updater-v1/model.pt",
+  "normalization": {
+    "mode": "per-sample-layer-norm",
+    "corpus_statistics": "audit-only",
+    "source_split": "train-only",
+    "feature_count": 1056,
+    "candidate_layers": [4, 8, 12, 16, 20],
+    "minimum_standard_deviation": 0.05
+  },
+  "training": {
+    "state_steps": 300,
+    "conv_steps": 300,
+    "per_run_step_cap": 300,
+    "stored_answer_routes": false,
+    "teacher_answers_used": false
+  },
+  "calibration": {
+    "split": "train-only",
+    "state_delta_alpha_candidates": [0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0]
+  },
+  "evaluation": {
+    "split": "validation-only",
+    "prompt_groups": 4,
+    "stages_per_prompt": 4,
+    "transitions": 16
+  },
+  "combined_checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
+  "status_report": "results/aira_qwen_active_v1.json",
+  "required_gates": [
+    "hash_bound_data",
+    "disjoint_prompt_groups",
+    "full_recurrent_state",
+    "full_convolution_cache",
+    "native_partial_state_injection",
+    "mean_full_cache_future_kl",
+    "every_transition_future_kl",
+    "autoregressive_generation",
+    "physical_skip_speedup"
+  ],
+  "deployment_allowed": false
+}

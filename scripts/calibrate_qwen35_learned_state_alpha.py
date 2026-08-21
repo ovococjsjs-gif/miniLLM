@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 import subprocess
@@ -14,11 +15,20 @@ from typing import Any
 from evaluate_qwen35_learned_state_replay import read_metrics
 
 
+def sha256(path: Path) -> str:
+    with path.open("rb") as handle:
+        return hashlib.file_digest(handle, "sha256").hexdigest()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--alphas", default="0.01,0.025,0.05,0.075,0.1,0.25,0.5,0.75,1.0"
     )
+    parser.add_argument(
+        "--metric", choices=("state-only", "full-cache"), default="state-only"
+    )
+    parser.add_argument("--combined-checkpoint")
     parser.add_argument(
         "--checkpoint", default="artifacts/qwen35-gated-delta-updater-v1/model.pt"
     )
@@ -58,21 +68,26 @@ def main() -> None:
                 shutil.rmtree(root, ignore_errors=True)
                 root.mkdir(parents=True)
                 patch = root / "patch.bin"
+                export_command = [
+                    sys.executable,
+                    "scripts/export_qwen35_learned_state_patch.py",
+                    "--checkpoint",
+                    args.checkpoint,
+                    "--prompt-id",
+                    prompt["id"],
+                    "--stage",
+                    "1",
+                    "--alpha",
+                    str(alpha),
+                    "--output",
+                    str(patch),
+                ]
+                if args.combined_checkpoint:
+                    export_command.extend(
+                        ["--combined-checkpoint", args.combined_checkpoint]
+                    )
                 export = subprocess.run(
-                    [
-                        sys.executable,
-                        "scripts/export_qwen35_learned_state_patch.py",
-                        "--checkpoint",
-                        args.checkpoint,
-                        "--prompt-id",
-                        prompt["id"],
-                        "--stage",
-                        "1",
-                        "--alpha",
-                        str(alpha),
-                        "--output",
-                        str(patch),
-                    ],
+                    export_command,
                     text=True,
                     capture_output=True,
                     check=False,
@@ -94,15 +109,21 @@ def main() -> None:
                 if replay.returncode:
                     raise RuntimeError(replay.stdout + replay.stderr)
             metrics = read_metrics(metrics_path)
+            if args.metric == "full-cache":
+                candidate_kl = metrics["candidate_full_copy_kl"]
+                learned_kl = metrics["learned_full_kl"]
+            else:
+                candidate_kl = metrics["candidate_copy_kl"]
+                learned_kl = metrics["learned_kl"]
             prompt_metrics.append(
                 {
                     "prompt_id": prompt["id"],
-                    "candidate_copy_kl": metrics["candidate_copy_kl"],
-                    "learned_kl": metrics["learned_kl"],
-                    "improved": metrics["learned_kl"] < metrics["candidate_copy_kl"],
+                    "candidate_kl": candidate_kl,
+                    "learned_kl": learned_kl,
+                    "improved": learned_kl < candidate_kl,
                 }
             )
-        mean_copy = sum(item["candidate_copy_kl"] for item in prompt_metrics) / len(
+        mean_copy = sum(item["candidate_kl"] for item in prompt_metrics) / len(
             prompt_metrics
         )
         mean_learned = sum(item["learned_kl"] for item in prompt_metrics) / len(
@@ -112,7 +133,7 @@ def main() -> None:
             {
                 "alpha": alpha,
                 "prompts": len(prompt_metrics),
-                "mean_candidate_copy_kl": mean_copy,
+                "mean_candidate_kl": mean_copy,
                 "mean_learned_kl": mean_learned,
                 "learned_over_copy_ratio": mean_learned / mean_copy,
                 "improved_prompts": sum(item["improved"] for item in prompt_metrics),
@@ -123,13 +144,16 @@ def main() -> None:
     report = {
         "schema_version": 1,
         "experiment": "qwen35-learned-state-alpha-calibration-v1",
+        "checkpoint": args.combined_checkpoint or args.checkpoint,
+        "checkpoint_sha256": sha256(Path(args.combined_checkpoint or args.checkpoint)),
         "split": "train-only",
+        "metric": args.metric,
         "validation_prompts_used": 0,
         "candidates": records,
         "selected_alpha": selected["alpha"],
-        "selection_metric": "minimum mean train true-vocabulary KL",
+        "selection_metric": f"minimum mean train {args.metric} true-vocabulary KL",
         "selected_mean_kl": selected["mean_learned_kl"],
-        "selected_copy_mean_kl": selected["mean_candidate_copy_kl"],
+        "selected_copy_mean_kl": selected["mean_candidate_kl"],
         "selected_ratio": selected["learned_over_copy_ratio"],
     }
     output = Path(args.output)

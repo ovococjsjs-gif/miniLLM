@@ -4,10 +4,41 @@ import pytest
 import torch
 
 from minillm.aira.full_state import (
+    AIraQwenCacheUpdater,
     ConvRowUpdater,
     GatedDeltaParameters,
     GatedDeltaParameterUpdater,
 )
+
+
+def test_joint_cache_updater_normalizes_and_emits_injectible_shapes() -> None:
+    model = AIraQwenCacheUpdater(
+        event_mean=torch.zeros(12),
+        event_scale=torch.ones(12),
+        layers=2,
+        heads=3,
+        state_width=8,
+        conv_width=32,
+        state_hidden_dim=16,
+        conv_hidden_dim=16,
+        conv_bottleneck_dim=4,
+        identity_dim=3,
+        state_alpha=0.1,
+    )
+    recurrent = torch.randn(5, 3, 8, 8)
+    conv = torch.randn(5, 3, 32)
+    output = model(
+        recurrent,
+        conv,
+        torch.randn(5, 12),
+        torch.tensor([0, 1, 0, 1, 0]),
+    )
+
+    assert output.recurrent_state.shape == recurrent.shape
+    assert output.convolution_state.shape == conv.shape
+    assert torch.equal(output.convolution_state[:, 0], conv[:, 1])
+    assert torch.equal(output.convolution_state[:, 1], conv[:, 2])
+    assert output.convolution_confidence.shape == (5,)
 
 
 def test_conv_row_updater_starts_as_copy_and_learns_residual() -> None:

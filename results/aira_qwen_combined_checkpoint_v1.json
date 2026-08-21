@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
+  "checkpoint_sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f",
+  "parameters": 8069185,
+  "state_checkpoint": "artifacts/qwen35-gated-delta-updater-v1/model.pt",
+  "state_checkpoint_sha256": "eccf3060467ed1edaf907319ba397d04a053a31ea66b01806f7c280a2b3bb7ae",
+  "conv_checkpoint": "artifacts/qwen35-conv-row-updater-v1/model.pt",
+  "conv_checkpoint_sha256": "27ff118a118e4545dffc28e6c6ee58750d301d74a16c2dce190bb1ebc62b81f1",
+  "normalization": {
+    "mode": "per-sample-layer-norm",
+    "corpus_statistics": "audit-only",
+    "records": 160,
+    "audit_mean_sha256": "3533914cd616e89777b44f15aa9ab26a6769847cf5c49524ca911bec80d6efe4",
+    "audit_scale_sha256": "09aa5a80dc94b772d65f7b377b68c583d53e1b9ebfa19a821a421793a09dae9e",
+    "applied_mean_sha256": "0d71643bfaa0cd6f10b638daa12819f01a0f6a53a07835eb11532b45ed90a244",
+    "applied_scale_sha256": "a868785262680a50559157b7fdc93cab81db2f2b920b8264931324567342bb04"
+  },
+  "source_manifest_sha256": "93ec537ac4d2732068c6fe0359abceb6346f11b950c1ac971afe983462432fde",
+  "stored_answer_routes_used": false
+}

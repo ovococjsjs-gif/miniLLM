@@ -53,6 +53,8 @@ from .foundry import (
     write_teacher_packet,
 )
 from .full_state import (
+    AIraQwenCacheUpdater,
+    CacheUpdate,
     ConvRowUpdate,
     ConvRowUpdater,
     GatedDeltaParameters,
@@ -107,6 +109,7 @@ from .synthetic import (
     generate_aira_mentor_records,
     validate_synthetic_record,
 )
+from .transition_data import EventNormalization, TransitionCorpus
 from .trigger import (
     CompactShelfLevel,
     ShelfEvaluation,
@@ -129,6 +132,7 @@ __all__ = [
     "AIraOne",
     "AIraOneResponse",
     "AIraOneStats",
+    "AIraQwenCacheUpdater",
     "AttentionByteEventLM",
     "BabysitRecord",
     "BoundedAssociativeMemory",
@@ -137,6 +141,7 @@ __all__ = [
     "ByteEventConfig",
     "ByteEventGenerationResult",
     "ByteEventLM",
+    "CacheUpdate",
     "CognitiveCascadeResult",
     "CompactShelfLevel",
     "ContrastiveExample",
@@ -148,6 +153,7 @@ __all__ = [
     "EventContextLM",
     "EventDatasetWriter",
     "EventKind",
+    "EventNormalization",
     "EventPackingMetrics",
     "EventShardInfo",
     "EventTrainingBatch",
@@ -182,6 +188,7 @@ __all__ = [
     "SyntheticRecord",
     "TeacherCluster",
     "TeacherPacket",
+    "TransitionCorpus",
     "VerifierObservation",
     "backprop_gradients",
     "build_compact_shelf",

@@ -38,6 +38,7 @@ def main() -> None:
         "--model",
         default="data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf",
     )
+    parser.add_argument("--combined-checkpoint")
     parser.add_argument(
         "--checkpoint", default="artifacts/qwen35-gated-delta-updater-v1/model.pt"
     )
@@ -85,21 +86,26 @@ def main() -> None:
             root = work / prompt["id"] / f"stage-{stage}"
             root.mkdir(parents=True)
             patch = root / "patch.bin"
+            export_command = [
+                sys.executable,
+                "scripts/export_qwen35_learned_state_patch.py",
+                "--checkpoint",
+                args.checkpoint,
+                "--prompt-id",
+                prompt["id"],
+                "--stage",
+                str(stage),
+                "--alpha",
+                str(args.alpha),
+                "--output",
+                str(patch),
+            ]
+            if args.combined_checkpoint:
+                export_command.extend(
+                    ["--combined-checkpoint", args.combined_checkpoint]
+                )
             export = subprocess.run(
-                [
-                    sys.executable,
-                    "scripts/export_qwen35_learned_state_patch.py",
-                    "--checkpoint",
-                    args.checkpoint,
-                    "--prompt-id",
-                    prompt["id"],
-                    "--stage",
-                    str(stage),
-                    "--alpha",
-                    str(args.alpha),
-                    "--output",
-                    str(patch),
-                ],
+                export_command,
                 text=True,
                 capture_output=True,
                 check=False,
@@ -154,7 +160,8 @@ def main() -> None:
         "schema_version": 1,
         "experiment": "qwen35-learned-state-replay-v1",
         "role": "native injection gate for learned full recurrent states",
-        "checkpoint_sha256": sha256(Path(args.checkpoint)),
+        "checkpoint_sha256": sha256(Path(args.combined_checkpoint or args.checkpoint)),
+        "combined_checkpoint": args.combined_checkpoint,
         "binary_build": args.binary_build,
         "binary_sha256": build["binary_sha256"],
         "prompt_groups": len(prompts),

@@ -1,0 +1,538 @@
+{
+  "schema_version": 1,
+  "experiment": "qwen35-learned-state-alpha-calibration-v1",
+  "checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
+  "checkpoint_sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f",
+  "split": "train-only",
+  "metric": "full-cache",
+  "validation_prompts_used": 0,
+  "candidates": [
+    {
+      "alpha": 0.01,
+      "prompts": 8,
+      "mean_candidate_kl": 0.019133274494789264,
+      "mean_learned_kl": 0.006301911658084922,
+      "learned_over_copy_ratio": 0.3293692179977441,
+      "improved_prompts": 5,
+      "records": [
+        {
+          "prompt_id": "train-en-arithmetic",
+          "candidate_kl": 0.02367966281475337,
+          "learned_kl": 0.005595995679043367,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-arithmetic",
+          "candidate_kl": 0.000119230902526656,
+          "learned_kl": 0.00014446833440563583,
+          "improved": false
+        },
+        {
+          "prompt_id": "train-en-grounding",
+          "candidate_kl": 0.00014075455672967076,
+          "learned_kl": 1.6320434178822645e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-grounding",
+          "candidate_kl": 0.054145586948270756,
+          "learned_kl": 0.007963379981576871,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-tool",
+          "candidate_kl": 0.0008248373653455239,
+          "learned_kl": 2.4166772829075422e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-memory",
+          "candidate_kl": 0.0003209874170179452,
+          "learned_kl": 0.001701269865068116,
+          "improved": false
+        },
+        {
+          "prompt_id": "train-en-logic",
+          "candidate_kl": 0.06738998029619503,
+          "learned_kl": 0.027192648536621688,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-python",
+          "candidate_kl": 0.006445155657475168,
+          "learned_kl": 0.007777043660955799,
+          "improved": false
+        }
+      ]
+    },
+    {
+      "alpha": 0.025,
+      "prompts": 8,
+      "mean_candidate_kl": 0.019133274494789264,
+      "mean_learned_kl": 0.005240011593845307,
+      "learned_over_copy_ratio": 0.2738690439669575,
+      "improved_prompts": 6,
+      "records": [
+        {
+          "prompt_id": "train-en-arithmetic",
+          "candidate_kl": 0.02367966281475337,
+          "learned_kl": 0.005870471140664807,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-arithmetic",
+          "candidate_kl": 0.000119230902526656,
+          "learned_kl": 5.0221863948096656e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-grounding",
+          "candidate_kl": 0.00014075455672967076,
+          "learned_kl": 1.0189574854110196e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-grounding",
+          "candidate_kl": 0.054145586948270756,
+          "learned_kl": 0.008889936249352769,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-tool",
+          "candidate_kl": 0.0008248373653455239,
+          "learned_kl": 3.4453044021377435e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-memory",
+          "candidate_kl": 0.0003209874170179452,
+          "learned_kl": 0.001470421695895211,
+          "improved": false
+        },
+        {
+          "prompt_id": "train-en-logic",
+          "candidate_kl": 0.06738998029619503,
+          "learned_kl": 0.016868031209888983,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-python",
+          "candidate_kl": 0.006445155657475168,
+          "learned_kl": 0.008726367972137106,
+          "improved": false
+        }
+      ]
+    },
+    {
+      "alpha": 0.05,
+      "prompts": 8,
+      "mean_candidate_kl": 0.019133274494789264,
+      "mean_learned_kl": 0.004662410917941568,
+      "learned_over_copy_ratio": 0.24368076249631626,
+      "improved_prompts": 7,
+      "records": [
+        {
+          "prompt_id": "train-en-arithmetic",
+          "candidate_kl": 0.02367966281475337,
+          "learned_kl": 0.005057764847886413,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-arithmetic",
+          "candidate_kl": 0.000119230902526656,
+          "learned_kl": 3.819757412065538e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-grounding",
+          "candidate_kl": 0.00014075455672967076,
+          "learned_kl": 2.3202362930267927e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-grounding",
+          "candidate_kl": 0.054145586948270756,
+          "learned_kl": 0.009893726358886317,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-tool",
+          "candidate_kl": 0.0008248373653455239,
+          "learned_kl": 3.362517121131461e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-memory",
+          "candidate_kl": 0.0003209874170179452,
+          "learned_kl": 0.000824517337639628,
+          "improved": false
+        },
+        {
+          "prompt_id": "train-en-logic",
+          "candidate_kl": 0.06738998029619503,
+          "learned_kl": 0.015924573916364863,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-python",
+          "candidate_kl": 0.006445155657475168,
+          "learned_kl": 0.005503679774493087,
+          "improved": true
+        }
+      ]
+    },
+    {
+      "alpha": 0.075,
+      "prompts": 8,
+      "mean_candidate_kl": 0.019133274494789264,
+      "mean_learned_kl": 0.008319159652864396,
+      "learned_over_copy_ratio": 0.43480062208536374,
+      "improved_prompts": 6,
+      "records": [
+        {
+          "prompt_id": "train-en-arithmetic",
+          "candidate_kl": 0.02367966281475337,
+          "learned_kl": 0.00457001311223186,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-arithmetic",
+          "candidate_kl": 0.000119230902526656,
+          "learned_kl": 2.5339976076520457e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-grounding",
+          "candidate_kl": 0.00014075455672967076,
+          "learned_kl": 2.3316259612670508e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-grounding",
+          "candidate_kl": 0.054145586948270756,
+          "learned_kl": 0.014987311417027468,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-tool",
+          "candidate_kl": 0.0008248373653455239,
+          "learned_kl": 4.741945365001909e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-memory",
+          "candidate_kl": 0.0003209874170179452,
+          "learned_kl": 0.0011806171818339027,
+          "improved": false
+        },
+        {
+          "prompt_id": "train-en-logic",
+          "candidate_kl": 0.06738998029619503,
+          "learned_kl": 0.036650144145705985,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-python",
+          "candidate_kl": 0.006445155657475168,
+          "learned_kl": 0.009069115676776745,
+          "improved": false
+        }
+      ]
+    },
+    {
+      "alpha": 0.1,
+      "prompts": 8,
+      "mean_candidate_kl": 0.019133274494789264,
+      "mean_learned_kl": 0.006329785737451409,
+      "learned_over_copy_ratio": 0.33082605589415737,
+      "improved_prompts": 6,
+      "records": [
+        {
+          "prompt_id": "train-en-arithmetic",
+          "candidate_kl": 0.02367966281475337,
+          "learned_kl": 0.005728625579878634,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-arithmetic",
+          "candidate_kl": 0.000119230902526656,
+          "learned_kl": 4.299929320523614e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-grounding",
+          "candidate_kl": 0.00014075455672967076,
+          "learned_kl": 1.6835162443343127e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-grounding",
+          "candidate_kl": 0.054145586948270756,
+          "learned_kl": 0.013833955199377943,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-tool",
+          "candidate_kl": 0.0008248373653455239,
+          "learned_kl": 4.9705714336580176e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-memory",
+          "candidate_kl": 0.0003209874170179452,
+          "learned_kl": 0.0008825643764923085,
+          "improved": false
+        },
+        {
+          "prompt_id": "train-en-logic",
+          "candidate_kl": 0.06738998029619503,
+          "learned_kl": 0.01715123444881594,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-python",
+          "candidate_kl": 0.006445155657475168,
+          "learned_kl": 0.01293236612506129,
+          "improved": false
+        }
+      ]
+    },
+    {
+      "alpha": 0.25,
+      "prompts": 8,
+      "mean_candidate_kl": 0.019133274494789264,
+      "mean_learned_kl": 0.008457416896320128,
+      "learned_over_copy_ratio": 0.442026632640608,
+      "improved_prompts": 6,
+      "records": [
+        {
+          "prompt_id": "train-en-arithmetic",
+          "candidate_kl": 0.02367966281475337,
+          "learned_kl": 0.004774358000801302,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-arithmetic",
+          "candidate_kl": 0.000119230902526656,
+          "learned_kl": 0.00010760026042797191,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-grounding",
+          "candidate_kl": 0.00014075455672967076,
+          "learned_kl": 1.4564053226162948e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-grounding",
+          "candidate_kl": 0.054145586948270756,
+          "learned_kl": 0.007496262912428203,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-tool",
+          "candidate_kl": 0.0008248373653455239,
+          "learned_kl": 8.463558870206216e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-memory",
+          "candidate_kl": 0.0003209874170179452,
+          "learned_kl": 0.0006606935222750866,
+          "improved": false
+        },
+        {
+          "prompt_id": "train-en-logic",
+          "candidate_kl": 0.06738998029619503,
+          "learned_kl": 0.036635439796626736,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-python",
+          "candidate_kl": 0.006445155657475168,
+          "learned_kl": 0.017885781036073495,
+          "improved": false
+        }
+      ]
+    },
+    {
+      "alpha": 0.5,
+      "prompts": 8,
+      "mean_candidate_kl": 0.019133274494789264,
+      "mean_learned_kl": 0.013844340123699936,
+      "learned_over_copy_ratio": 0.7235740085927419,
+      "improved_prompts": 7,
+      "records": [
+        {
+          "prompt_id": "train-en-arithmetic",
+          "candidate_kl": 0.02367966281475337,
+          "learned_kl": 0.010109717961184681,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-arithmetic",
+          "candidate_kl": 0.000119230902526656,
+          "learned_kl": 6.505886185655086e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-grounding",
+          "candidate_kl": 0.00014075455672967076,
+          "learned_kl": 2.361661544480884e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-grounding",
+          "candidate_kl": 0.054145586948270756,
+          "learned_kl": 0.015242213285784761,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-tool",
+          "candidate_kl": 0.0008248373653455239,
+          "learned_kl": 0.00019300963429930132,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-memory",
+          "candidate_kl": 0.0003209874170179452,
+          "learned_kl": 0.0002719972924382886,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-logic",
+          "candidate_kl": 0.06738998029619503,
+          "learned_kl": 0.05623396351882584,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-python",
+          "candidate_kl": 0.006445155657475168,
+          "learned_kl": 0.028615143819765244,
+          "improved": false
+        }
+      ]
+    },
+    {
+      "alpha": 0.75,
+      "prompts": 8,
+      "mean_candidate_kl": 0.019133274494789264,
+      "mean_learned_kl": 0.020778534324605528,
+      "learned_over_copy_ratio": 1.0859894541451507,
+      "improved_prompts": 6,
+      "records": [
+        {
+          "prompt_id": "train-en-arithmetic",
+          "candidate_kl": 0.02367966281475337,
+          "learned_kl": 0.013189565387463556,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-arithmetic",
+          "candidate_kl": 0.000119230902526656,
+          "learned_kl": 0.00011543471771457879,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-grounding",
+          "candidate_kl": 0.00014075455672967076,
+          "learned_kl": 3.320795552589174e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-grounding",
+          "candidate_kl": 0.054145586948270756,
+          "learned_kl": 0.020578863549066243,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-tool",
+          "candidate_kl": 0.0008248373653455239,
+          "learned_kl": 0.00040618039301145147,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-memory",
+          "candidate_kl": 0.0003209874170179452,
+          "learned_kl": 0.00030445456212295057,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-logic",
+          "candidate_kl": 0.06738998029619503,
+          "learned_kl": 0.10535607125938723,
+          "improved": false
+        },
+        {
+          "prompt_id": "train-ru-python",
+          "candidate_kl": 0.006445155657475168,
+          "learned_kl": 0.026244496772552344,
+          "improved": false
+        }
+      ]
+    },
+    {
+      "alpha": 1.0,
+      "prompts": 8,
+      "mean_candidate_kl": 0.019133274494789264,
+      "mean_learned_kl": 0.026194750848352783,
+      "learned_over_copy_ratio": 1.3690678433263808,
+      "improved_prompts": 4,
+      "records": [
+        {
+          "prompt_id": "train-en-arithmetic",
+          "candidate_kl": 0.02367966281475337,
+          "learned_kl": 0.02475743451263628,
+          "improved": false
+        },
+        {
+          "prompt_id": "train-ru-arithmetic",
+          "candidate_kl": 0.000119230902526656,
+          "learned_kl": 0.00016079804796187818,
+          "improved": false
+        },
+        {
+          "prompt_id": "train-en-grounding",
+          "candidate_kl": 0.00014075455672967076,
+          "learned_kl": 7.639446876063228e-05,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-grounding",
+          "candidate_kl": 0.054145586948270756,
+          "learned_kl": 0.0381131828533041,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-tool",
+          "candidate_kl": 0.0008248373653455239,
+          "learned_kl": 0.0005304791364017508,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-ru-memory",
+          "candidate_kl": 0.0003209874170179452,
+          "learned_kl": 0.00017172977781004982,
+          "improved": true
+        },
+        {
+          "prompt_id": "train-en-logic",
+          "candidate_kl": 0.06738998029619503,
+          "learned_kl": 0.11503534766689277,
+          "improved": false
+        },
+        {
+          "prompt_id": "train-ru-python",
+          "candidate_kl": 0.006445155657475168,
+          "learned_kl": 0.030712640323054787,
+          "improved": false
+        }
+      ]
+    }
+  ],
+  "selected_alpha": 0.05,
+  "selection_metric": "minimum mean train full-cache true-vocabulary KL",
+  "selected_mean_kl": 0.004662410917941568,
+  "selected_copy_mean_kl": 0.019133274494789264,
+  "selected_ratio": 0.24368076249631626
+}

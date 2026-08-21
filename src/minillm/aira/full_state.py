@@ -185,3 +185,88 @@ class GatedDeltaParameterUpdater(nn.Module):
         state_key = torch.einsum("bhij,bhj->bhi", decayed, parameters.key)
         innovation = (parameters.value - state_key) * parameters.beta.unsqueeze(-1)
         return decayed + torch.einsum("bhi,bhj->bhij", innovation, parameters.key)
+
+
+@dataclass(frozen=True)
+class CacheUpdate:
+    recurrent_state: torch.Tensor
+    convolution_state: torch.Tensor
+    recurrent_delta: torch.Tensor
+    convolution_delta: torch.Tensor
+    convolution_confidence: torch.Tensor
+
+
+class AIraQwenCacheUpdater(nn.Module):
+    """Normalized joint interface for all learned Qwen cache updates."""
+
+    def __init__(
+        self,
+        *,
+        event_mean: torch.Tensor,
+        event_scale: torch.Tensor,
+        layers: int,
+        heads: int = 16,
+        state_width: int = 128,
+        conv_width: int = 6144,
+        state_hidden_dim: int = 256,
+        conv_hidden_dim: int = 256,
+        conv_bottleneck_dim: int = 64,
+        identity_dim: int = 16,
+        state_alpha: float = 1.0,
+    ) -> None:
+        super().__init__()
+        if event_mean.ndim != 1 or event_scale.shape != event_mean.shape:
+            raise ValueError("event normalization tensors must be equal-width vectors")
+        if not 0 < state_alpha <= 1:
+            raise ValueError("state alpha must lie in (0, 1]")
+        self.register_buffer("event_mean", event_mean.detach().float().clone())
+        self.register_buffer("event_scale", event_scale.detach().float().clone())
+        self.register_buffer("state_alpha", torch.tensor(float(state_alpha)))
+        event_dim = event_mean.shape[0]
+        self.state_updater = GatedDeltaParameterUpdater(
+            event_dim=event_dim,
+            layers=layers,
+            heads=heads,
+            state_width=state_width,
+            hidden_dim=state_hidden_dim,
+            identity_dim=identity_dim,
+        )
+        self.conv_updater = ConvRowUpdater(
+            event_dim=event_dim,
+            layers=layers,
+            row_width=conv_width,
+            hidden_dim=conv_hidden_dim,
+            bottleneck_dim=conv_bottleneck_dim,
+            identity_dim=identity_dim,
+        )
+
+    def normalize_event(self, event_features: torch.Tensor) -> torch.Tensor:
+        if event_features.shape[-1] != self.event_mean.shape[0]:
+            raise ValueError("event feature width differs from updater normalization")
+        return (event_features - self.event_mean) * self.event_scale
+
+    def forward(
+        self,
+        recurrent_state: torch.Tensor,
+        convolution_state: torch.Tensor,
+        event_features: torch.Tensor,
+        layer_ids: torch.Tensor,
+    ) -> CacheUpdate:
+        if convolution_state.ndim != 3 or convolution_state.shape[1] != 3:
+            raise ValueError("convolution state must have shape [batch, 3, width]")
+        normalized = self.normalize_event(event_features)
+        parameters = self.state_updater(normalized, layer_ids)
+        proposed_state = self.state_updater.apply(recurrent_state, parameters)
+        recurrent_delta = self.state_alpha * (proposed_state - recurrent_state)
+        updated_state = recurrent_state + recurrent_delta
+        conv = self.conv_updater(convolution_state[:, 2], normalized, layer_ids)
+        updated_conv = torch.stack(
+            (convolution_state[:, 1], convolution_state[:, 2], conv.row), dim=1
+        )
+        return CacheUpdate(
+            updated_state,
+            updated_conv,
+            recurrent_delta,
+            conv.delta,
+            conv.confidence,
+        )

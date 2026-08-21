@@ -1,0 +1,920 @@
+{
+  "schema_version": 1,
+  "experiment": "aira-qwen-active-v1",
+  "mode": "trained-and-replayed",
+  "config_sha256": "f6309551dafd3b0f87f7c1576f906776587ad50dc75e22c03477d6f261440836",
+  "prepared": {
+    "model_sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+    "llama_cpp_revision": "9a532ae4bab1b164052ce60a738f78538b421c66",
+    "source_manifest_sha256": "93ec537ac4d2732068c6fe0359abceb6346f11b950c1ac971afe983462432fde",
+    "inventory": {
+      "samples": 48,
+      "layers": 5,
+      "tensors": 1920,
+      "shifted_row_matches": 480,
+      "shifted_row_comparisons": 480
+    },
+    "normalization_records": 160,
+    "normalization_mean_sha256": "3533914cd616e89777b44f15aa9ab26a6769847cf5c49524ca911bec80d6efe4",
+    "normalization_scale_sha256": "09aa5a80dc94b772d65f7b377b68c583d53e1b9ebfa19a821a421793a09dae9e",
+    "train_transitions": 32,
+    "validation_transitions": 16,
+    "stored_answer_routes_used": false,
+    "ready_for_training": true
+  },
+  "combined_checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
+  "combined_checkpoint_sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f",
+  "training": {
+    "state": {
+      "schema_version": 1,
+      "experiment": "qwen35-gated-delta-updater-v1",
+      "role": "learned stable-parameter updater producing full injectible Qwen recurrent states; not yet an acceleration claim",
+      "config": "configs/experiments/qwen35_gated_delta_updater_v1.json",
+      "config_sha256": "9fcf7e449da148f92f5652be4bafa540eb3aeebe80c990e1f437d92a242b884d",
+      "source_manifest_sha256": "93ec537ac4d2732068c6fe0359abceb6346f11b950c1ac971afe983462432fde",
+      "transition_probe_build": "results/qwen35_transition_probe_build.json",
+      "transition_probe_source_sha256": "b29324542135ba78d24a120d154c3eb93393dbf4ad724e146117bfe757119f56",
+      "raw_state_bytes": 2691190272,
+      "candidate_recurrent_layers": [
+        4,
+        8,
+        12,
+        16,
+        20
+      ],
+      "conditioning": "token features plus exact output of the preceding attention anchor",
+      "parameters": 5647184,
+      "steps": 300,
+      "training_seconds": 20.268495033999898,
+      "structure": {
+        "exact_formula_max_abs": 9.5367431640625e-07,
+        "exact_formula_mse": 1.0047216718062213e-18,
+        "exact_formula_elements": 62914560,
+        "conv_shift_matches": 480,
+        "conv_shift_comparisons": 480,
+        "sampled_delta_residual_energy": {
+          "rank_1": 0.0853582404277177,
+          "rank_2": 0.011625851440702547,
+          "rank_4": 0.001543625546479344,
+          "rank_8": 0.00019464511475891395
+        },
+        "seconds": 4.464147541999409
+      },
+      "loss_samples": [
+        {
+          "step": 1,
+          "loss": 30.271663665771484,
+          "state_ratio": 39.225433349609375,
+          "key_cosine": 0.9966578483581543,
+          "value_ratio": 1.220651626586914,
+          "gate_ratio": 16.8219051361084,
+          "beta_mse": 0.06137126684188843,
+          "gradient_norm": 28.667861938476562
+        },
+        {
+          "step": 76,
+          "loss": 1.6107521057128906,
+          "state_ratio": 1.092185139656067,
+          "key_cosine": 0.3647400438785553,
+          "value_ratio": 0.5090481042861938,
+          "gate_ratio": 0.22227473556995392,
+          "beta_mse": 0.15946799516677856,
+          "gradient_norm": 1.4991025924682617
+        },
+        {
+          "step": 151,
+          "loss": 1.0103733539581299,
+          "state_ratio": 0.7453230619430542,
+          "key_cosine": 0.2083420753479004,
+          "value_ratio": 0.282356321811676,
+          "gate_ratio": 0.14023186266422272,
+          "beta_mse": 0.15379483997821808,
+          "gradient_norm": 1.0799851417541504
+        },
+        {
+          "step": 226,
+          "loss": 0.5699301362037659,
+          "state_ratio": 0.47802475094795227,
+          "key_cosine": 0.13341963291168213,
+          "value_ratio": 0.13320684432983398,
+          "gate_ratio": 0.07974031567573547,
+          "beta_mse": 0.048842255026102066,
+          "gradient_norm": 0.7580685615539551
+        },
+        {
+          "step": 300,
+          "loss": 0.7227590680122375,
+          "state_ratio": 0.5831663608551025,
+          "key_cosine": 0.10487963259220123,
+          "value_ratio": 0.2244345098733902,
+          "gate_ratio": 0.11482410132884979,
+          "beta_mse": 0.0888993889093399,
+          "gradient_norm": 1.926329255104065
+        }
+      ],
+      "train": {
+        "transitions": 32.0,
+        "layer_transitions": 160.0,
+        "copy_state_mse": 1.6623064882992367e-05,
+        "patch_state_mse": 9.515641671242748e-06,
+        "state_mse_ratio": 0.5724360542548643,
+        "key_cosine": 0.11142588981892913,
+        "value_ratio": 0.22983992276713253,
+        "gate_ratio": 0.0926875260018278,
+        "beta_mse": 0.0829514357901644
+      },
+      "validation": {
+        "transitions": 16.0,
+        "layer_transitions": 80.0,
+        "copy_state_mse": 2.0357421381334006e-05,
+        "patch_state_mse": 1.7156765369463756e-05,
+        "state_mse_ratio": 0.842776943507935,
+        "key_cosine": 0.22934210686944426,
+        "value_ratio": 0.3145857688039541,
+        "gate_ratio": 0.25734634376131,
+        "beta_mse": 0.08617718822788448
+      },
+      "checkpoint": "artifacts/qwen35-gated-delta-updater-v1/model.pt",
+      "checkpoint_sha256": "eccf3060467ed1edaf907319ba397d04a053a31ea66b01806f7c280a2b3bb7ae",
+      "acceptance": {
+        "full_state_formula_verified": true,
+        "conv_shift_structure_exact": true,
+        "beats_copy_state_mse": true,
+        "injected_future_logit_gate_passed": false,
+        "generated_quality_gate_passed": false,
+        "measured_speedup_gate_passed": false,
+        "deployment_allowed": false
+      },
+      "limitations": "The updater uses a computed attention-anchor hidden state and predicts exact Gated DeltaNet parameters. Native injection, convolution new-row prediction, future logits, free generation, and measured skip speed remain mandatory."
+    },
+    "convolution": {
+      "schema_version": 1,
+      "experiment": "qwen35-conv-row-updater-v1",
+      "role": "learned newest-row cache updater; not an acceleration claim",
+      "config": "configs/experiments/qwen35_conv_row_updater_v1.json",
+      "config_sha256": "f4475c9b8da9e0238c0404e4471abe87ce0bfd2c7a21fc975d53d816f9193e8d",
+      "source_manifest_sha256": "93ec537ac4d2732068c6fe0359abceb6346f11b950c1ac971afe983462432fde",
+      "candidate_recurrent_layers": [
+        4,
+        8,
+        12,
+        16,
+        20
+      ],
+      "parameters": 2422001,
+      "steps": 300,
+      "training_seconds": 6.051213315999917,
+      "loss_samples": [
+        {
+          "step": 1,
+          "loss": 1.0345029830932617,
+          "mse_ratio": 1.0,
+          "copy_mse": 0.7700190544128418,
+          "patch_mse": 0.7700190544128418,
+          "confidence_bce": 0.690058708190918,
+          "gradient_norm": 0.01648206077516079
+        },
+        {
+          "step": 76,
+          "loss": 0.5706839561462402,
+          "mse_ratio": 0.538926362991333,
+          "copy_mse": 1.3072404861450195,
+          "patch_mse": 0.6450952291488647,
+          "confidence_bce": 0.6351521015167236,
+          "gradient_norm": 0.16221508383750916
+        },
+        {
+          "step": 151,
+          "loss": 0.2915060222148895,
+          "mse_ratio": 0.26401203870773315,
+          "copy_mse": 1.2925031185150146,
+          "patch_mse": 0.30205750465393066,
+          "confidence_bce": 0.549879789352417,
+          "gradient_norm": 0.3434089720249176
+        },
+        {
+          "step": 226,
+          "loss": 0.1522528976202011,
+          "mse_ratio": 0.13485227525234222,
+          "copy_mse": 1.011873483657837,
+          "patch_mse": 0.14676685631275177,
+          "confidence_bce": 0.3480125665664673,
+          "gradient_norm": 0.2546127140522003
+        },
+        {
+          "step": 300,
+          "loss": 0.07475122064352036,
+          "mse_ratio": 0.06323101371526718,
+          "copy_mse": 1.287405014038086,
+          "patch_mse": 0.09644998610019684,
+          "confidence_bce": 0.2304040789604187,
+          "gradient_norm": 0.16777287423610687
+        }
+      ],
+      "train": {
+        "transitions": 32.0,
+        "layer_rows": 160.0,
+        "copy_new_row_mse": 1.1353295683860778,
+        "patch_new_row_mse": 0.09781660530716181,
+        "new_row_mse_ratio": 0.0861570138142465,
+        "copy_cosine_error": 0.1890947014093399,
+        "patch_cosine_error": 0.015380080044269561,
+        "mean_confidence": 0.9144923742860556
+      },
+      "validation": {
+        "transitions": 16.0,
+        "layer_rows": 80.0,
+        "copy_new_row_mse": 1.3139655828475951,
+        "patch_new_row_mse": 0.7332877874374389,
+        "new_row_mse_ratio": 0.5580722942896837,
+        "copy_cosine_error": 0.22064486667513847,
+        "patch_cosine_error": 0.12046499401330948,
+        "mean_confidence": 0.7773950107395649
+      },
+      "checkpoint": "artifacts/qwen35-conv-row-updater-v1/model.pt",
+      "checkpoint_sha256": "27ff118a118e4545dffc28e6c6ee58750d301d74a16c2dce190bb1ebc62b81f1",
+      "acceptance": {
+        "older_rows_shift_exact": true,
+        "beats_copy_new_row_mse": true,
+        "injected_future_kl_gate_passed": false,
+        "deployment_allowed": false
+      },
+      "limitations": "The result must be combined with learned full recurrent states and replayed through Qwen before any layer-skip or speed claim."
+    },
+    "combined": {
+      "schema_version": 1,
+      "checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
+      "checkpoint_sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f",
+      "parameters": 8069185,
+      "state_checkpoint": "artifacts/qwen35-gated-delta-updater-v1/model.pt",
+      "state_checkpoint_sha256": "eccf3060467ed1edaf907319ba397d04a053a31ea66b01806f7c280a2b3bb7ae",
+      "conv_checkpoint": "artifacts/qwen35-conv-row-updater-v1/model.pt",
+      "conv_checkpoint_sha256": "27ff118a118e4545dffc28e6c6ee58750d301d74a16c2dce190bb1ebc62b81f1",
+      "normalization": {
+        "mode": "per-sample-layer-norm",
+        "corpus_statistics": "audit-only",
+        "records": 160,
+        "audit_mean_sha256": "3533914cd616e89777b44f15aa9ab26a6769847cf5c49524ca911bec80d6efe4",
+        "audit_scale_sha256": "09aa5a80dc94b772d65f7b377b68c583d53e1b9ebfa19a821a421793a09dae9e",
+        "applied_mean_sha256": "0d71643bfaa0cd6f10b638daa12819f01a0f6a53a07835eb11532b45ed90a244",
+        "applied_scale_sha256": "a868785262680a50559157b7fdc93cab81db2f2b920b8264931324567342bb04"
+      },
+      "source_manifest_sha256": "93ec537ac4d2732068c6fe0359abceb6346f11b950c1ac971afe983462432fde",
+      "stored_answer_routes_used": false
+    }
+  },
+  "calibration": {
+    "schema_version": 1,
+    "experiment": "qwen35-learned-state-alpha-calibration-v1",
+    "checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
+    "checkpoint_sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f",
+    "split": "train-only",
+    "metric": "full-cache",
+    "validation_prompts_used": 0,
+    "candidates": [
+      {
+        "alpha": 0.01,
+        "prompts": 8,
+        "mean_candidate_kl": 0.019133274494789264,
+        "mean_learned_kl": 0.006301911658084922,
+        "learned_over_copy_ratio": 0.3293692179977441,
+        "improved_prompts": 5,
+        "records": [
+          {
+            "prompt_id": "train-en-arithmetic",
+            "candidate_kl": 0.02367966281475337,
+            "learned_kl": 0.005595995679043367,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-arithmetic",
+            "candidate_kl": 0.000119230902526656,
+            "learned_kl": 0.00014446833440563583,
+            "improved": false
+          },
+          {
+            "prompt_id": "train-en-grounding",
+            "candidate_kl": 0.00014075455672967076,
+            "learned_kl": 1.6320434178822645e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-grounding",
+            "candidate_kl": 0.054145586948270756,
+            "learned_kl": 0.007963379981576871,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-tool",
+            "candidate_kl": 0.0008248373653455239,
+            "learned_kl": 2.4166772829075422e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-memory",
+            "candidate_kl": 0.0003209874170179452,
+            "learned_kl": 0.001701269865068116,
+            "improved": false
+          },
+          {
+            "prompt_id": "train-en-logic",
+            "candidate_kl": 0.06738998029619503,
+            "learned_kl": 0.027192648536621688,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-python",
+            "candidate_kl": 0.006445155657475168,
+            "learned_kl": 0.007777043660955799,
+            "improved": false
+          }
+        ]
+      },
+      {
+        "alpha": 0.025,
+        "prompts": 8,
+        "mean_candidate_kl": 0.019133274494789264,
+        "mean_learned_kl": 0.005240011593845307,
+        "learned_over_copy_ratio": 0.2738690439669575,
+        "improved_prompts": 6,
+        "records": [
+          {
+            "prompt_id": "train-en-arithmetic",
+            "candidate_kl": 0.02367966281475337,
+            "learned_kl": 0.005870471140664807,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-arithmetic",
+            "candidate_kl": 0.000119230902526656,
+            "learned_kl": 5.0221863948096656e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-grounding",
+            "candidate_kl": 0.00014075455672967076,
+            "learned_kl": 1.0189574854110196e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-grounding",
+            "candidate_kl": 0.054145586948270756,
+            "learned_kl": 0.008889936249352769,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-tool",
+            "candidate_kl": 0.0008248373653455239,
+            "learned_kl": 3.4453044021377435e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-memory",
+            "candidate_kl": 0.0003209874170179452,
+            "learned_kl": 0.001470421695895211,
+            "improved": false
+          },
+          {
+            "prompt_id": "train-en-logic",
+            "candidate_kl": 0.06738998029619503,
+            "learned_kl": 0.016868031209888983,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-python",
+            "candidate_kl": 0.006445155657475168,
+            "learned_kl": 0.008726367972137106,
+            "improved": false
+          }
+        ]
+      },
+      {
+        "alpha": 0.05,
+        "prompts": 8,
+        "mean_candidate_kl": 0.019133274494789264,
+        "mean_learned_kl": 0.004662410917941568,
+        "learned_over_copy_ratio": 0.24368076249631626,
+        "improved_prompts": 7,
+        "records": [
+          {
+            "prompt_id": "train-en-arithmetic",
+            "candidate_kl": 0.02367966281475337,
+            "learned_kl": 0.005057764847886413,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-arithmetic",
+            "candidate_kl": 0.000119230902526656,
+            "learned_kl": 3.819757412065538e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-grounding",
+            "candidate_kl": 0.00014075455672967076,
+            "learned_kl": 2.3202362930267927e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-grounding",
+            "candidate_kl": 0.054145586948270756,
+            "learned_kl": 0.009893726358886317,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-tool",
+            "candidate_kl": 0.0008248373653455239,
+            "learned_kl": 3.362517121131461e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-memory",
+            "candidate_kl": 0.0003209874170179452,
+            "learned_kl": 0.000824517337639628,
+            "improved": false
+          },
+          {
+            "prompt_id": "train-en-logic",
+            "candidate_kl": 0.06738998029619503,
+            "learned_kl": 0.015924573916364863,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-python",
+            "candidate_kl": 0.006445155657475168,
+            "learned_kl": 0.005503679774493087,
+            "improved": true
+          }
+        ]
+      },
+      {
+        "alpha": 0.075,
+        "prompts": 8,
+        "mean_candidate_kl": 0.019133274494789264,
+        "mean_learned_kl": 0.008319159652864396,
+        "learned_over_copy_ratio": 0.43480062208536374,
+        "improved_prompts": 6,
+        "records": [
+          {
+            "prompt_id": "train-en-arithmetic",
+            "candidate_kl": 0.02367966281475337,
+            "learned_kl": 0.00457001311223186,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-arithmetic",
+            "candidate_kl": 0.000119230902526656,
+            "learned_kl": 2.5339976076520457e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-grounding",
+            "candidate_kl": 0.00014075455672967076,
+            "learned_kl": 2.3316259612670508e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-grounding",
+            "candidate_kl": 0.054145586948270756,
+            "learned_kl": 0.014987311417027468,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-tool",
+            "candidate_kl": 0.0008248373653455239,
+            "learned_kl": 4.741945365001909e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-memory",
+            "candidate_kl": 0.0003209874170179452,
+            "learned_kl": 0.0011806171818339027,
+            "improved": false
+          },
+          {
+            "prompt_id": "train-en-logic",
+            "candidate_kl": 0.06738998029619503,
+            "learned_kl": 0.036650144145705985,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-python",
+            "candidate_kl": 0.006445155657475168,
+            "learned_kl": 0.009069115676776745,
+            "improved": false
+          }
+        ]
+      },
+      {
+        "alpha": 0.1,
+        "prompts": 8,
+        "mean_candidate_kl": 0.019133274494789264,
+        "mean_learned_kl": 0.006329785737451409,
+        "learned_over_copy_ratio": 0.33082605589415737,
+        "improved_prompts": 6,
+        "records": [
+          {
+            "prompt_id": "train-en-arithmetic",
+            "candidate_kl": 0.02367966281475337,
+            "learned_kl": 0.005728625579878634,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-arithmetic",
+            "candidate_kl": 0.000119230902526656,
+            "learned_kl": 4.299929320523614e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-grounding",
+            "candidate_kl": 0.00014075455672967076,
+            "learned_kl": 1.6835162443343127e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-grounding",
+            "candidate_kl": 0.054145586948270756,
+            "learned_kl": 0.013833955199377943,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-tool",
+            "candidate_kl": 0.0008248373653455239,
+            "learned_kl": 4.9705714336580176e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-memory",
+            "candidate_kl": 0.0003209874170179452,
+            "learned_kl": 0.0008825643764923085,
+            "improved": false
+          },
+          {
+            "prompt_id": "train-en-logic",
+            "candidate_kl": 0.06738998029619503,
+            "learned_kl": 0.01715123444881594,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-python",
+            "candidate_kl": 0.006445155657475168,
+            "learned_kl": 0.01293236612506129,
+            "improved": false
+          }
+        ]
+      },
+      {
+        "alpha": 0.25,
+        "prompts": 8,
+        "mean_candidate_kl": 0.019133274494789264,
+        "mean_learned_kl": 0.008457416896320128,
+        "learned_over_copy_ratio": 0.442026632640608,
+        "improved_prompts": 6,
+        "records": [
+          {
+            "prompt_id": "train-en-arithmetic",
+            "candidate_kl": 0.02367966281475337,
+            "learned_kl": 0.004774358000801302,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-arithmetic",
+            "candidate_kl": 0.000119230902526656,
+            "learned_kl": 0.00010760026042797191,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-grounding",
+            "candidate_kl": 0.00014075455672967076,
+            "learned_kl": 1.4564053226162948e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-grounding",
+            "candidate_kl": 0.054145586948270756,
+            "learned_kl": 0.007496262912428203,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-tool",
+            "candidate_kl": 0.0008248373653455239,
+            "learned_kl": 8.463558870206216e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-memory",
+            "candidate_kl": 0.0003209874170179452,
+            "learned_kl": 0.0006606935222750866,
+            "improved": false
+          },
+          {
+            "prompt_id": "train-en-logic",
+            "candidate_kl": 0.06738998029619503,
+            "learned_kl": 0.036635439796626736,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-python",
+            "candidate_kl": 0.006445155657475168,
+            "learned_kl": 0.017885781036073495,
+            "improved": false
+          }
+        ]
+      },
+      {
+        "alpha": 0.5,
+        "prompts": 8,
+        "mean_candidate_kl": 0.019133274494789264,
+        "mean_learned_kl": 0.013844340123699936,
+        "learned_over_copy_ratio": 0.7235740085927419,
+        "improved_prompts": 7,
+        "records": [
+          {
+            "prompt_id": "train-en-arithmetic",
+            "candidate_kl": 0.02367966281475337,
+            "learned_kl": 0.010109717961184681,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-arithmetic",
+            "candidate_kl": 0.000119230902526656,
+            "learned_kl": 6.505886185655086e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-grounding",
+            "candidate_kl": 0.00014075455672967076,
+            "learned_kl": 2.361661544480884e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-grounding",
+            "candidate_kl": 0.054145586948270756,
+            "learned_kl": 0.015242213285784761,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-tool",
+            "candidate_kl": 0.0008248373653455239,
+            "learned_kl": 0.00019300963429930132,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-memory",
+            "candidate_kl": 0.0003209874170179452,
+            "learned_kl": 0.0002719972924382886,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-logic",
+            "candidate_kl": 0.06738998029619503,
+            "learned_kl": 0.05623396351882584,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-python",
+            "candidate_kl": 0.006445155657475168,
+            "learned_kl": 0.028615143819765244,
+            "improved": false
+          }
+        ]
+      },
+      {
+        "alpha": 0.75,
+        "prompts": 8,
+        "mean_candidate_kl": 0.019133274494789264,
+        "mean_learned_kl": 0.020778534324605528,
+        "learned_over_copy_ratio": 1.0859894541451507,
+        "improved_prompts": 6,
+        "records": [
+          {
+            "prompt_id": "train-en-arithmetic",
+            "candidate_kl": 0.02367966281475337,
+            "learned_kl": 0.013189565387463556,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-arithmetic",
+            "candidate_kl": 0.000119230902526656,
+            "learned_kl": 0.00011543471771457879,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-grounding",
+            "candidate_kl": 0.00014075455672967076,
+            "learned_kl": 3.320795552589174e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-grounding",
+            "candidate_kl": 0.054145586948270756,
+            "learned_kl": 0.020578863549066243,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-tool",
+            "candidate_kl": 0.0008248373653455239,
+            "learned_kl": 0.00040618039301145147,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-memory",
+            "candidate_kl": 0.0003209874170179452,
+            "learned_kl": 0.00030445456212295057,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-logic",
+            "candidate_kl": 0.06738998029619503,
+            "learned_kl": 0.10535607125938723,
+            "improved": false
+          },
+          {
+            "prompt_id": "train-ru-python",
+            "candidate_kl": 0.006445155657475168,
+            "learned_kl": 0.026244496772552344,
+            "improved": false
+          }
+        ]
+      },
+      {
+        "alpha": 1.0,
+        "prompts": 8,
+        "mean_candidate_kl": 0.019133274494789264,
+        "mean_learned_kl": 0.026194750848352783,
+        "learned_over_copy_ratio": 1.3690678433263808,
+        "improved_prompts": 4,
+        "records": [
+          {
+            "prompt_id": "train-en-arithmetic",
+            "candidate_kl": 0.02367966281475337,
+            "learned_kl": 0.02475743451263628,
+            "improved": false
+          },
+          {
+            "prompt_id": "train-ru-arithmetic",
+            "candidate_kl": 0.000119230902526656,
+            "learned_kl": 0.00016079804796187818,
+            "improved": false
+          },
+          {
+            "prompt_id": "train-en-grounding",
+            "candidate_kl": 0.00014075455672967076,
+            "learned_kl": 7.639446876063228e-05,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-grounding",
+            "candidate_kl": 0.054145586948270756,
+            "learned_kl": 0.0381131828533041,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-tool",
+            "candidate_kl": 0.0008248373653455239,
+            "learned_kl": 0.0005304791364017508,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-ru-memory",
+            "candidate_kl": 0.0003209874170179452,
+            "learned_kl": 0.00017172977781004982,
+            "improved": true
+          },
+          {
+            "prompt_id": "train-en-logic",
+            "candidate_kl": 0.06738998029619503,
+            "learned_kl": 0.11503534766689277,
+            "improved": false
+          },
+          {
+            "prompt_id": "train-ru-python",
+            "candidate_kl": 0.006445155657475168,
+            "learned_kl": 0.030712640323054787,
+            "improved": false
+          }
+        ]
+      }
+    ],
+    "selected_alpha": 0.05,
+    "selection_metric": "minimum mean train full-cache true-vocabulary KL",
+    "selected_mean_kl": 0.004662410917941568,
+    "selected_copy_mean_kl": 0.019133274494789264,
+    "selected_ratio": 0.24368076249631626
+  },
+  "replay": {
+    "schema_version": 1,
+    "experiment": "qwen35-learned-state-replay-v1",
+    "role": "native injection gate for learned full recurrent states",
+    "checkpoint_sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f",
+    "combined_checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
+    "binary_build": "results/qwen35_learned_state_replay_build.json",
+    "binary_sha256": "73eecd698d9ade26b0db3f5d385f47ea4f7086f5e1c9e308f2c04cbda11091f9",
+    "prompt_groups": 4,
+    "stages": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "transitions": 16,
+    "train_calibrated_alpha": 0.05,
+    "alpha_calibration_scope": "train prompts, stage 1 only",
+    "mean_candidate_copy_kl": 0.0049066179122691485,
+    "mean_learned_kl": 0.005023933158027673,
+    "learned_over_copy_kl_ratio": 1.0239095947261705,
+    "learned_improvements": 10,
+    "argmax_preserved": 15,
+    "mean_candidate_full_copy_kl": 0.021935155087099346,
+    "mean_learned_full_kl": 0.018194402726117033,
+    "learned_full_over_copy_kl_ratio": 0.8294631450687873,
+    "learned_full_improvements": 11,
+    "learned_full_argmax_preserved": 16,
+    "elapsed_seconds": 64.0411087829998,
+    "acceptance": {
+      "all_serialization_controls_exact": true,
+      "learned_mean_kl_below_candidate_copy": false,
+      "learned_improves_every_prompt": false,
+      "oracle_convolution_removed": true,
+      "learned_full_mean_kl_below_full_copy": true,
+      "learned_full_improves_every_prompt": false,
+      "generated_quality_gate_passed": false,
+      "speedup_gate_passed": false,
+      "deployment_allowed": false
+    },
+    "interpretation": "Injection is the binding test. State alpha is selected only on train prompts. The strict full baseline leaves both candidate recurrent and convolution states stale; learned full patches replace both without oracle convolution. Generated-quality and speed gates remain separate."
+  },
+  "gates": {
+    "normalization_contract_hash_bound": true,
+    "combined_checkpoint": true,
+    "full_cache_mean_kl": true,
+    "every_transition_kl": false,
+    "autoregressive_generation": false,
+    "physical_skip_speedup": false,
+    "deployment_allowed": false
+  },
+  "steps": [
+    {
+      "transition_probe": {
+        "status": "verified",
+        "report": "results/qwen35_transition_probe_build.json"
+      }
+    },
+    {
+      "learned_replay": {
+        "status": "verified",
+        "report": "results/qwen35_learned_state_replay_build.json"
+      }
+    },
+    {
+      "combined_checkpoint": {
+        "command": [
+          "/home/user/miniLLM/.venv/bin/python",
+          "scripts/package_aira_qwen_cache_updater.py",
+          "--config",
+          "configs/experiments/aira_qwen_active_v1.json"
+        ],
+        "seconds": 2.0536014320000504,
+        "stdout_sha256": "5196a3221673955b608dc7263884e18c3ffdb97b9e650bcce0faec80b2361638"
+      }
+    },
+    {
+      "calibration": {
+        "command": [
+          "/home/user/miniLLM/.venv/bin/python",
+          "scripts/calibrate_qwen35_learned_state_alpha.py",
+          "--combined-checkpoint",
+          "artifacts/aira-qwen-active-v1/cache-updater.pt",
+          "--metric",
+          "full-cache",
+          "--alphas",
+          "0.01,0.025,0.05,0.075,0.1,0.25,0.5,0.75,1.0",
+          "--work-dir",
+          ".cache/aira-qwen-active-alpha",
+          "--output",
+          "results/aira_qwen_active_alpha_calibration_v1.json",
+          "--reuse-existing"
+        ],
+        "seconds": 0.10618904299963106,
+        "stdout_sha256": "89b3fc3be58fc5259b36c42e0ab8258623d10086174ef550fc3ef6f3801c225a"
+      }
+    },
+    {
+      "replay": {
+        "command": [
+          "/home/user/miniLLM/.venv/bin/python",
+          "scripts/evaluate_qwen35_learned_state_replay.py",
+          "--combined-checkpoint",
+          "artifacts/aira-qwen-active-v1/cache-updater.pt",
+          "--alpha",
+          "0.05",
+          "--work-dir",
+          ".cache/aira-qwen-active-replay",
+          "--output",
+          "results/aira_qwen_active_replay_v1.json"
+        ],
+        "seconds": 64.1271929569998,
+        "stdout_sha256": "44e9c8f01532f48698f527dcf1804b3aee9d1ee7b18900a901aec1387c67dc3f"
+      }
+    }
+  ]
+}

@@ -74,6 +74,12 @@ python -m venv .venv
 # Восстановить проверенный donor и собрать runtime
 python scripts/bootstrap_qwen35_donor.py --build-runtime --source github
 
+# Проверить, что active AIra-Qwen полностью готов к обучению
+python scripts/run_aira_qwen_active.py --prepare-only
+
+# Fresh bounded training + packaging + calibration + native replay
+python scripts/run_aira_qwen_active.py
+
 # Локальный controller/chat
 python scripts/run_aira_one.py
 
@@ -83,6 +89,7 @@ pytest
 
 ## Основные технические документы
 
+- [Единый active training pipeline](docs/aira-qwen-active.md)
 - [Qwen donor и архитектурный план](docs/aira-qwen35-donor.md)
 - [Реальные recurrent states](docs/aira-qwen35-real-state-probe.md)
 - [AIra One как controller](docs/aira-one-v01.md)

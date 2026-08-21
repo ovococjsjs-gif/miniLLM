@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "name": "aira-qwen-active-v1",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 887,
+      "sha256": "a26d24ef418e4131e350df0a38c769356b4fc79f3ce27d3e9a302d755913fc0b"
+    },
+    {
+      "path": "cache-updater.pt",
+      "bytes": 32306970,
+      "sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "configs/experiments/aira_qwen_active_v1.json",
+      "sha256": "f6309551dafd3b0f87f7c1576f906776587ad50dc75e22c03477d6f261440836"
+    },
+    {
+      "path": "results/aira_qwen_combined_checkpoint_v1.json",
+      "sha256": "5196a3221673955b608dc7263884e18c3ffdb97b9e650bcce0faec80b2361638"
+    },
+    {
+      "path": "results/aira_qwen_active_alpha_calibration_v1.json",
+      "sha256": "89b3fc3be58fc5259b36c42e0ab8258623d10086174ef550fc3ef6f3801c225a"
+    },
+    {
+      "path": "results/aira_qwen_active_replay_v1.json",
+      "sha256": "44e9c8f01532f48698f527dcf1804b3aee9d1ee7b18900a901aec1387c67dc3f"
+    },
+    {
+      "path": "results/aira_qwen_active_v1.json",
+      "sha256": "f9beb05a17c2f6876dd2ccdc748ed5e5ea916dd2083ef6e5fd49b54792e08ed8"
+    }
+  ],
+  "training_ready": true,
+  "deployment_allowed": false
+}

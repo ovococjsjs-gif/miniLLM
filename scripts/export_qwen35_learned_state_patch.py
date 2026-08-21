@@ -13,7 +13,11 @@ from typing import Any
 import numpy as np
 import torch
 
-from minillm.aira.full_state import ConvRowUpdater, GatedDeltaParameterUpdater
+from minillm.aira.full_state import (
+    AIraQwenCacheUpdater,
+    ConvRowUpdater,
+    GatedDeltaParameterUpdater,
+)
 
 
 def sha256(path: Path) -> str:
@@ -39,6 +43,7 @@ def read_tensor(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--combined-checkpoint")
     parser.add_argument(
         "--checkpoint", default="artifacts/qwen35-gated-delta-updater-v1/model.pt"
     )
@@ -60,19 +65,38 @@ def main() -> None:
 
     if not 0 < args.alpha <= 1:
         raise ValueError("patch alpha must lie in (0, 1]")
-    checkpoint_path = Path(args.checkpoint)
-    checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
-    conv_checkpoint_path = Path(args.conv_checkpoint)
-    conv_checkpoint = torch.load(
-        conv_checkpoint_path, map_location="cpu", weights_only=True
+    combined_checkpoint_path = (
+        Path(args.combined_checkpoint) if args.combined_checkpoint else None
     )
-    config = checkpoint["config"]
-    conv_config = conv_checkpoint["config"]
-    layers = list(config["candidate_recurrent_layers"])
-    if layers != list(conv_config["candidate_recurrent_layers"]):
-        raise ValueError("state and convolution checkpoints target different layers")
-    heads = int(config["heads"])
-    width = int(config["state_width"])
+    checkpoint_path = Path(args.checkpoint)
+    conv_checkpoint_path = Path(args.conv_checkpoint)
+    if combined_checkpoint_path is not None:
+        combined_checkpoint = torch.load(
+            combined_checkpoint_path, map_location="cpu", weights_only=True
+        )
+        if combined_checkpoint.get("kind") != "aira-qwen-normalized-cache-updater":
+            raise ValueError("combined checkpoint has the wrong schema")
+        layers = list(combined_checkpoint["layers"])
+        heads = 16
+        width = 128
+        checkpoint = None
+        conv_checkpoint = None
+        config = None
+        conv_config = None
+    else:
+        checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
+        conv_checkpoint = torch.load(
+            conv_checkpoint_path, map_location="cpu", weights_only=True
+        )
+        config = checkpoint["config"]
+        conv_config = conv_checkpoint["config"]
+        layers = list(config["candidate_recurrent_layers"])
+        if layers != list(conv_config["candidate_recurrent_layers"]):
+            raise ValueError(
+                "state and convolution checkpoints target different layers"
+            )
+        heads = int(config["heads"])
+        width = int(config["state_width"])
     source_root = Path(args.source_pairs)
     manifest = json.loads((source_root / "manifest.json").read_text(encoding="utf-8"))
     samples = [
@@ -123,44 +147,65 @@ def main() -> None:
         conv_after_values.append(
             read_tensor(raw_root, sample, "last_conv_states", layer, (6144, 3)).T
         )
-    model = GatedDeltaParameterUpdater(
-        event_dim=len(events[0]),
-        layers=len(layers),
-        heads=heads,
-        state_width=width,
-        hidden_dim=config["hidden_dim"],
-        identity_dim=config["identity_dim"],
-    )
-    model.load_state_dict(checkpoint["model"])
-    model.eval()
-    conv_model = ConvRowUpdater(
-        event_dim=len(events[0]),
-        layers=len(layers),
-        row_width=conv_config["row_width"],
-        hidden_dim=conv_config["hidden_dim"],
-        bottleneck_dim=conv_config["bottleneck_dim"],
-        identity_dim=conv_config["identity_dim"],
-    )
-    conv_model.load_state_dict(conv_checkpoint["model"])
-    conv_model.eval()
     before = torch.from_numpy(np.stack(before_values).copy())
     conv_before = torch.from_numpy(np.stack(conv_before_values).copy())
     event_tensor = torch.from_numpy(np.asarray(events, dtype=np.float32))
     layer_ids = torch.arange(len(layers), dtype=torch.long)
-    with torch.no_grad():
-        parameters = model(event_tensor, layer_ids)
-        predicted = model.apply(before, parameters)
-        predicted = before + args.alpha * (predicted - before)
-        conv_output = conv_model(conv_before[:, 2], event_tensor, layer_ids)
-        predicted_conv = torch.stack(
-            (conv_before[:, 1], conv_before[:, 2], conv_output.row), dim=1
+    if combined_checkpoint_path is not None:
+        state_dict = combined_checkpoint["model"]
+        bundle = AIraQwenCacheUpdater(
+            event_mean=state_dict["event_mean"],
+            event_scale=state_dict["event_scale"],
+            layers=len(layers),
+            state_hidden_dim=256,
+            conv_hidden_dim=256,
+            conv_bottleneck_dim=64,
+            identity_dim=16,
+            state_alpha=1.0,
         )
+        bundle.load_state_dict(state_dict)
+        bundle.eval()
+        with torch.no_grad():
+            combined_output = bundle(before, conv_before, event_tensor, layer_ids)
+            predicted = before + args.alpha * (combined_output.recurrent_state - before)
+            predicted_conv = combined_output.convolution_state
+            predicted_conv_row = predicted_conv[:, 2]
+    else:
+        model = GatedDeltaParameterUpdater(
+            event_dim=len(events[0]),
+            layers=len(layers),
+            heads=heads,
+            state_width=width,
+            hidden_dim=config["hidden_dim"],
+            identity_dim=config["identity_dim"],
+        )
+        model.load_state_dict(checkpoint["model"])
+        model.eval()
+        conv_model = ConvRowUpdater(
+            event_dim=len(events[0]),
+            layers=len(layers),
+            row_width=conv_config["row_width"],
+            hidden_dim=conv_config["hidden_dim"],
+            bottleneck_dim=conv_config["bottleneck_dim"],
+            identity_dim=conv_config["identity_dim"],
+        )
+        conv_model.load_state_dict(conv_checkpoint["model"])
+        conv_model.eval()
+        with torch.no_grad():
+            parameters = model(event_tensor, layer_ids)
+            predicted = model.apply(before, parameters)
+            predicted = before + args.alpha * (predicted - before)
+            conv_output = conv_model(conv_before[:, 2], event_tensor, layer_ids)
+            predicted_conv = torch.stack(
+                (conv_before[:, 1], conv_before[:, 2], conv_output.row), dim=1
+            )
+            predicted_conv_row = conv_output.row
     after = torch.from_numpy(np.stack(after_values).copy())
     conv_after = torch.from_numpy(np.stack(conv_after_values).copy())
     copy_mse = float((before - after).square().mean())
     patch_mse = float((predicted - after).square().mean())
     conv_copy_mse = float((conv_before[:, 2] - conv_after[:, 2]).square().mean())
-    conv_patch_mse = float((conv_output.row - conv_after[:, 2]).square().mean())
+    conv_patch_mse = float((predicted_conv_row - conv_after[:, 2]).square().mean())
 
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -174,10 +219,22 @@ def main() -> None:
     metadata = {
         "schema_version": 2,
         "format": "AIRASTP2",
-        "checkpoint": str(checkpoint_path),
-        "checkpoint_sha256": sha256(checkpoint_path),
-        "conv_checkpoint": str(conv_checkpoint_path),
-        "conv_checkpoint_sha256": sha256(conv_checkpoint_path),
+        "combined_checkpoint": (
+            str(combined_checkpoint_path) if combined_checkpoint_path else None
+        ),
+        "combined_checkpoint_sha256": (
+            sha256(combined_checkpoint_path) if combined_checkpoint_path else None
+        ),
+        "checkpoint": None if combined_checkpoint_path else str(checkpoint_path),
+        "checkpoint_sha256": (
+            None if combined_checkpoint_path else sha256(checkpoint_path)
+        ),
+        "conv_checkpoint": (
+            None if combined_checkpoint_path else str(conv_checkpoint_path)
+        ),
+        "conv_checkpoint_sha256": (
+            None if combined_checkpoint_path else sha256(conv_checkpoint_path)
+        ),
         "prompt_id": args.prompt_id,
         "prompt": next(
             prompt["text"]
