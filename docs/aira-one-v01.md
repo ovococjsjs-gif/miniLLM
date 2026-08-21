@@ -152,6 +152,7 @@ curl http://127.0.0.1:8000/v1/chat/completions \
 |---|---:|---:|---:|
 | manually reviewed validation passes | 2/24 | 23/24 | **24/24** independent routes |
 | validation neural calls | 24 | 1 | **0** |
+| summed request latency, этот CPU run | 249.65 s | 11.38 s | **0.0057 s** |
 | установленные reviewed skills | 0 | 23 | **24** |
 
 По циклам после ручной проверки:

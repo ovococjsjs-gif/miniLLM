@@ -9,6 +9,7 @@ Three broad cycles cover science, practical safety, and computing/AI; one manual
 - Automated concept result: 4/24 -> 24/24, 23 installed routes
 - Manually reviewed result after three cycles: 2/24 -> 23/24
 - Final result after one remediation cycle: 24/24 independent routes, 0 Qwen calls, 24 installed routes
+- Summed validation request latency on this CPU run: 249.65 s -> 11.38 s -> 0.0057 s
 
 `records.jsonl` and its manifest are the immutable raw three-cycle evidence. `records_audited.jsonl` adds the manually detected boiling-pressure failure and its teacher correction. `skills_pre_review.json` preserves the generated 23-route shelf; `skills.json` is the final audited 24-route shelf. `audited_report.json` summarizes the manual decisions and final regression.
 

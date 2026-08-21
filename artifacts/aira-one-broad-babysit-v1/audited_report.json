@@ -35,6 +35,8 @@
       "tasks": 8,
       "validation_neural_calls_before": 8,
       "validation_neural_calls_after": 1,
+      "validation_request_latency_seconds_before": 72.42812927000034,
+      "validation_request_latency_seconds_after": 11.383112890000348,
       "skills_installed_by_automated_gate": 7
     },
     {
@@ -45,6 +47,8 @@
       "tasks": 8,
       "validation_neural_calls_before": 8,
       "validation_neural_calls_after": 0,
+      "validation_request_latency_seconds_before": 79.8634403360004,
+      "validation_request_latency_seconds_after": 0.0005525769997802854,
       "skills_installed_by_automated_gate": 8
     },
     {
@@ -55,6 +59,8 @@
       "tasks": 8,
       "validation_neural_calls_before": 8,
       "validation_neural_calls_after": 0,
+      "validation_request_latency_seconds_before": 97.35754184199982,
+      "validation_request_latency_seconds_after": 0.0009900489997107798,
       "skills_installed_by_automated_gate": 8
     },
     {
@@ -65,6 +71,8 @@
       "validation_passes_after": 1,
       "validation_neural_calls_before": 1,
       "validation_neural_calls_after": 0,
+      "validation_request_latency_seconds_before": 11.66988333300003,
+      "validation_request_latency_seconds_after": 8.548599998903228e-05,
       "skills_installed_by_manual_gate": 1
     }
   ],
@@ -82,6 +90,7 @@
       "route": "babysit.broad.science.boiling-pressure",
       "model_bypassed": true,
       "neural_calls": 0,
+      "latency_seconds": 8.548599998903228e-05,
       "verification": {
         "passed": true,
         "nonempty": true,
@@ -103,6 +112,11 @@
     "passes": 24,
     "neural_calls": 0,
     "bypassed_requests": 24,
-    "skills_installed": 24
+    "skills_installed": 24,
+    "total_request_latency_seconds": 0.0056510209992666205,
+    "mean_request_latency_seconds": 0.00023545920830277586,
+    "baseline_total_request_latency_seconds": 249.64911144800055,
+    "after_three_cycles_total_request_latency_seconds": 11.384655515999839,
+    "latency_scope": "Summed AIraOne.answer request latency on this CPU run; final set uses the independent remediation paraphrase for boiling-pressure."
   }
 }

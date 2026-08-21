@@ -194,6 +194,7 @@ def main() -> None:
                 "route": response.route,
                 "model_bypassed": response.model_bypassed,
                 "neural_calls": response.neural_calls,
+                "latency_seconds": response.latency_seconds,
                 "verification": check,
             }
         )
@@ -221,6 +222,12 @@ def main() -> None:
                 "validation_neural_calls_after": sum(
                     item["neural_calls"] for item in raw_cycle["validation_after"]
                 ),
+                "validation_request_latency_seconds_before": sum(
+                    item["latency_seconds"] for item in raw_cycle["validation_before"]
+                ),
+                "validation_request_latency_seconds_after": sum(
+                    item["latency_seconds"] for item in raw_cycle["validation_after"]
+                ),
                 "skills_installed_by_automated_gate": raw_cycle["skills_installed"],
             }
         )
@@ -233,6 +240,12 @@ def main() -> None:
             "validation_passes_after": 1,
             "validation_neural_calls_before": source["neural_calls"],
             "validation_neural_calls_after": 0,
+            "validation_request_latency_seconds_before": source["latency_seconds"],
+            "validation_request_latency_seconds_after": next(
+                item["latency_seconds"]
+                for item in independent_results
+                if item["task_id"] == remediation["task_id"]
+            ),
             "skills_installed_by_manual_gate": 1,
         }
     )
@@ -286,6 +299,27 @@ def main() -> None:
             "neural_calls": 0,
             "bypassed_requests": 24,
             "skills_installed": len(skills),
+            "total_request_latency_seconds": sum(
+                item["latency_seconds"] for item in independent_results
+            ),
+            "mean_request_latency_seconds": sum(
+                item["latency_seconds"] for item in independent_results
+            )
+            / len(independent_results),
+            "baseline_total_request_latency_seconds": sum(
+                item["latency_seconds"]
+                for cycle in raw["cycle_reports"]
+                for item in cycle["validation_before"]
+            ),
+            "after_three_cycles_total_request_latency_seconds": sum(
+                item["latency_seconds"]
+                for cycle in raw["cycle_reports"]
+                for item in cycle["validation_after"]
+            ),
+            "latency_scope": (
+                "Summed AIraOne.answer request latency on this CPU run; final set uses "
+                "the independent remediation paraphrase for boiling-pressure."
+            ),
             "results": independent_results,
         },
         "evidence": {
@@ -334,7 +368,11 @@ def main() -> None:
         "- Automated concept result: 4/24 -> 24/24, 23 installed routes\n"
         "- Manually reviewed result after three cycles: 2/24 -> 23/24\n"
         "- Final result after one remediation cycle: 24/24 independent routes, "
-        "0 Qwen calls, 24 installed routes\n\n"
+        "0 Qwen calls, 24 installed routes\n"
+        f"- Summed validation request latency on this CPU run: "
+        f"{audited['final_independent_regression']['baseline_total_request_latency_seconds']:.2f} s "
+        f"-> {audited['final_independent_regression']['after_three_cycles_total_request_latency_seconds']:.2f} s "
+        f"-> {audited['final_independent_regression']['total_request_latency_seconds']:.4f} s\n\n"
         "`records.jsonl` and its manifest are the immutable raw three-cycle evidence. "
         "`records_audited.jsonl` adds the manually detected boiling-pressure failure "
         "and its teacher correction. `skills_pre_review.json` preserves the generated "

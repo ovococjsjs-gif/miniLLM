@@ -5,8 +5,8 @@
   "files": [
     {
       "path": "configs/aira-one/v01.json",
-      "bytes": 2361,
-      "sha256": "f99230792e9b5221a7c6872eb1ac82b1ad711ec03e8b9cde63713035991c0b38"
+      "bytes": 2438,
+      "sha256": "1e3d4699ca9c6058b6475747027b3af7ad226006fe1271e43217dabdb6c283ab"
     },
     {
       "path": "configs/donors/qwen35_08b.json",
@@ -15,8 +15,8 @@
     },
     {
       "path": "docs/aira-one-v01.md",
-      "bytes": 11056,
-      "sha256": "58fe0849863fbf51eaa28b079872c31c2524c4c7349cf059b4fbf90d871807b1"
+      "bytes": 11137,
+      "sha256": "81323e5264fededa6a391c09d37da40f7b45939402782247c013a78c9006838b"
     },
     {
       "path": "src/minillm/aira/one.py",
@@ -75,8 +75,8 @@
     },
     {
       "path": "scripts/apply_aira_one_broad_review.py",
-      "bytes": 15184,
-      "sha256": "27bfb211e82d894c817f0f67844ec8f35eb6860bd3a45cd3092382012ac2bfbc"
+      "bytes": 17249,
+      "sha256": "5a4c8ffced00ac0f549968b0e42361a109ff0d51eed9490298b54cbb734d1485"
     },
     {
       "path": "artifacts/aira-one-babysit-v01/records.jsonl",
@@ -110,8 +110,8 @@
     },
     {
       "path": "artifacts/aira-one-broad-babysit-v1/README.md",
-      "bytes": 1695,
-      "sha256": "a4c2d6061e9a4e29f8e837f3c85e98551549a0d52b7c1da18e1e888b08dfcf2e"
+      "bytes": 1780,
+      "sha256": "26bea72d4c0034a38927e7ac5aec83a0654c0ae05b8f887d4a108e8d21646e68"
     },
     {
       "path": "artifacts/aira-one-broad-babysit-v1/records.jsonl",
@@ -150,8 +150,8 @@
     },
     {
       "path": "artifacts/aira-one-broad-babysit-v1/audited_report.json",
-      "bytes": 6223,
-      "sha256": "6e8c8ae8f2f5103ead218090a136240bc1b1d09b8c82e119307256b2f5c78c6b"
+      "bytes": 7256,
+      "sha256": "2ecc05193875eeab776ca49f38152564232712410eefee19ba8c313927c0fdef"
     },
     {
       "path": "results/aira_one_broad_babysit_v1.json",
@@ -160,11 +160,11 @@
     },
     {
       "path": "results/aira_one_broad_babysit_v1_audited.json",
-      "bytes": 25095,
-      "sha256": "9560e73ba4829c8b3a206cfdf664680e1980055b5b147f8c4681e9189ec35800"
+      "bytes": 27331,
+      "sha256": "76acfeb37973ab9961291fd664cb42716ea9b97091e32c30da31979c246ce898"
     }
   ],
-  "package_source_bytes": 710572,
+  "package_source_bytes": 716149,
   "external_runtime_artifact": {
     "path": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf",
     "bytes": 532517120,

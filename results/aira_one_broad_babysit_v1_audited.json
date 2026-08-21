@@ -35,6 +35,8 @@
       "tasks": 8,
       "validation_neural_calls_before": 8,
       "validation_neural_calls_after": 1,
+      "validation_request_latency_seconds_before": 72.42812927000034,
+      "validation_request_latency_seconds_after": 11.383112890000348,
       "skills_installed_by_automated_gate": 7
     },
     {
@@ -45,6 +47,8 @@
       "tasks": 8,
       "validation_neural_calls_before": 8,
       "validation_neural_calls_after": 0,
+      "validation_request_latency_seconds_before": 79.8634403360004,
+      "validation_request_latency_seconds_after": 0.0005525769997802854,
       "skills_installed_by_automated_gate": 8
     },
     {
@@ -55,6 +59,8 @@
       "tasks": 8,
       "validation_neural_calls_before": 8,
       "validation_neural_calls_after": 0,
+      "validation_request_latency_seconds_before": 97.35754184199982,
+      "validation_request_latency_seconds_after": 0.0009900489997107798,
       "skills_installed_by_automated_gate": 8
     },
     {
@@ -65,6 +71,8 @@
       "validation_passes_after": 1,
       "validation_neural_calls_before": 1,
       "validation_neural_calls_after": 0,
+      "validation_request_latency_seconds_before": 11.66988333300003,
+      "validation_request_latency_seconds_after": 8.548599998903228e-05,
       "skills_installed_by_manual_gate": 1
     }
   ],
@@ -82,6 +90,7 @@
       "route": "babysit.broad.science.boiling-pressure",
       "model_bypassed": true,
       "neural_calls": 0,
+      "latency_seconds": 8.548599998903228e-05,
       "verification": {
         "passed": true,
         "nonempty": true,
@@ -96,6 +105,11 @@
     "neural_calls": 0,
     "bypassed_requests": 24,
     "skills_installed": 24,
+    "total_request_latency_seconds": 0.0056510209992666205,
+    "mean_request_latency_seconds": 0.00023545920830277586,
+    "baseline_total_request_latency_seconds": 249.64911144800055,
+    "after_three_cycles_total_request_latency_seconds": 11.384655515999839,
+    "latency_scope": "Summed AIraOne.answer request latency on this CPU run; final set uses the independent remediation paraphrase for boiling-pressure.",
     "results": [
       {
         "task_id": "seasons-axis-tilt",
@@ -104,6 +118,7 @@
         "route": "babysit.broad.science.seasons-axis-tilt",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 0.0039898499999253545,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -118,6 +133,7 @@
         "route": "babysit.broad.science.antibiotics-viruses",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 7.85500001256878e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -132,6 +148,7 @@
         "route": "babysit.broad.science.boiling-pressure",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 8.548599998903228e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -146,6 +163,7 @@
         "route": "babysit.broad.science.photosynthesis-input-output",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 5.077099967820686e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -160,6 +178,7 @@
         "route": "babysit.broad.science.thunder-after-lightning",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 3.752100019482896e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -174,6 +193,7 @@
         "route": "babysit.broad.science.vaccines-immune-memory",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 3.623199972935254e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -188,6 +208,7 @@
         "route": "babysit.broad.science.moon-phases-geometry",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 3.351499981363304e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -202,6 +223,7 @@
         "route": "babysit.broad.science.greenhouse-infrared",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 5.607599996437784e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -216,6 +238,7 @@
         "route": "babysit.broad.practical-safety.phishing-signs",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 5.1097000323352404e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -230,6 +253,7 @@
         "route": "babysit.broad.practical-safety.password-manager",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 5.462199987960048e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -244,6 +268,7 @@
         "route": "babysit.broad.practical-safety.backup-321",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 3.4701000004133675e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -258,6 +283,7 @@
         "route": "babysit.broad.practical-safety.suspicious-link",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 5.709400011255639e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -272,6 +298,7 @@
         "route": "babysit.broad.practical-safety.severe-bleeding-first-aid",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 6.105300008130143e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -286,6 +313,7 @@
         "route": "babysit.broad.practical-safety.carbon-monoxide",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 7.699999969190685e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -300,6 +328,7 @@
         "route": "babysit.broad.practical-safety.software-updates",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 0.00011321800002406235,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -314,6 +343,7 @@
         "route": "babysit.broad.practical-safety.public-wifi",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 9.220999982062494e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -328,6 +358,7 @@
         "route": "babysit.broad.computing-ai.ram-vs-storage",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 0.00011868499996126047,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -342,6 +373,7 @@
         "route": "babysit.broad.computing-ai.compiler-interpreter",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 7.734399969194783e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -356,6 +388,7 @@
         "route": "babysit.broad.computing-ai.encryption-vs-hashing",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 7.077899999785586e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -370,6 +403,7 @@
         "route": "babysit.broad.computing-ai.cpu-vs-gpu",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 8.264899997811881e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -384,6 +418,7 @@
         "route": "babysit.broad.computing-ai.llm-hallucinations",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 7.691200016779476e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -398,6 +433,7 @@
         "route": "babysit.broad.computing-ai.rag-purpose",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 0.0001115860000027169,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -412,6 +448,7 @@
         "route": "babysit.broad.computing-ai.function-edge-cases",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 8.68590000209224e-05,
         "verification": {
           "passed": true,
           "nonempty": true,
@@ -426,6 +463,7 @@
         "route": "babysit.broad.computing-ai.sql-injection-parameters",
         "model_bypassed": true,
         "neural_calls": 0,
+        "latency_seconds": 0.00011721100008799112,
         "verification": {
           "passed": true,
           "nonempty": true,

@@ -237,6 +237,15 @@ def test_broad_babysit_evidence_and_deployed_shelf_agree() -> None:
     assert audited["final_independent_regression"]["passes"] == 24
     assert audited["final_independent_regression"]["neural_calls"] == 0
     assert audited["final_independent_regression"]["skills_installed"] == 24
+    assert (
+        audited["final_independent_regression"][
+            "baseline_total_request_latency_seconds"
+        ]
+        > 249
+    )
+    assert (
+        audited["final_independent_regression"]["total_request_latency_seconds"] < 0.1
+    )
 
     assistant = AIraOne(None)
     boiling = assistant.answer(

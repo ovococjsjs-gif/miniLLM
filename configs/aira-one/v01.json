@@ -57,6 +57,7 @@
     "broad_tasks": 24,
     "broad_manual_validation_passes_before_after": "2/24 -> 24/24",
     "broad_validation_neural_calls_before_after": "24 -> 0",
+    "broad_summed_request_latency_seconds_before_after": "249.65 -> 0.0057",
     "child_maxrss_kib": 881884
   },
   "limitations": [
