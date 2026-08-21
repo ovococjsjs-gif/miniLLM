@@ -13,6 +13,7 @@ dependencies = ["numpy>=1.26", "torch>=2.2", "tokenizers>=0.20"]
 [project.optional-dependencies]
 dev = ["pytest>=8", "numpy>=1.26", "ruff>=0.8"]
 data = ["datasets>=3.0"]
+runtime = ["cmake>=3.25", "ninja>=1.11"]
 
 [project.scripts]
 minillm = "minillm.cli:main"

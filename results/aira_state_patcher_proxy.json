@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "experiment": "synthetic event-state catch-up proxy",
+  "scope_warning": "This validates the patcher training path on known synthetic dynamics; it is not evidence that Qwen recurrent states can yet be reconstructed.",
+  "seed": 71,
+  "steps": 200,
+  "batch_size": 32,
+  "threads": 2,
+  "training_seconds": 0.8118410130000484,
+  "parameter_count": 15489,
+  "layers": 6,
+  "state_dim": 24,
+  "event_dim": 16,
+  "initial": {
+    "state_mse": 0.0595797598361969,
+    "zero_delta_baseline_mse": 0.058125365525484085,
+    "mse_ratio": 1.0250216722488403,
+    "future_kl": 0.014753427356481552,
+    "anchor_max_abs_error": 0.0,
+    "mean_confidence": 0.5354894995689392
+  },
+  "final": {
+    "state_mse": 0.003530992427840829,
+    "zero_delta_baseline_mse": 0.058125365525484085,
+    "mse_ratio": 0.06074787303805351,
+    "future_kl": 0.0007801702013239264,
+    "anchor_max_abs_error": 0.0,
+    "mean_confidence": 0.9867619276046753
+  },
+  "samples": [
+    {
+      "step": 1,
+      "total_loss": 0.13838732242584229,
+      "state_mse": 0.06020359694957733,
+      "future_kl": 0.013506886549293995,
+      "gradient_norm": 0.03779148310422897
+    },
+    {
+      "step": 51,
+      "total_loss": 0.04620501399040222,
+      "state_mse": 0.017480885609984398,
+      "future_kl": 0.004002161789685488,
+      "gradient_norm": 0.044733937829732895
+    },
+    {
+      "step": 101,
+      "total_loss": 0.02088625729084015,
+      "state_mse": 0.006867501884698868,
+      "future_kl": 0.001576138660311699,
+      "gradient_norm": 0.03336283564567566
+    },
+    {
+      "step": 151,
+      "total_loss": 0.01641271635890007,
+      "state_mse": 0.005236063618212938,
+      "future_kl": 0.0010999551741406322,
+      "gradient_norm": 0.034385256469249725
+    },
+    {
+      "step": 200,
+      "total_loss": 0.012708805501461029,
+      "state_mse": 0.003904263721778989,
+      "future_kl": 0.0007751759840175509,
+      "gradient_norm": 0.026101650670170784
+    }
+  ],
+  "success_gate": {
+    "mse_ratio_below_0_25": true,
+    "anchors_exact": true,
+    "future_kl_below_initial": true
+  }
+}

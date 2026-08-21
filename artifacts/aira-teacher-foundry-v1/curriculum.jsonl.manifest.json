@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "records": 1193,
+  "sha256": "558110129b1cce5adcffcd34c418c1f76351d27023ed197fc0998fc5dad889ed",
+  "categories": {
+    "algebra": 120,
+    "arithmetic": 120,
+    "critique_revision": 120,
+    "grounded_qa": 120,
+    "logic": 120,
+    "memory_control": 113,
+    "prompt_injection": 120,
+    "python": 120,
+    "tool_call": 120,
+    "uncertainty": 120
+  },
+  "patches": {
+    "critique-independent-recompute-v1": 120,
+    "equation-isolate-check-v1": 120,
+    "grounded-field-citation-v1": 120,
+    "memory-key-source-v1": 113,
+    "missing-evidence-abstention-v1": 120,
+    "numeric-operand-ledger-v1": 119,
+    "ordered-constraint-chain-v1": 120,
+    "python-contract-first-v1": 120,
+    "response-state-isolation-v1": 1,
+    "tool-argument-grounding-v1": 120,
+    "untrusted-document-boundary-v1": 120
+  },
+  "sources": {
+    "deterministic-generated": 1000,
+    "on-policy-correction": 193
+  },
+  "metadata": {
+    "source_babysit": "artifacts/aira-mentor-babysit-v1/records.jsonl",
+    "source_babysit_sha256": "9b2ab76b38c10323c281b6a578a72ef422c8055da1464a3187de96a67a076528",
+    "teacher_packet_sha256": "4a67d5d1346e9031bde8e973809188992ccea3a42427aeb741b12e509751b78b",
+    "generated_seed": 44,
+    "generated_examples_per_category": 100,
+    "protected_aira_mentor_v1_splits_used": false,
+    "public_weight_use_status": "deterministic records are project-owned; agent-authored patch text requires Arena terms review before public weight release"
+  }
+}

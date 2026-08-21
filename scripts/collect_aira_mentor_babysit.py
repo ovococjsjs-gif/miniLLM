@@ -9,12 +9,13 @@ import json
 from collections import Counter
 from pathlib import Path
 
-from train_aira_mentor_tiny import prompt_ids, verify_generation
+from train_aira_mentor_tiny import prompt_ids
 
 from minillm.aira import (
     BabysitRecord,
     VerifierObservation,
     generate_aira_mentor_records,
+    verify_synthetic_generation,
     write_babysit_dataset,
 )
 from minillm.generation import SamplingConfig, generate_ids, load_model_checkpoint
@@ -78,7 +79,7 @@ def main() -> None:
             list(generated.generated_token_ids), skip_special_tokens=True
         )
         reference = record.messages[-1].content
-        passed = verify_generation(payload, student_answer)
+        passed = verify_synthetic_generation(payload, student_answer)
         category_totals[record.category] += 1
         category_passes[record.category] += passed
         language = record.language

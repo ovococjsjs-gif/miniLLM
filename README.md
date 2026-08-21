@@ -50,6 +50,10 @@
 - AI Babysit critique/correction/verifier/preference records с teacher/student identity;
 - project-owned `AIra Mentor v1`: 6K RU/EN verifier-first SFT records в 10 категориях;
 - 1.7M-parameter/300-step local interaction smoke и первый 200-task Babysit failure set;
+- Teacher Foundry: 11 причинных failure clusters, 11 RU/EN skill patches и 1,193 contrastive curriculum records;
+- общий strict verifier с restricted-AST Python unit tests для training/Babysit/donor evaluation;
+- pinned 579.6MB Qwen3.5-0.8B Q4 language donor/control и OpenAI-compatible provider adapter;
+- masked recurrent-state patcher с future-KL/confidence objective и успешным 200-step synthetic dynamics proxy;
 - deterministic event shards и resume-safe ≤300-step multi-head trainer;
 - строгая UTF-8 grammar mask и отдельная calibration на generated contexts до разрешения bypass;
 - request-level `AIraCascade`: accepted explicit fact возвращается напрямую, unknown/conflict падает в shelf→neural;
@@ -96,6 +100,22 @@ python scripts/build_aira_mentor_dataset.py --overwrite
 # Tiny interaction smoke и сбор свежих AI Babysit ошибок (оба capped at 300)
 python scripts/train_aira_mentor_tiny.py --steps 300
 python scripts/collect_aira_mentor_babysit.py
+
+# Свернуть on-policy ошибки в teacher packet, skill patches и contrastive curriculum
+python scripts/build_aira_teacher_foundry.py
+
+# Matched negative control: ещё ≤300 steps tiny smoke на Foundry curriculum
+python scripts/finetune_aira_mentor_foundry.py --steps 300
+
+# Воспроизвести bounded proxy для event-state catch-up (не более 300 шагов)
+python scripts/run_aira_state_patcher_proxy.py --steps 200
+
+# Собрать pinned llama.cpp и проверить/загрузить 0.8B donor (если HF binary path доступен)
+.venv/bin/pip install -e '.[runtime]'
+python scripts/bootstrap_qwen35_donor.py --build-runtime --download
+
+# После запуска llama-server — strict generated donor baseline
+python scripts/evaluate_qwen35_donor.py --endpoint http://127.0.0.1:8080
 
 # Проверить найденный JSONL-датасет по AIra handoff contract
 python scripts/audit_aira_dataset.py /path/to/candidate.jsonl
@@ -204,6 +224,8 @@ Prompt-copy покрывает 42% при min-2, но ухудшает event cou
 байтов не превосходят pure oracle 8-byte event count при включённой короткой shelf. Значит, главный следующий gate —
 не таблица и не copy сами по себе, а реально обученный и откалиброванный multi-byte head.
 
+Новая pretrained ветка не назначает маленькую open model учителем. Arena.ai agent формирует причинные `SkillPatch`, а solvers/verifiers размножают их в свежие задачи. Первый matched Foundry intervention снизил tiny validation ppl с 2.427 до 2.222, но на одинаковых свежих seed-45 задачах strict pass остался 0/10 → 0/10: curriculum исправляет supervision, но не заменяет pretrained capacity. Qwen3.5-0.8B принят только как 579.6MB языковой donor/control: его шесть групп `3×Gated DeltaNet + attention` дают конкретную точку для fast/balanced/deep exits и state catch-up. На synthetic dynamics 15.5K state patcher снизил MSE относительно zero-delta baseline до 6.07% и точно сохранил anchor layers; это plumbing evidence, а не доказательство реконструкции Qwen state. llama.cpp b9222 собран, но GGUF binary пока не загружен из-за TLS/CAS ограничений текущей сети, поэтому donor quality numbers отсутствуют.
+
 Плотные 350M, recurrent 209M, MoE и GDN2-конфигурации остаются контрольными ветками.
 Их обычное масштабирование приостановлено, пока end-to-end каскад не покажет лучший
 quality-adjusted active compute.
@@ -225,6 +247,8 @@ quality-adjusted active compute.
 - [Контракт данных и готовность AIra base training](docs/aira-training-readiness.md)
 - [Аудит synthetic SFT-кандидатов и AI Babysit](docs/aira-synthetic-sft-audit.md)
 - [AIra Mentor v1: 6K verifier-first RU/EN SFT](docs/aira-mentor-v1.md)
+- [AIra Teacher Foundry v1: failure clusters → skill patches → curriculum](docs/aira-teacher-foundry-v1.md)
+- [Qwen3.5-0.8B как language donor/control и state-catch-up gate](docs/aira-qwen35-donor.md)
 - [Исторический разбор AIra (superseded)](docs/aira-review.md)
 - [Аннотированные первоисточники](docs/sources.md)
 

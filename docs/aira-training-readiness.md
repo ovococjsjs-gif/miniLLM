@@ -62,6 +62,8 @@ The project-owned alternative is AI Babysit: student rollouts are verified, crit
 
 The first owned seed, [`AIra Mentor v1`](aira-mentor-v1.md), is now materialized: 6,000 verifier-approved RU/EN conversations across arithmetic, algebra, logic, Python, tools, explicit memory, grounded QA, prompt injection, unknown rejection and critique/revision. It is only ~0.7M pilot-tokenizer tokens and must be used as later assistant-only SFT, never as a base-corpus substitute. A 1.7M random-init 300-step smoke reached validation ppl 2.43 but passed only 1/10 strict generated demonstrations; the first fresh 200-task Babysit rollout produced 193 corrections. This confirms that useful SFT must start from a pretrained base and be selected by autonomous verifiers, not teacher-forced loss.
 
+[`AIra Teacher Foundry v1`](aira-teacher-foundry-v1.md) now turns those failures into a bounded teacher review: 11 causal clusters, 11 RU/EN skill patches and 1,193 contrastive records, including every exact on-policy correction plus 1,000 new verifier-backed seed-44 tasks. Shared generated-answer verification now runs restricted Python unit tests rather than accepting code that merely compiles. A matched 300-step continuation lowered tiny validation perplexity from 2.427 to 2.222 but left the same fresh generated suite at 0/10 before and after, so the Foundry curriculum is accepted while further random-init tiny scaling is rejected. Small local checkpoints are explicitly donors/controls, not teachers; their generated failures enter this same Foundry loop.
+
 ## Dataset handoff format
 
 Preferred source format is one UTF-8 JSON object per line:
@@ -162,9 +164,10 @@ Teacher-forced packing ratios and oracle copy spans are upper bounds, not speed 
 
 ## Remaining blockers outside dataset collection
 
-- bind a legally usable strong teacher;
+- obtain the pinned 579.6MB Qwen3.5 donor binary through a network path that does not terminate TLS/CAS downloads, then run the strict baseline;
+- collect full-pass recurrent states/future logits and test the state patcher on real donor events;
 - implement a source-pointer head before training document-copy actions end to end;
-- choose/freeze the tokenizer after the new corpus mixture audit;
+- choose/freeze the tokenizer after the new corpus mixture audit or prove a safe donor-token bridge/vocabulary reduction;
 - bind full-stream anchor batches and sampled residual controls into the large-data trainer recipe;
 - produce a fused/incremental event runtime only after a safe generated threshold exists;
-- scale the accepted 5M proxy through 20M and 50–100M controls before a serious base run.
+- review Arena terms before any public weight release that consumes agent-authored patch text.

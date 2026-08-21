@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "role": "pretrained_language_donor_and_control_not_teacher",
+  "upstream": {
+    "model_id": "Qwen/Qwen3.5-0.8B",
+    "revision": "2fc06364715b967f1860aea9cf38778875588b17",
+    "license": "Apache-2.0",
+    "architecture": "qwen35",
+    "parameters": 800000000,
+    "layers": 24,
+    "hidden_size": 1024,
+    "vocabulary_size": 248320,
+    "context_length": 262144,
+    "layout": "6 x (3 Gated DeltaNet + 1 gated attention)",
+    "mtp_trained": true
+  },
+  "gguf": {
+    "repository": "bartowski/Qwen_Qwen3.5-0.8B-GGUF",
+    "revision": "f36b1ea49a332ede8fe5f389bbf5b3575ef71f48",
+    "filename": "Qwen_Qwen3.5-0.8B-Q4_K_M.gguf",
+    "quantization": "Q4_K_M",
+    "size_bytes": 579615840,
+    "sha256": "fb044e93939a70469c905781334f5de1e6c8b608ced6cbc8c9249bd4127d9526",
+    "local_path": "data/external/qwen3.5-0.8b/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf"
+  },
+  "runtime": {
+    "engine": "llama.cpp",
+    "revision": "9a532ae4bab1b164052ce60a738f78538b421c66",
+    "release": "b9222",
+    "context_length": 2048,
+    "threads": 2,
+    "batch": 128,
+    "temperature": 0,
+    "language_model_only": true
+  },
+  "acceptance": {
+    "artifact_budget_bytes": 1000000000,
+    "baseline_required_before_architecture_surgery": true,
+    "teacher_role_allowed": false,
+    "first_aira_quality_tolerance_absolute": 0.02,
+    "first_aira_active_block_compute_target": 0.5
+  }
+}

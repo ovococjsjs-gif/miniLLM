@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "source_records": 200,
+  "failed_records": 193,
+  "passed_records": 7,
+  "failure_clusters": 11,
+  "cluster_counts": {
+    "algebra:operand-binding-drift": 20,
+    "arithmetic:cross-task-contamination": 1,
+    "arithmetic:operand-binding-drift": 19,
+    "critique_revision:operand-binding-drift": 20,
+    "grounded_qa:source-identity-binding": 20,
+    "logic:constraint-entity-binding": 20,
+    "memory_control:memory-source-binding": 13,
+    "prompt_injection:source-identity-binding": 20,
+    "python:symbol-and-constant-binding": 20,
+    "tool_call:tool-argument-binding": 20,
+    "uncertainty:source-identity-binding": 20
+  },
+  "skill_patches": 11,
+  "curriculum_records": 1193,
+  "curriculum_patch_counts": {
+    "critique-independent-recompute-v1": 120,
+    "equation-isolate-check-v1": 120,
+    "grounded-field-citation-v1": 120,
+    "memory-key-source-v1": 113,
+    "missing-evidence-abstention-v1": 120,
+    "numeric-operand-ledger-v1": 119,
+    "ordered-constraint-chain-v1": 120,
+    "python-contract-first-v1": 120,
+    "response-state-isolation-v1": 1,
+    "tool-argument-grounding-v1": 120,
+    "untrusted-document-boundary-v1": 120
+  },
+  "teacher_packet": "artifacts/aira-teacher-foundry-v1/teacher-packet.json",
+  "skill_patches_path": "artifacts/aira-teacher-foundry-v1/skill-patches.json",
+  "curriculum": "artifacts/aira-teacher-foundry-v1/curriculum.jsonl",
+  "manifest": "artifacts/aira-teacher-foundry-v1/curriculum.jsonl.manifest.json"
+}

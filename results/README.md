@@ -24,6 +24,9 @@
 - `aira_event_packing_proxy.json` — lossless multi-byte/shelf/prompt-copy compression upper bounds;
 - `aira_event_training_smoke.json` — prepared-shard, multi-head loss, checkpoint and resume plumbing smoke;
 - `aira_mentor_tiny_training.json` — 1.7M random-init, 300-step SFT smoke and strict generated failures;
+- `aira_mentor_tiny_foundry_finetune.json` — matched 300-step Foundry intervention: lower PPL but unchanged 0/10 fresh strict passes;
+- `aira_state_patcher_proxy.json` — 200-step synthetic state catch-up, future-KL and exact-anchor control;
+- `qwen35_donor_bootstrap.json` — pinned donor/runtime verification and current binary-download blocker;
 - `pc_alm_proxy.json` — old finite PC versus PC-ALM BP-gradient alignment.
 
 Каноническая интерпретация AIra-результатов находится в

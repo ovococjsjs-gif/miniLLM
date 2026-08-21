@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "config": "configs/donors/qwen35_08b.json",
+  "model_id": "Qwen/Qwen3.5-0.8B",
+  "model_revision": "2fc06364715b967f1860aea9cf38778875588b17",
+  "gguf_repository": "bartowski/Qwen_Qwen3.5-0.8B-GGUF",
+  "gguf_revision": "f36b1ea49a332ede8fe5f389bbf5b3575ef71f48",
+  "filename": "Qwen_Qwen3.5-0.8B-Q4_K_M.gguf",
+  "download_attempted": true,
+  "download_error": {
+    "type": "hf-cli-failure",
+    "returncode": 1,
+    "detail": "-GGUF/resolve/f36b1ea49a332ede8fe5f389bbf5b3575ef71f48/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf\nRetrying in 4s [Retry 3/5].\n'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/bartowski/Qwen_Qwen3.5-0.8B-GGUF/resolve/f36b1ea49a332ede8fe5f389bbf5b3575ef71f48/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf\nRetrying in 8s [Retry 4/5].\n'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/bartowski/Qwen_Qwen3.5-0.8B-GGUF/resolve/f36b1ea49a332ede8fe5f389bbf5b3575ef71f48/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf\nRetrying in 8s [Retry 5/5].\n'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/bartowski/Qwen_Qwen3.5-0.8B-GGUF/resolve/f36b1ea49a332ede8fe5f389bbf5b3575ef71f48/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf\nError: Local entry not found. TLS/SSL connection has been closed (EOF) (_ssl.c:992)\nHint: set HF_DEBUG=1 as environment variable for full traceback.\n"
+  },
+  "artifact": {
+    "status": "missing",
+    "path": "data/external/qwen3.5-0.8b/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf"
+  },
+  "runtime": {
+    "status": "verified",
+    "path": ".cache/llama.cpp/build/bin/llama-cli",
+    "version": "version: 1 (9a532ae)\nbuilt with GNU 12.2.0 for Linux x86_64"
+  },
+  "runtime_build_attempted": false
+}

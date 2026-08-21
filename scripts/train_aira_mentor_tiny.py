@@ -9,7 +9,6 @@ import json
 import math
 import platform
 import random
-import re
 import time
 from collections import defaultdict
 from pathlib import Path
@@ -18,6 +17,7 @@ from typing import Any
 import torch
 from torch.nn import functional as F
 
+from minillm.aira import verify_synthetic_generation
 from minillm.config import MiniLLMConfig
 from minillm.generation import SamplingConfig, generate_ids, save_inference_checkpoint
 from minillm.model import MiniLLM
@@ -135,60 +135,6 @@ def prompt_ids(record: dict[str, Any], tokenizer) -> list[int]:
     return [int(value) for value in ids]
 
 
-def verify_generation(record: dict[str, Any], generated: str) -> bool:
-    verification = record["verification"]
-    expected = verification.get("expected")
-    category = record["category"]
-    if verification["kind"] == "json_equal":
-        try:
-            return json.loads(generated) == expected
-        except json.JSONDecodeError:
-            return False
-    if verification["kind"] == "python_tests":
-        match = re.search(r"```python\n(.*?)\n```", generated, flags=re.DOTALL)
-        if match is None or verification["function"] not in match.group(1):
-            return False
-        try:
-            compile(match.group(1), "<generated>", "exec")
-        except SyntaxError:
-            return False
-        return True
-    if category == "arithmetic":
-        return (
-            re.search(rf"(?:Answer:|Ответ:)\s*{expected}\.?\s*$", generated) is not None
-        )
-    if category == "algebra":
-        return re.search(rf"[xyz]\s*=\s*{expected}(?:\D|$)", generated) is not None
-    if category == "logic":
-        reference = next(
-            message["content"]
-            for message in record["messages"]
-            if message["role"] == "assistant"
-        )
-        return generated == reference
-    if category == "memory_control":
-        reference = next(
-            message["content"]
-            for message in record["messages"]
-            if message["role"] == "assistant"
-        )
-        return generated == reference
-    if category in {"grounded_qa", "prompt_injection"}:
-        return (
-            str(expected) in generated and f"[{verification['citation']}]" in generated
-        )
-    if category == "uncertainty":
-        reference = next(
-            message["content"]
-            for message in record["messages"]
-            if message["role"] == "assistant"
-        )
-        return generated == reference
-    if category == "critique_revision":
-        return generated.rstrip(".").endswith(str(expected))
-    return False
-
-
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", default="artifacts/aira-mentor-v1")
@@ -293,7 +239,7 @@ def main() -> None:
                 "category": record["category"],
                 "language": record["language"],
                 "generated": generated_text,
-                "verified_pass": verify_generation(record, generated_text),
+                "verified_pass": verify_synthetic_generation(record, generated_text),
                 "reference": next(
                     message["content"]
                     for message in record["messages"]

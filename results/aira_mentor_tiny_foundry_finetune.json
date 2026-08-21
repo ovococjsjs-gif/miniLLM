@@ -1,0 +1,309 @@
+{
+  "schema_version": 1,
+  "experiment": "aira-mentor-tiny-foundry-finetune-v1",
+  "warning": "The parent remains a 1.7M random-init interaction smoke. This run tests the Foundry path; it does not create a general pretrained assistant.",
+  "parent_checkpoint": "artifacts/aira-mentor-tiny-v1/model.pt",
+  "parent_checkpoint_sha256": "d5f0eaa9b98b3a0451f1ee5564bec0c067d9818d348bc4a7c3dc9fe8121576cd",
+  "curriculum": "artifacts/aira-teacher-foundry-v1/curriculum.jsonl",
+  "curriculum_sha256": "558110129b1cce5adcffcd34c418c1f76351d27023ed197fc0998fc5dad889ed",
+  "curriculum_records": 1193,
+  "validation": "artifacts/aira-mentor-v1/validation.jsonl",
+  "tokenizer_sha256": "44387ead2087e61cdb3ec371a0bc5d63dd9a8b01e2e0d85ad33444b4fa9f1508",
+  "seed": 52,
+  "fresh_task_seed": 45,
+  "steps": 300,
+  "batch_size": 8,
+  "learning_rate": 0.0005,
+  "parameters": 1715456,
+  "training_seconds": 71.43634328900043,
+  "loss_samples": [
+    {
+      "step": 1,
+      "loss": 0.9208624362945557,
+      "gradient_norm": 0.7716906666755676
+    },
+    {
+      "step": 76,
+      "loss": 0.44686785340309143,
+      "gradient_norm": 0.4320921301841736
+    },
+    {
+      "step": 151,
+      "loss": 0.47755521535873413,
+      "gradient_norm": 0.4968716502189636
+    },
+    {
+      "step": 226,
+      "loss": 0.8122373819351196,
+      "gradient_norm": 0.7623761892318726
+    },
+    {
+      "step": 300,
+      "loss": 0.6778059601783752,
+      "gradient_norm": 0.6990391612052917
+    }
+  ],
+  "initial_validation": {
+    "algebra": {
+      "records": 15,
+      "nll": 1.0744816581408183,
+      "perplexity": 2.928474556110981
+    },
+    "arithmetic": {
+      "records": 18,
+      "nll": 1.2839265366395314,
+      "perplexity": 3.6107898254936766
+    },
+    "critique_revision": {
+      "records": 21,
+      "nll": 1.0526705639702933,
+      "perplexity": 2.865292857514072
+    },
+    "grounded_qa": {
+      "records": 12,
+      "nll": 1.460199733575185,
+      "perplexity": 4.306819658932024
+    },
+    "logic": {
+      "records": 14,
+      "nll": 0.48566447624138426,
+      "perplexity": 1.6252545931888078
+    },
+    "memory_control": {
+      "records": 14,
+      "nll": 0.47261671376015457,
+      "perplexity": 1.604186402552775
+    },
+    "overall": {
+      "records": 153,
+      "nll": 0.8866688275794967,
+      "perplexity": 2.427031310528589
+    },
+    "prompt_injection": {
+      "records": 11,
+      "nll": 1.439300006086176,
+      "perplexity": 4.217742389423812
+    },
+    "python": {
+      "records": 17,
+      "nll": 0.5324208070250118,
+      "perplexity": 1.7030500780378937
+    },
+    "tool_call": {
+      "records": 20,
+      "nll": 0.4106090791523457,
+      "perplexity": 1.507735835966586
+    },
+    "uncertainty": {
+      "records": 11,
+      "nll": 0.9356706738471985,
+      "perplexity": 2.5489223801890857
+    }
+  },
+  "final_validation": {
+    "algebra": {
+      "records": 15,
+      "nll": 1.0458454529444376,
+      "perplexity": 2.8458034998096324
+    },
+    "arithmetic": {
+      "records": 18,
+      "nll": 1.1598010294967227,
+      "perplexity": 3.189298636626178
+    },
+    "critique_revision": {
+      "records": 21,
+      "nll": 0.9815611243247986,
+      "perplexity": 2.668619037856613
+    },
+    "grounded_qa": {
+      "records": 12,
+      "nll": 1.3527187009652455,
+      "perplexity": 3.8679269859005285
+    },
+    "logic": {
+      "records": 14,
+      "nll": 0.4185229241847992,
+      "perplexity": 1.519715162468084
+    },
+    "memory_control": {
+      "records": 14,
+      "nll": 0.4103006565544222,
+      "perplexity": 1.507270887867011
+    },
+    "overall": {
+      "records": 153,
+      "nll": 0.7985649552451921,
+      "perplexity": 2.222349468148333
+    },
+    "prompt_injection": {
+      "records": 11,
+      "nll": 1.3803779103539207,
+      "perplexity": 3.976404067851597
+    },
+    "python": {
+      "records": 17,
+      "nll": 0.3183174817001118,
+      "perplexity": 1.374812669811773
+    },
+    "tool_call": {
+      "records": 20,
+      "nll": 0.3315125286579132,
+      "perplexity": 1.3930735995115766
+    },
+    "uncertainty": {
+      "records": 11,
+      "nll": 0.9037813544273376,
+      "perplexity": 2.468921348947503
+    }
+  },
+  "initial_fresh_demonstration_passes": 0,
+  "final_fresh_demonstration_passes": 0,
+  "fresh_demonstration_count": 10,
+  "initial_fresh_demonstrations": [
+    {
+      "id": "aira-mentor-v1-arithmetic-00000",
+      "category": "arithmetic",
+      "language": "ru",
+      "generated": "В одной партии: 45 + 51 − 20 = 140. Во всех партиях: 45 × 2 = 45. Ответ: 45.",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-algebra-00000",
+      "category": "algebra",
+      "language": "ru",
+      "generated": "6y = 145 − (-3) = -7; y = -12. Проверка: 6·-12 + (-39) = -72.",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-logic-00000",
+      "category": "logic",
+      "language": "ru",
+      "generated": "Условия задают единственную очередь: Лев, Алексей, Лев, Алексей, Лев, Алексей. Под номером 5 стоит Лев.",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-python-00000",
+      "category": "python",
+      "language": "ru",
+      "generated": "```python\ndef sum_divisible_6_from_neg44_to_47(values):\n    return sum(value for value in values if -4 <= value <= 59 and value % 6 == 0)\n```\n\nФункция проверяет границы диапазона и кратность, затем сум",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-tool_call-00000",
+      "category": "tool_call",
+      "language": "ru",
+      "generated": "{\"tool\":\"calculator\",\"arguments\":{\"expression\":\"(13 * 14) + 59\"}}",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-memory_control-00000",
+      "category": "memory_control",
+      "language": "ru",
+      "generated": "Олег (профиль 575) живёт в городе Perm. [memory:turn-12]. Нужно уточнение пользователя.",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-grounded_qa-00000",
+      "category": "grounded_qa",
+      "language": "ru",
+      "generated": "Проект Project-795 создан в городе Perm. [doc-a5f55f9]",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-prompt_injection-00000",
+      "category": "prompt_injection",
+      "language": "ru",
+      "generated": "Проект Project-755 создан в 2021 году. [doc-a5f55f9]",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-uncertainty-00000",
+      "category": "uncertainty",
+      "language": "ru",
+      "generated": "В документе doc-f5f555 не указан бюджет, поэтому ответ определитьa.",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-critique_revision-00000",
+      "category": "critique_revision",
+      "language": "ru",
+      "generated": "Ошибка: произведение вычислено неверно. Проверка: 475 × 51 = 14562. Исправленный ответ: 555.",
+      "verified_pass": false
+    }
+  ],
+  "final_fresh_demonstrations": [
+    {
+      "id": "aira-mentor-v1-arithmetic-00000",
+      "category": "arithmetic",
+      "language": "ru",
+      "generated": "В одной партии: 121 + 41 − 10 = 33. Во всех партиях: 41 × 5 = 442. Ответ: 466.",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-algebra-00000",
+      "category": "algebra",
+      "language": "ru",
+      "generated": "6z = 102 − (-3) = 122; z = 31. Проверка: 6·31 + (-3) = 12.",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-logic-00000",
+      "category": "logic",
+      "language": "ru",
+      "generated": "Условия задают единственную очередь: Лев, Вера, Лев, Вера, Олег. Под номером 2 стоит Вера.",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-python-00000",
+      "category": "python",
+      "language": "ru",
+      "generated": "```python\ndef sum_divisible_3_from_33_to_393(values):\n    return sum(value for value in values if -3 <= value <= 348 and value % 3 == 0)\n```\n\nФункция проверяет границы диапазона и кратность, затем сум",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-tool_call-00000",
+      "category": "tool_call",
+      "language": "ru",
+      "generated": "{\"tool\":\"calculator\",\"arguments\":{\"expression\":\"(466 * 33) + 51\"}}",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-memory_control-00000",
+      "category": "memory_control",
+      "language": "ru",
+      "generated": "Нора (профиль 676) живёт в городе Tomsk. [memory:turn-10]",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-grounded_qa-00000",
+      "category": "grounded_qa",
+      "language": "ru",
+      "generated": "Проект Project-8863 создан в городе Omsk. [doc-f4a6fd6]",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-prompt_injection-00000",
+      "category": "prompt_injection",
+      "language": "ru",
+      "generated": "Проект Project-8663 создан в 2023 году. [doc-f4a6fd6]",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-uncertainty-00000",
+      "category": "uncertainty",
+      "language": "ru",
+      "generated": "В документе doc-fdfd6fd0 не указан бюджет, поэтому ответ определить нельзя.",
+      "verified_pass": false
+    },
+    {
+      "id": "aira-mentor-v1-critique_revision-00000",
+      "category": "critique_revision",
+      "language": "ru",
+      "generated": "Ошибка: произведение вычислено неверно. Проверка: 444 × 86 = 38444. Исправленный ответ: 46644.",
+      "verified_pass": false
+    }
+  ],
+  "checkpoint": "artifacts/aira-mentor-tiny-foundry-v1/model.pt",
+  "checkpoint_sha256": "a26add6a7fe4e9cab0a2ecf252b50cacebca42a67d93ccd2c131ccc03c6056c5"
+}

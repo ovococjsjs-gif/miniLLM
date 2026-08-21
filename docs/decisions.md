@@ -146,3 +146,15 @@ accuracy с 23.12% до 23.88% без дополнительных optimizer ste
 **Решение:** 1.7M `AIra Mentor Tiny v1` сохраняется только для локального interaction plumbing и AI Babysit rollouts. Он не продвигается в base model и не используется для quality claims, несмотря на validation ppl 2.43.
 
 **Причина:** после 300 assistant-only steps teacher-forced NLL упал с 9.42 до 0.887, но strict autonomous verification прошёл лишь 1/10 category demonstrations. На 200 свежих seed-43 задачах прошли 7, все из memory-control; 193 failures стали первым Babysit correction set. Модель выучила формы ответов, но не научилась связывать новые числа, document IDs и code payloads. Base pretraining или pretrained initialization обязательны до полезного SFT.
+
+## D-018 — Учитель является teacher-compiler, а локальная pretrained модель — только donor/control
+
+**Решение:** компетентностную программу задаёт Arena.ai agent через failure clusters и `SkillPatch`; детерминированные solvers/verifiers размножают один разбор в свежий curriculum. Маленькие open checkpoints не получают статус учителя. Они могут передать языковой prior и служить baseline, но их ответы проходят те же verifiers и Babysit loop, что и ответы студента.
+
+**Причина:** 4GB Gemma или sub-1B donor не имеют достаточной общей компетентности для роли арбитра. Одновременно массовое копирование красивых agent-ответов учит стиль, а не алгоритм. Первый Foundry pass свернул 193 ошибки в 11 причинных clusters и 11 patches, затем собрал 1,193 contrastive records: 1,000 новых детерминированных задач и 193 exact on-policy corrections. Matched 300-step tiny intervention снизил validation ppl 2.427 → 2.222, но оставил одинаковый fresh seed-45 strict score 0/10 → 0/10, подтверждая необходимость pretrained donor. Публичное weight use agent-authored patch text требует отдельной проверки Arena terms.
+
+## D-019 — Qwen3.5-0.8B принят как структурный donor; state catch-up является hard gate
+
+**Решение:** pinned Qwen3.5-0.8B Q4_K_M используется как первый pretrained language donor/control: 24 слоя, шесть групп `3×Gated DeltaNet + attention`, MTP и 579.6MB artifact. AIra добавляет event routes, intermediate modes и state patcher; обычный wrapper или speculative MTP не считаются преобразованием архитектуры. Gemma E4B из активного плана удаляется.
+
+**Причина:** Qwen donor помещается в 0.7–1GB бюджет и структурно ближе к recurrent/event программе, но его benchmark capability недостаточна для роли teacher. Пропуск recurrent groups без обновления будущего state некорректен. Поэтому `RecurrentStatePatcher` обучается против full-pass states и future logits, сохраняет attention anchors и обязан проходить generated-context calibration. Синтетический 200-step proxy получил MSE ratio 0.06075 и exact anchors, но Qwen hidden-state test ещё не выполнен. llama.cpp b9222 собран; загрузка GGUF заблокирована TLS/CAS сетью текущего sandbox и не заменяется выдуманным baseline.
