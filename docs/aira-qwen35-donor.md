@@ -169,7 +169,9 @@ The first real AIra surgery is not arbitrary layer deletion:
 5. compare future-window logits and generated quality against a full donor pass;
 6. fall back to the full group whenever patch confidence is below a generated-context threshold.
 
-The 200-step synthetic dynamics proxy reduced held-out state MSE from a zero-delta baseline of `0.058125` to `0.003531` (ratio `0.06075`), reduced future KL from `0.014753` to `0.000780`, and kept anchor max error exactly zero. This validates only the patcher plumbing. Real Qwen state pairs remain the next gate.
+The 200-step synthetic dynamics proxy reduced held-out state MSE from a zero-delta baseline of `0.058125` to `0.003531` (ratio `0.06075`), reduced future KL from `0.014753` to `0.000780`, and kept anchor max error exactly zero. This validates only the patcher plumbing.
+
+The instrumentation half of the real-state gate is now complete. A public llama.cpp evaluation callback captured all 18 live `128×128×16` Gated DeltaNet states, their convolution caches, all 24 layer outputs and complete future logits. Prompt-state outputs matched the next autoregressive pre-states byte-for-byte in all 18 recurrent layers, as did all 18 convolution caches. See `docs/aira-qwen35-real-state-probe.md`. Training and validating the patcher on projected real-state pairs remains the next gate; no acceleration claim follows from extraction alone.
 
 ## Acceptance gate
 

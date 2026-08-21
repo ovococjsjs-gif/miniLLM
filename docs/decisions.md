@@ -170,3 +170,9 @@ accuracy с 23.12% до 23.88% без дополнительных optimizer ste
 **Решение:** 17 fresh seed-46 corrections компилируются с 1,000 новыми deterministic seed-47 contrasts в отдельный `aira-teacher-foundry-qwen-v1`. Protected 50-task baseline остаётся evaluation-only. Новый `SkillPatch` не добавляется, пока существующий catalog объясняет механизм.
 
 **Причина:** Qwen packet даёт 11 clusters: operand binding, constraint binding, source identity, memory source/conflict, Python contract, tool schema и tool arguments. Все они маршрутизируются в существующие 11 patches. Итоговый curriculum содержит 1,017 records, включая ровно 17 on-policy corrections, SHA-256 `7e28525b0955efa63b763ae3a2ec6a43d32f2da5db3ec1514a21006eaa885de8` и явный protected-split count 0; генератор исключает все 6,000 известных Mentor v1 content hashes.
+
+## D-022 — Real Qwen recurrent-state instrumentation gate passed; acceleration gate remains closed
+
+**Решение:** pinned llama.cpp `cb_eval` probe становится каноническим источником real-state pairs. Он извлекает `state_predelta`, `new_state`, convolution cache, 24 layer outputs и full logits без fork/patch llama.cpp. Raw float32 остаются ignored; в Git входят source, build provenance, hashes и compact audit. Сам факт extraction не разрешает bypass.
+
+**Причина:** для 18 Gated DeltaNet layers получены states `128×128×16` (1,048,576 bytes/layer). Между prompt stage и первым autoregressive event все 18 `new_state → state_predelta` и 18 `last_conv_states → conv_states` совпали byte-exact. Средний `||Δ||/||state_after||` следующего event равен 0.205614, максимум 0.611461, поэтому zero-update небезопасен. Но patcher ещё не обучен на этих real states, future-KL и generated-quality gate не пройдены, следовательно compute/quality acceleration не заявляется.

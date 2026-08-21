@@ -29,6 +29,8 @@
 - `qwen35_donor_bootstrap.json` — exact recovered donor and pinned llama.cpp verification;
 - `qwen35_08b_model_audit.json` — embedded GGUF architecture, license, tensor and quantization inventory;
 - `qwen35_08b_runtime_smoke.json` — bounded 2-thread RSS and prompt/generation throughput;
+- `qwen35_state_probe_build.json` — pinned llama.cpp/public-API native probe build provenance;
+- `qwen35_08b_real_state_probe.json` — exact 18-layer recurrent/conv cache chains, hidden outputs and full logits;
 - `qwen35_08b_donor_baseline.json` — balanced 50-task protected strict/content/protocol/source baseline;
 - `pc_alm_proxy.json` — old finite PC versus PC-ALM BP-gradient alignment.
 

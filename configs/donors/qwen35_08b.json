@@ -51,6 +51,17 @@
     "temperature": 0,
     "language_model_only": true
   },
+  "state_probe": {
+    "source": "native/qwen35_state_probe.cpp",
+    "build_script": "scripts/build_qwen35_state_probe.py",
+    "audit_script": "scripts/audit_qwen35_state_probe.py",
+    "recurrent_layers": 18,
+    "attention_layers": 6,
+    "state_elements_per_recurrent_layer": 262144,
+    "full_logits": true,
+    "real_state_extraction_verified": true,
+    "real_state_patcher_trained": false
+  },
   "acceptance": {
     "artifact_budget_bytes": 1000000000,
     "baseline_required_before_architecture_surgery": true,

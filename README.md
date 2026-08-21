@@ -54,6 +54,7 @@
 - второй Qwen on-policy Foundry cycle: 17 exact corrections + 1,000 fresh seed-47 records без protected-split leakage;
 - общий strict verifier с restricted-AST Python unit tests для training/Babysit/donor evaluation;
 - recovered exact 532.5MB Unsloth Qwen3.5-0.8B Q4 donor/control, local llama.cpp runtime и OpenAI-compatible provider adapter;
+- public-API real-state probe: exact 18-layer Gated DeltaNet/conv cache chains, 24 hidden outputs и full future logits;
 - masked recurrent-state patcher с future-KL/confidence objective и успешным 200-step synthetic dynamics proxy;
 - deterministic event shards и resume-safe ≤300-step multi-head trainer;
 - строгая UTF-8 grammar mask и отдельная calibration на generated contexts до разрешения bypass;
@@ -227,7 +228,7 @@ Prompt-copy покрывает 42% при min-2, но ухудшает event cou
 байтов не превосходят pure oracle 8-byte event count при включённой короткой shelf. Значит, главный следующий gate —
 не таблица и не copy сами по себе, а реально обученный и откалиброванный multi-byte head.
 
-Новая pretrained ветка не назначает маленькую open model учителем. Arena.ai agent формирует причинные `SkillPatch`, а solvers/verifiers размножают их в свежие задачи. Первый matched Foundry intervention снизил tiny validation ppl с 2.427 до 2.222, но на одинаковых свежих seed-45 задачах strict pass остался 0/10 → 0/10: curriculum исправляет supervision, но не заменяет pretrained capacity. Exact Unsloth Qwen3.5-0.8B Q4 восстановлен из 50 частей и принят только как 532.5MB language donor/control. На двух CPU threads он даёт около 21.4 generated token/s при ~852 MiB peak RSS. Balanced protected sample получает 6/50 strict, 31/50 content и 0/18 обязательных source attributions; fresh seed-46 rollout — 3/20 strict. Answer-free protocol control поднял source 0/7 → 3/7, content 12/20 → 13/20 и protocol 17/20 → 18/20, но strict остался 3/20, поэтому prompt-only fix отклонён. Это подтверждает, что donor даёт язык, но не заменяет teacher/verifier. Его шесть групп `3×Gated DeltaNet + attention` остаются конкретной точкой для fast/balanced/deep exits и state catch-up. На synthetic dynamics 15.5K state patcher снизил MSE относительно zero-delta baseline до 6.07% и точно сохранил anchor layers; реальный Qwen-state gate ещё впереди.
+Новая pretrained ветка не назначает маленькую open model учителем. Arena.ai agent формирует причинные `SkillPatch`, а solvers/verifiers размножают их в свежие задачи. Первый matched Foundry intervention снизил tiny validation ppl с 2.427 до 2.222, но на одинаковых свежих seed-45 задачах strict pass остался 0/10 → 0/10: curriculum исправляет supervision, но не заменяет pretrained capacity. Exact Unsloth Qwen3.5-0.8B Q4 восстановлен из 50 частей и принят только как 532.5MB language donor/control. На двух CPU threads он даёт около 21.4 generated token/s при ~852 MiB peak RSS. Balanced protected sample получает 6/50 strict, 31/50 content и 0/18 обязательных source attributions; fresh seed-46 rollout — 3/20 strict. Answer-free protocol control поднял source 0/7 → 3/7, content 12/20 → 13/20 и protocol 17/20 → 18/20, но strict остался 3/20, поэтому prompt-only fix отклонён. Это подтверждает, что donor даёт язык, но не заменяет teacher/verifier. Его шесть групп `3×Gated DeltaNet + attention` остаются конкретной точкой для fast/balanced/deep exits и state catch-up. Public llama.cpp callback probe теперь извлекает реальные `128×128×16` states всех 18 recurrent layers, conv caches, 24 hidden outputs и полные 248,320-way logits. Между prompt и первым autoregressive event получено 18/18 byte-exact state transitions и 18/18 conv transitions; средний относительный state delta равен 0.2056. На synthetic dynamics 15.5K state patcher снизил MSE относительно zero-delta baseline до 6.07%, но обучение patcher на real-state pairs ещё не выполнено, поэтому acceleration claim закрыт.
 
 Плотные 350M, recurrent 209M, MoE и GDN2-конфигурации остаются контрольными ветками.
 Их обычное масштабирование приостановлено, пока end-to-end каскад не покажет лучший
@@ -252,6 +253,7 @@ quality-adjusted active compute.
 - [AIra Mentor v1: 6K verifier-first RU/EN SFT](docs/aira-mentor-v1.md)
 - [AIra Teacher Foundry v1: failure clusters → skill patches → curriculum](docs/aira-teacher-foundry-v1.md)
 - [Qwen3.5-0.8B как language donor/control и state-catch-up gate](docs/aira-qwen35-donor.md)
+- [реальный Qwen3.5 recurrent-state/full-logit probe](docs/aira-qwen35-real-state-probe.md)
 - [Исторический разбор AIra (superseded)](docs/aira-review.md)
 - [Аннотированные первоисточники](docs/sources.md)
 
