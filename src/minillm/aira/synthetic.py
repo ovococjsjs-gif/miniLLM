@@ -6,6 +6,7 @@ import ast
 import hashlib
 import json
 import random
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass, replace
 from datetime import date, timedelta
 from typing import Any, Literal
@@ -926,11 +927,12 @@ def generate_aira_mentor_records(
     *,
     examples_per_category: int = 600,
     seed: int = 42,
+    excluded_content_hashes: Iterable[str] = (),
 ) -> list[SyntheticRecord]:
     if examples_per_category < 1:
         raise ValueError("examples_per_category must be positive")
     records = []
-    hashes: set[str] = set()
+    hashes = set(excluded_content_hashes)
     for category in _CATEGORIES:
         generator = _GENERATORS[category]
         for index in range(examples_per_category):

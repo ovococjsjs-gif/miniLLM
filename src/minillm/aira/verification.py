@@ -225,10 +225,18 @@ def synthetic_generation_components(record: Any, generated: str) -> dict[str, bo
             marker in folded
             for marker in (
                 "cannot be determined",
+                "unable to determine",
                 "does not state",
                 "not contain",
+                "no information",
+                "not enough information",
                 "не содержится",
                 "не указан",
+                "не удалось определить",
+                "нет информации",
+                "недостаточно информации",
+                "невозможно определить",
+                "невозможно установить",
                 "нельзя",
             )
         )

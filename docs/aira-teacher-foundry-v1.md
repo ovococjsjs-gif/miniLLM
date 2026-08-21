@@ -79,7 +79,7 @@ Curriculum composition:
 - 193 exact on-policy student corrections;
 - no protected Mentor v1 train/validation/test record was consumed;
 - zero identifier or content collisions;
-- curriculum SHA-256 `558110129b1cce5adcffcd34c418c1f76351d27023ed197fc0998fc5dad889ed`.
+- curriculum SHA-256 `972f34c559618feb7c6682917ede6ad7c5323474f54bf47827884b7249a795ec` (all 6,000 Mentor v1 content hashes excluded during fresh generation).
 
 Observed failure mechanisms:
 
@@ -107,7 +107,7 @@ It is not a base-pretraining corpus. Repeating it into a random-init tiny model 
 
 ## Matched tiny-model intervention
 
-`finetune_aira_mentor_foundry.py` continued the published 1.715M-parameter tiny checkpoint for exactly 300 additional optimizer steps on the 1,193-record curriculum. On the unchanged 153-record Mentor validation split, perplexity improved from `2.427031` to `2.222349`. On the same ten fresh seed-45 generated tasks, however, strict verification remained `0/10 → 0/10`. The output still substituted stale numbers, identifiers, document IDs and tool arguments.
+`finetune_aira_mentor_foundry.py` continued the published 1.715M-parameter tiny checkpoint for exactly 300 additional optimizer steps on the 1,193-record curriculum. After explicit exclusion of every Mentor v1 content hash, the corrected matched rerun improved perplexity on the unchanged 153-record validation split from `2.427031` to `2.222130`. On the same ten fresh seed-45 generated tasks, however, strict verification remained `0/10 → 0/10`. The output still substituted stale numbers, identifiers, document IDs and tool arguments.
 
 This is a useful negative control: Foundry makes corrections denser and auditable, but cannot manufacture the missing language/binding capacity in a random-init 1.7M model. The resulting checkpoint is retained only as a local experiment and is not published as a better assistant. The machine-readable report is `results/aira_mentor_tiny_foundry_finetune.json`.
 
@@ -115,14 +115,22 @@ This is a useful negative control: Foundry makes corrections denser and auditabl
 
 The 1,000 generated task targets and all 193 corrections are deterministic project records. Skill-patch language and 22 contrastive demonstrations were authored by the Arena.ai agent under user direction. Internal experiments are approved by the project owner; terms must be reviewed before publicly releasing weights trained specifically on agent-authored text. The artifact records this status rather than incorrectly labeling all content CC0 or attributing it to a named proprietary model.
 
-## Next Foundry cycle
+## Qwen donor Foundry cycle
 
-The recovered Qwen donor has now been run on a balanced protected sample and 20 fresh seed-46 tasks. The fresh rollout produced 17 corrections: 7 source failures, 5 content failures, 3 combined content/protocol failures and 2 strict-surface failures. They are stored under `artifacts/qwen35-donor-babysit-v1/`; the protected 50-task answers remain evaluation-only.
+The recovered Qwen donor was run on a balanced protected sample and 20 fresh seed-46 tasks. The fresh rollout produced 17 corrections: 7 source failures, 5 content failures, 3 combined content/protocol failures and 2 strict-surface failures. The protected 50-task answers remain evaluation-only.
+
+`artifacts/aira-teacher-foundry-qwen-v1/` now compiles those attempts into:
+
+- 17 exact on-policy corrections plus 3 preserved passes in the source packet;
+- 11 causal clusters, including operand drift, source identity, memory source/conflict, Python contract, tool schema and tool argument binding;
+- the existing 11-patch catalog, with no unjustified new patch;
+- 1,000 fresh deterministic seed-47 contrastive examples;
+- 1,017 total curriculum records with SHA-256 `7e28525b0955efa63b763ae3a2ec6a43d32f2da5db3ec1514a21006eaa885de8`;
+- zero protected Mentor v1 records in the weight-producing manifest.
 
 Next:
 
-1. cluster the 17 fresh donor failures against the existing 11 patches;
-2. add a patch only when the existing catalog cannot explain a failure;
-3. emphasize exact citations, tool-call protocol and multi-operand arithmetic;
-4. train AIra routes/state patching on generated spans;
-5. keep every protected task out of weight-producing manifests.
+1. train AIra routes/state patching on generated spans rather than repeating random-init tiny SFT;
+2. implement selective source pointers and deterministic tool execution as runtime actions;
+3. evaluate every intervention against the frozen protected sample;
+4. add a new patch only when a fresh failure cannot be explained by this catalog.

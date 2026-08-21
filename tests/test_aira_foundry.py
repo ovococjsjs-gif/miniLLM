@@ -111,3 +111,17 @@ def test_component_diagnostics_do_not_promote_missing_citations() -> None:
         "source_required": True,
         "protocol": True,
     }
+
+
+def test_uncertainty_component_accepts_clear_paraphrase_but_keeps_strict_exact() -> None:
+    records = generate_aira_mentor_records(examples_per_category=1, seed=93)
+    uncertain = next(record for record in records if record.category == "uncertainty")
+    citation = uncertain.verification["citation"]
+    generated = f"Не удалось определить ответ: нет информации в {citation}."
+
+    components = synthetic_generation_components(uncertain, generated)
+
+    assert not components["strict"]
+    assert components["content"]
+    assert components["source"]
+    assert components["protocol"]

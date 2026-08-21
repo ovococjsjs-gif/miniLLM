@@ -46,6 +46,8 @@
     "context_length": 2048,
     "threads": 2,
     "batch": 128,
+    "parallel_slots": 1,
+    "prompt_cache_ram_mib": 0,
     "temperature": 0,
     "language_model_only": true
   },

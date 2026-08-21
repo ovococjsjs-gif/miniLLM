@@ -165,7 +165,7 @@ Teacher-forced packing ratios and oracle copy spans are upper bounds, not speed 
 ## Remaining blockers outside dataset collection
 
 - expose or instrument full-pass recurrent states/future logits from the recovered Qwen donor and test the state patcher on real events;
-- convert the fresh seed-46 Qwen failures into the next patch-balanced Foundry curriculum without using the protected 50-task sample for training;
+- bind the completed 1,017-record Qwen Foundry cycle to an AIra route/state training recipe without using the protected 50-task sample for training;
 - implement a source-pointer head before training document-copy actions end to end;
 - choose/freeze the tokenizer after the new corpus mixture audit or prove a safe donor-token bridge/vocabulary reduction;
 - bind full-stream anchor batches and sampled residual controls into the large-data trainer recipe;

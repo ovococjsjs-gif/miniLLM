@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "source_records": 20,
+  "failed_records": 17,
+  "passed_records": 3,
+  "failure_clusters": 11,
+  "cluster_counts": {
+    "arithmetic:operand-binding-drift": 2,
+    "critique_revision:operand-binding-drift": 2,
+    "grounded_qa:source-identity-binding": 2,
+    "logic:constraint-entity-binding": 2,
+    "memory_control:memory-conflict-policy": 1,
+    "memory_control:memory-source-binding": 1,
+    "prompt_injection:source-identity-binding": 2,
+    "python:python-functional-contract": 1,
+    "tool_call:structured-output-schema": 1,
+    "tool_call:tool-argument-binding": 1,
+    "uncertainty:source-identity-binding": 2
+  },
+  "skill_patches": 11,
+  "protected_content_hashes_excluded": 6000,
+  "curriculum_records": 1017,
+  "curriculum_patch_counts": {
+    "critique-independent-recompute-v1": 102,
+    "equation-isolate-check-v1": 100,
+    "grounded-field-citation-v1": 102,
+    "memory-key-source-v1": 102,
+    "missing-evidence-abstention-v1": 102,
+    "numeric-operand-ledger-v1": 102,
+    "ordered-constraint-chain-v1": 102,
+    "python-contract-first-v1": 101,
+    "tool-argument-grounding-v1": 102,
+    "untrusted-document-boundary-v1": 102
+  },
+  "teacher_packet": "artifacts/aira-teacher-foundry-qwen-v1/teacher-packet.json",
+  "skill_patches_path": "artifacts/aira-teacher-foundry-qwen-v1/skill-patches.json",
+  "curriculum": "artifacts/aira-teacher-foundry-qwen-v1/curriculum.jsonl",
+  "manifest": "artifacts/aira-teacher-foundry-qwen-v1/curriculum.jsonl.manifest.json"
+}

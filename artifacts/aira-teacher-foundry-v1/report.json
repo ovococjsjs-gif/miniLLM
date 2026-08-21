@@ -18,6 +18,7 @@
     "uncertainty:source-identity-binding": 20
   },
   "skill_patches": 11,
+  "protected_content_hashes_excluded": 6000,
   "curriculum_records": 1193,
   "curriculum_patch_counts": {
     "critique-independent-recompute-v1": 120,

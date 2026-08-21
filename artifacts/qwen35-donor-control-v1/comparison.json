@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "baseline": {
+    "path": "artifacts/qwen35-donor-babysit-v1/evaluation.json",
+    "sha256": "3ea1234fb39a0ea109fca9582772cbad1394ecf4a8712121f5b38a763e3e479f",
+    "control_profile": "baseline"
+  },
+  "candidate": {
+    "path": "artifacts/qwen35-donor-control-v1/evaluation.json",
+    "sha256": "8667fcc766f611a4b1f3dda439bd20e3bd44552eeceea6634216eb735e326338",
+    "control_profile": "aira-protocol-v1"
+  },
+  "dataset_sha256": "ec6b156b129803e23eae986888f7c8bff1b3ea5b3a4c182e5d06a9b1eaa9505a",
+  "matched_tasks": 20,
+  "components": {
+    "strict": {
+      "applicable": 20,
+      "baseline_passed": 3,
+      "candidate_passed": 3,
+      "delta": 0,
+      "improved_ids": [],
+      "regressed_ids": []
+    },
+    "content": {
+      "applicable": 20,
+      "baseline_passed": 12,
+      "candidate_passed": 13,
+      "delta": 1,
+      "improved_ids": [
+        "aira-mentor-v1-tool_call-00000",
+        "aira-mentor-v1-critique_revision-00001"
+      ],
+      "regressed_ids": [
+        "aira-mentor-v1-memory_control-00000"
+      ]
+    },
+    "protocol": {
+      "applicable": 20,
+      "baseline_passed": 17,
+      "candidate_passed": 18,
+      "delta": 1,
+      "improved_ids": [
+        "aira-mentor-v1-tool_call-00000",
+        "aira-mentor-v1-tool_call-00001"
+      ],
+      "regressed_ids": [
+        "aira-mentor-v1-memory_control-00000"
+      ]
+    },
+    "source": {
+      "applicable": 7,
+      "baseline_passed": 0,
+      "candidate_passed": 3,
+      "delta": 3,
+      "improved_ids": [
+        "aira-mentor-v1-memory_control-00000",
+        "aira-mentor-v1-uncertainty-00000",
+        "aira-mentor-v1-uncertainty-00001"
+      ],
+      "regressed_ids": []
+    }
+  },
+  "changed_tasks": [
+    {
+      "id": "aira-mentor-v1-tool_call-00000",
+      "category": "tool_call",
+      "components": {
+        "content": {
+          "baseline": false,
+          "candidate": true
+        },
+        "protocol": {
+          "baseline": false,
+          "candidate": true
+        }
+      }
+    },
+    {
+      "id": "aira-mentor-v1-tool_call-00001",
+      "category": "tool_call",
+      "components": {
+        "protocol": {
+          "baseline": false,
+          "candidate": true
+        }
+      }
+    },
+    {
+      "id": "aira-mentor-v1-memory_control-00000",
+      "category": "memory_control",
+      "components": {
+        "content": {
+          "baseline": true,
+          "candidate": false
+        },
+        "protocol": {
+          "baseline": true,
+          "candidate": false
+        },
+        "source": {
+          "baseline": false,
+          "candidate": true
+        }
+      }
+    },
+    {
+      "id": "aira-mentor-v1-uncertainty-00000",
+      "category": "uncertainty",
+      "components": {
+        "source": {
+          "baseline": false,
+          "candidate": true
+        }
+      }
+    },
+    {
+      "id": "aira-mentor-v1-uncertainty-00001",
+      "category": "uncertainty",
+      "components": {
+        "source": {
+          "baseline": false,
+          "candidate": true
+        }
+      }
+    },
+    {
+      "id": "aira-mentor-v1-critique_revision-00001",
+      "category": "critique_revision",
+      "components": {
+        "content": {
+          "baseline": false,
+          "candidate": true
+        }
+      }
+    }
+  ],
+  "conclusion": "The protocol prompt is not accepted as a quality intervention unless strict passes improve without component regressions."
+}

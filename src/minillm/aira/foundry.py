@@ -858,6 +858,7 @@ def compile_curriculum(
     generated_examples_per_category: int,
     generated_seed: int,
     babysit_records: Sequence[BabysitRecord] = (),
+    excluded_content_hashes: Iterable[str] = (),
 ) -> list[CurriculumRecord]:
     if generated_examples_per_category < 0:
         raise ValueError("generated examples per category cannot be negative")
@@ -868,6 +869,7 @@ def compile_curriculum(
         generated = generate_aira_mentor_records(
             examples_per_category=generated_examples_per_category,
             seed=generated_seed,
+            excluded_content_hashes=excluded_content_hashes,
         )
         for record in generated:
             patch = _patch_for(record.category, "", patches)

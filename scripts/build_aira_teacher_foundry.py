@@ -25,6 +25,19 @@ def sha256(path: Path) -> str:
         return hashlib.file_digest(handle, "sha256").hexdigest()
 
 
+def protected_content_hashes(directory: Path) -> set[str]:
+    hashes: set[str] = set()
+    for filename in ("train.jsonl", "validation.jsonl", "test.jsonl"):
+        path = directory / filename
+        if not path.exists():
+            raise FileNotFoundError(f"protected split is missing: {path}")
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                record = json.loads(line)
+                hashes.add(record["content_sha256"])
+    return hashes
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -37,10 +50,12 @@ def main() -> None:
     parser.add_argument("--generated-examples-per-category", type=int, default=100)
     parser.add_argument("--generated-seed", type=int, default=44)
     parser.add_argument("--max-representatives", type=int, default=3)
+    parser.add_argument("--protected-dir", default="artifacts/aira-mentor-v1")
     args = parser.parse_args()
 
     source_path = Path(args.babysit)
     output = Path(args.output_dir)
+    protected_hashes = protected_content_hashes(Path(args.protected_dir))
     records = read_babysit_dataset(source_path)
     packet = build_teacher_packet(
         records,
@@ -53,6 +68,7 @@ def main() -> None:
         generated_examples_per_category=args.generated_examples_per_category,
         generated_seed=args.generated_seed,
         babysit_records=records,
+        excluded_content_hashes=protected_hashes,
     )
 
     packet_path = write_teacher_packet(output / "teacher-packet.json", packet)
@@ -67,6 +83,7 @@ def main() -> None:
             "teacher_packet_sha256": packet.content_sha256,
             "generated_seed": args.generated_seed,
             "generated_examples_per_category": args.generated_examples_per_category,
+            "protected_content_hashes_excluded": len(protected_hashes),
             "protected_aira_mentor_v1_splits_used": False,
             "public_weight_use_status": (
                 "deterministic records are project-owned; agent-authored patch text "
@@ -86,6 +103,7 @@ def main() -> None:
             for cluster in packet.clusters
         },
         "skill_patches": len(patches),
+        "protected_content_hashes_excluded": len(protected_hashes),
         "curriculum_records": len(curriculum),
         "curriculum_patch_counts": dict(sorted(patch_counts.items())),
         "teacher_packet": str(packet_path),

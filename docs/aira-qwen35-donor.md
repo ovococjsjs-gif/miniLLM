@@ -106,6 +106,19 @@ The resulting diagnostic/on-policy data is in `artifacts/qwen35-donor-babysit-v1
 
 This empirically confirms the design decision: Qwen is useful pretrained tissue, but it is not a competent teacher. Teacher Foundry and deterministic verifiers remain authoritative.
 
+## Matched protocol-control intervention
+
+A category-specific but answer-free `aira-protocol-v1` system suffix was tested on the same 20 fresh tasks. It reminded the donor about exact source IDs, tool JSON shape, Python fencing and final-answer forms without reading the reference answer.
+
+| component | baseline | controlled | delta |
+|---|---:|---:|---:|
+| strict | 3/20 | 3/20 | 0 |
+| content | 12/20 | 13/20 | +1 |
+| protocol | 17/20 | 18/20 | +1 |
+| required source | 0/7 | 3/7 | +3 |
+
+The intervention fixed the surface schema of both tool calls but not their arguments. It inserted source IDs in three cases, while one memory answer collapsed into a long citation list. No strict verdict changed. The prompt is therefore rejected as a quality fix: it shows that surface citation/protocol behavior is steerable, but content binding, selective pointers and deterministic tool execution must be implemented as verified runtime/architecture actions. Full generations and matched transitions are in `artifacts/qwen35-donor-control-v1/`.
+
 ## Reproduction
 
 Build and verify the runtime/artifact:
@@ -123,6 +136,7 @@ Run the server:
   --alias qwen3.5-0.8b-q4-k-m \
   --ctx-size 2048 --threads 2 --threads-batch 2 \
   --batch-size 128 --ubatch-size 128 \
+  --parallel 1 --cache-ram 0 \
   --reasoning off --host 127.0.0.1 --port 8080
 ```
 
@@ -133,6 +147,13 @@ python scripts/evaluate_qwen35_donor.py \
   --endpoint http://127.0.0.1:8080 \
   --dataset artifacts/aira-mentor-v1/test.jsonl \
   --examples-per-category 5 --max-tokens 256
+
+# Answer-free matched protocol control on a fresh task file
+python scripts/evaluate_qwen35_donor.py \
+  --endpoint http://127.0.0.1:8080 \
+  --dataset artifacts/qwen35-donor-babysit-v1/tasks.jsonl \
+  --control-profile aira-protocol-v1 --max-tokens 256 \
+  --output artifacts/qwen35-donor-control-v1/evaluation.json
 ```
 
 `OpenAIChatProvider` is a reusable standard-library adapter and the evaluator deliberately loads its stdlib-only verification helpers without importing Torch.

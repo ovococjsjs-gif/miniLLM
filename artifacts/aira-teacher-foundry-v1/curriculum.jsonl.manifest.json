@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "records": 1193,
-  "sha256": "558110129b1cce5adcffcd34c418c1f76351d27023ed197fc0998fc5dad889ed",
+  "sha256": "972f34c559618feb7c6682917ede6ad7c5323474f54bf47827884b7249a795ec",
   "categories": {
     "algebra": 120,
     "arithmetic": 120,
@@ -37,6 +37,7 @@
     "teacher_packet_sha256": "4a67d5d1346e9031bde8e973809188992ccea3a42427aeb741b12e509751b78b",
     "generated_seed": 44,
     "generated_examples_per_category": 100,
+    "protected_content_hashes_excluded": 6000,
     "protected_aira_mentor_v1_splits_used": false,
     "public_weight_use_status": "deterministic records are project-owned; agent-authored patch text requires Arena terms review before public weight release"
   }

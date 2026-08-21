@@ -158,3 +158,15 @@ accuracy с 23.12% до 23.88% без дополнительных optimizer ste
 **Решение:** exact Unsloth Qwen3.5-0.8B Q4_K_M используется как первый pretrained language donor/control: 24 слоя, шесть групп `3×Gated DeltaNet + attention`, 752.4M parameter elements и 532.5MB artifact. В восстановленном GGUF нет отдельно именованных MTP tensors, поэтому MTP для этого файла не заявляется. AIra добавляет event routes, intermediate modes и state patcher; обычный wrapper не считается преобразованием архитектуры. Gemma E4B из активного плана удаляется.
 
 **Причина:** Qwen donor помещается в 0.7–1GB бюджет и структурно ближе к recurrent/event программе, но measured capability недостаточна для роли teacher: balanced protected sample даёт 6/50 strict, 31/50 content и 0/18 required source attribution; fresh seed-46 rollout — 3/20 strict и 17 corrections. При этом runtime практичен: около 21.4 generated token/s и 852 MiB peak RSS на двух CPU threads. Пропуск recurrent groups без обновления будущего state некорректен. Поэтому `RecurrentStatePatcher` обучается против full-pass states и future logits, сохраняет attention anchors и обязан проходить generated-context calibration. Синтетический 200-step proxy получил MSE ratio 0.06075 и exact anchors, но Qwen hidden-state test ещё не выполнен.
+
+## D-020 — Prompt-only protocol control rejected as an AIra quality fix
+
+**Решение:** `aira-protocol-v1` сохраняется только как measured control и не считается исправлением Qwen donor. Source-pointer, tool execution и format routes должны стать проверяемыми runtime/architecture actions с fallback, а не длинным system prompt.
+
+**Причина:** на тех же 20 fresh seed-46 задачах answer-free category hints подняли source fidelity с 0/7 до 3/7, content с 12/20 до 13/20 и protocol с 17/20 до 18/20. Но strict остался 3/20: оба tool calls получили правильную внешнюю JSON-схему, сохранив неверные arguments, а один memory answer выродился в список citations. Это полезное свидетельство controllability поверхности, но не прирост компетентности.
+
+## D-021 — Qwen failures enter a fresh Foundry cycle without patch proliferation
+
+**Решение:** 17 fresh seed-46 corrections компилируются с 1,000 новыми deterministic seed-47 contrasts в отдельный `aira-teacher-foundry-qwen-v1`. Protected 50-task baseline остаётся evaluation-only. Новый `SkillPatch` не добавляется, пока существующий catalog объясняет механизм.
+
+**Причина:** Qwen packet даёт 11 clusters: operand binding, constraint binding, source identity, memory source/conflict, Python contract, tool schema и tool arguments. Все они маршрутизируются в существующие 11 patches. Итоговый curriculum содержит 1,017 records, включая ровно 17 on-policy corrections, SHA-256 `7e28525b0955efa63b763ae3a2ec6a43d32f2da5db3ec1514a21006eaa885de8` и явный protected-split count 0; генератор исключает все 6,000 известных Mentor v1 content hashes.
