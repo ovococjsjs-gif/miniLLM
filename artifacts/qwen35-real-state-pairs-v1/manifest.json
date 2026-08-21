@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "name": "qwen35-real-state-pairs-v1",
+  "records": 48,
+  "split_records": {
+    "train": 32,
+    "validation": 16
+  },
+  "prompts": 12,
+  "continuation_tokens_per_prompt": 4,
+  "recurrent_layers": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14,
+    16,
+    17,
+    18,
+    20,
+    21,
+    22
+  ],
+  "state_feature_dim": 80,
+  "event_feature_dim": 32,
+  "future_probability_buckets": 256,
+  "max_emitted_bytes": 15,
+  "exact_cache_continuity": {
+    "comparisons": 864,
+    "state_matches": 864,
+    "conv_matches": 864
+  },
+  "model_sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+  "probe_source_sha256": "c0cf5023f60b5a1ae872117258875c2a141420ebb456fa63aedc18013fe62be8",
+  "probe_binary_sha256": "5f20b40f1cab0bbd5c00483adb54d870ceab83c9f2708a624e875215cfc3f4a7",
+  "experiment_config": "configs/experiments/qwen35_real_state_pairs_v1.json",
+  "experiment_config_sha256": "562c2fab3922789328f685ba93c5379934bdcc585c16e860216f3855fa6ba1e7",
+  "arrays": {
+    "state_before": {
+      "path": "state_before.npy",
+      "sha256": "0b434f7344f9ea8644bc33892f5018787dd9dd5bca959f6883b2eb175e05f25c",
+      "shape": [
+        48,
+        18,
+        80
+      ],
+      "dtype": "float32",
+      "bytes": 276608
+    },
+    "state_after": {
+      "path": "state_after.npy",
+      "sha256": "c882234cb0a9a732ae06be3c4cdd74e5c8113154e07dc3d4fe46051306602a9e",
+      "shape": [
+        48,
+        18,
+        80
+      ],
+      "dtype": "float32",
+      "bytes": 276608
+    },
+    "event_features": {
+      "path": "event_features.npy",
+      "sha256": "750df66fa4172b50f97d4781bac29c824920aaec359873da2ec3dba7e35b252e",
+      "shape": [
+        48,
+        32
+      ],
+      "dtype": "float32",
+      "bytes": 6272
+    },
+    "emitted_bytes": {
+      "path": "emitted_bytes.npy",
+      "sha256": "31102c9cc4a54977c12135945ef5a69315d8d07fd3ff05e0d7ceb181f8fa3ed8",
+      "shape": [
+        48,
+        15
+      ],
+      "dtype": "uint8",
+      "bytes": 848
+    },
+    "emitted_byte_mask": {
+      "path": "emitted_byte_mask.npy",
+      "sha256": "5dce6f558b85c7b3909c36c2918593c28c12b6c62315660bffa9723b09a33541",
+      "shape": [
+        48,
+        15
+      ],
+      "dtype": "bool",
+      "bytes": 848
+    },
+    "future_probabilities": {
+      "path": "future_probabilities.npy",
+      "sha256": "ecbbad1c75ea64d3bf9b44e1726c9a33374ff7d7b26af93c32052ca3a0871e4a",
+      "shape": [
+        48,
+        256
+      ],
+      "dtype": "float32",
+      "bytes": 49280
+    },
+    "split": {
+      "path": "split.npy",
+      "sha256": "2a199129c51d0abd70f1ad497476513c400c8199f3060e968d600925c493cfe6",
+      "shape": [
+        48
+      ],
+      "dtype": "uint8",
+      "bytes": 176
+    },
+    "token_ids": {
+      "path": "token_ids.npy",
+      "sha256": "644fc9056f57e4b24aa3b24e6e32af3c5083110e4019a5696d4c68ac5589b2f5",
+      "shape": [
+        48
+      ],
+      "dtype": "int32",
+      "bytes": 320
+    }
+  },
+  "samples": {
+    "path": "samples.jsonl",
+    "sha256": "77f66fc0d88d4ea9dfb2ac93c94c78c443fcf9e561d96e2d2b27f9ae73675a26",
+    "bytes": 26470
+  },
+  "interpretation": "CountSketch projections are a bounded learnability control, not full-state reconstruction and not an acceleration claim."
+}

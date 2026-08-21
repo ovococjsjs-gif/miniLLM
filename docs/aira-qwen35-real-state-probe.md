@@ -46,10 +46,36 @@ For every recurrent layer, stage-0 `new_state` is byte-identical to stage-1 `sta
 
 The first autoregressive token changed the recurrent states by a mean `||Δ|| / ||state_after||` of `0.205614`; the maximum was `0.611461`. Mean before/after cosine was `0.970720`, ranging from `0.801761` to `0.996503`. A skipped event therefore cannot safely leave the state unchanged, even though many layer states remain directionally close.
 
-Machine-readable evidence is in:
+Machine-readable extraction evidence is in:
 
 - `results/qwen35_state_probe_build.json`;
 - `results/qwen35_08b_real_state_probe.json`.
+
+## Projected real-state learnability control
+
+Twelve separate project-owned RU/EN prompts were then run for four autoregressive events each. Raw captures were checked before projection and discarded after each prompt. The compact artifact `artifacts/qwen35-real-state-pairs-v1/` contains 48 prompt-grouped transitions:
+
+- 32 train records from eight prompts;
+- 16 validation records from four disjoint prompts;
+- 864/864 exact recurrent-cache links and 864/864 exact convolution-cache links;
+- 64 deterministic CountSketch features plus 16 convolution features per layer;
+- 32 consumed-token features and masked emitted bytes;
+- 256 probability buckets derived from each complete future-logit distribution.
+
+A 69,569-parameter `RecurrentStatePatcher` was trained for 200 steps after a 100-step frozen future-readout fit, keeping the complete local run at 300 optimizer steps. The primary patcher objective was state MSE/cosine/confidence; future buckets were evaluation-only in this run.
+
+Held-out prompt-group results:
+
+| metric | copy/zero-delta | mean train delta | learned patcher |
+|---|---:|---:|---:|
+| normalized projected state MSE | 0.619321 | 0.606894 | **0.459573** |
+| state MSE ratio versus copy | 1.0000 | 0.9799 | **0.7421** |
+| cosine error | 0.244699 | — | **0.186590** |
+| bucketed future KL | 3.462925 | — | **3.334973** |
+
+The patcher reduces held-out projected state MSE by 25.8% versus copy and also beats the static mean-delta control. Its mean confidence remains low at `0.3720`, appropriately reflecting the tiny and lossy dataset. Bucketed future KL improves by `0.127953`, but the true-state readout floor is still `3.298733`; this coarse readout is not a substitute for replay through the donor.
+
+This passes only the projected learnability control. CountSketch cannot reconstruct or inject the full 18 × 262,144 state values, so full-state, generated-quality and acceleration gates remain closed. Machine-readable evidence is `results/qwen35_real_state_patcher_proxy.json`.
 
 ## Reproduction
 
@@ -64,9 +90,13 @@ Run and audit an exact two-stage smoke:
 
 ```bash
 python scripts/run_qwen35_state_probe.py --overwrite
+
+# Collect 48 projected transitions and run the bounded 300-step control
+python scripts/collect_qwen35_state_pairs.py --overwrite
+python scripts/train_qwen35_projected_state_patcher.py
 ```
 
-The runner verifies the model and probe binary hashes, writes into a temporary directory, atomically publishes raw captures, independently audits dimensions and cache continuity, and then writes the compact committed report.
+The runner verifies the model and probe binary hashes, writes into a temporary directory, atomically publishes raw captures, independently audits dimensions and cache continuity, and then writes the compact committed report. The pair collector processes prompts one at a time and removes large raw captures unless `--keep-raw` is explicitly requested.
 
 ## What this enables—and what it does not
 
@@ -75,8 +105,9 @@ Now enabled:
 1. compilation of real `(state_before, event features, emitted span, state_after)` pairs;
 2. exact attention-anchor hidden outputs;
 3. complete future-logit supervision;
-4. direct zero-delta, copy-state and learned-patcher controls;
-5. deterministic replay checks through cache hashes.
+4. direct zero-delta, mean-delta and learned projected-patcher controls;
+5. deterministic replay checks through cache hashes;
+6. masked variable-length byte spans in `RecurrentStatePatcher`.
 
 Still not demonstrated:
 
@@ -86,4 +117,4 @@ Still not demonstrated:
 - generated-quality parity;
 - any wall-clock or active-block acceleration.
 
-The next bounded experiment must project and batch multiple real transitions, train the patcher on those projections, and reject it unless held-out future behavior improves over the zero-delta baseline. Full-state low-rank reconstruction and actual skipped-layer execution come only after that control passes.
+The projected control now passes state learnability against both copy and mean-delta baselines. The next experiment must predict an injectible low-rank/full-state update, replay it through the donor, and measure true vocabulary KL and generated behavior. Actual skipped-layer execution comes only after that replay passes.

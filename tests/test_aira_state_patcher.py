@@ -25,6 +25,30 @@ def test_state_patcher_preserves_anchor_layers() -> None:
     assert torch.equal(output.confidence[~mask], torch.ones_like(output.confidence[~mask]))
 
 
+def test_state_patcher_ignores_masked_padding_bytes() -> None:
+    torch.manual_seed(31)
+    model = RecurrentStatePatcher(
+        layers=3, state_dim=6, event_dim=4, hidden_dim=12, byte_dim=5
+    )
+    state = torch.randn(2, 3, 6)
+    event = torch.randn(2, 4)
+    first = torch.tensor([[65, 66, 0, 0], [67, 0, 0, 0]])
+    second = torch.tensor([[65, 66, 91, 92], [67, 93, 94, 95]])
+    byte_mask = torch.tensor(
+        [[True, True, False, False], [True, False, False, False]]
+    )
+
+    first_output = model(
+        state, event, first, emitted_byte_mask=byte_mask
+    )
+    second_output = model(
+        state, event, second, emitted_byte_mask=byte_mask
+    )
+
+    assert torch.equal(first_output.state, second_output.state)
+    assert torch.equal(first_output.confidence, second_output.confidence)
+
+
 def test_state_patch_loss_supervises_state_future_and_confidence() -> None:
     torch.manual_seed(4)
     model = RecurrentStatePatcher(

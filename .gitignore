@@ -15,3 +15,4 @@ data/
 *.bin
 *.npy
 *.npz
+!artifacts/qwen35-real-state-pairs-v1/*.npy

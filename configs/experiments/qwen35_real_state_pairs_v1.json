@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "name": "qwen35-real-state-pairs-v1",
+  "purpose": "projected real recurrent/conv state transitions for a bounded state-patcher control",
+  "seed": 731,
+  "continuation_tokens": 4,
+  "state_buckets": 64,
+  "conv_buckets": 16,
+  "event_features": 32,
+  "future_probability_buckets": 256,
+  "prompts": [
+    {
+      "id": "train-en-arithmetic",
+      "split": "train",
+      "text": "User: Calculate (37 + 18 - 9) * 3 and explain briefly. Assistant:"
+    },
+    {
+      "id": "train-ru-arithmetic",
+      "split": "train",
+      "text": "Пользователь: Вычисли (64 - 17 + 8) * 2 и ответь кратко. Ассистент:"
+    },
+    {
+      "id": "train-en-grounding",
+      "split": "train",
+      "text": "Document [doc-river]: The survey began in Pskov in 2018. User: Where did the survey begin? Assistant:"
+    },
+    {
+      "id": "train-ru-grounding",
+      "split": "train",
+      "text": "Документ [doc-lake]: Экспедиция началась в Томске в 2021 году. Вопрос: Где началась экспедиция? Ответ:"
+    },
+    {
+      "id": "train-en-tool",
+      "split": "train",
+      "text": "User: Return only a calculator JSON call for 29 * 14 + 7. Assistant:"
+    },
+    {
+      "id": "train-ru-memory",
+      "split": "train",
+      "text": "Память [turn-2]: Мира выбрала Казань. Пользователь: Какой город выбрала Мира? Ассистент:"
+    },
+    {
+      "id": "train-en-logic",
+      "split": "train",
+      "text": "Rules: Iris is before Omar, and Omar is before Vera. User: Who is in the middle? Assistant:"
+    },
+    {
+      "id": "train-ru-python",
+      "split": "train",
+      "text": "Пользователь: Напиши функцию square_even(values), возвращающую квадраты только чётных чисел. Ассистент:"
+    },
+    {
+      "id": "validation-en-arithmetic",
+      "split": "validation",
+      "text": "User: Calculate (81 - 26 + 5) * 4 and give the final number. Assistant:"
+    },
+    {
+      "id": "validation-ru-grounding",
+      "split": "validation",
+      "text": "Документ [doc-forest]: Проект основан в Перми в 2016 году. Вопрос: В каком городе основан проект? Ответ:"
+    },
+    {
+      "id": "validation-en-memory",
+      "split": "validation",
+      "text": "Memory [turn-5]: Nora selected the silver key. User: Which key did Nora select? Assistant:"
+    },
+    {
+      "id": "validation-ru-logic",
+      "split": "validation",
+      "text": "Условия: Лев раньше Ирины, Ирина раньше Олега. Вопрос: Кто находится посередине? Ассистент:"
+    }
+  ],
+  "provenance": {
+    "prompts": "project-owned bounded instrumentation prompts",
+    "teacher_outputs_used": false,
+    "protected_aira_mentor_records_used": false
+  }
+}

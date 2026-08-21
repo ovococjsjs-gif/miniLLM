@@ -68,6 +68,7 @@ class RecurrentStatePatcher(nn.Module):
         emitted_bytes: torch.Tensor,
         *,
         patch_mask: torch.Tensor | None = None,
+        emitted_byte_mask: torch.Tensor | None = None,
     ) -> StatePatchOutput:
         if state.ndim != 3 or state.shape[1:] != (self.layers, self.state_dim):
             raise ValueError("state must have shape [batch, layers, state_dim]")
@@ -89,7 +90,19 @@ class RecurrentStatePatcher(nn.Module):
         if patch_mask.shape != (batch, self.layers) or patch_mask.dtype != torch.bool:
             raise ValueError("patch mask must be boolean [batch, layers]")
 
-        byte_summary = self.byte_embedding(emitted_bytes).mean(dim=1)
+        embedded_bytes = self.byte_embedding(emitted_bytes)
+        if emitted_byte_mask is None:
+            byte_summary = embedded_bytes.mean(dim=1)
+        else:
+            if (
+                emitted_byte_mask.shape != emitted_bytes.shape
+                or emitted_byte_mask.dtype != torch.bool
+            ):
+                raise ValueError("emitted byte mask must be boolean [batch, span]")
+            if torch.any(emitted_byte_mask.sum(dim=1) == 0):
+                raise ValueError("every event span needs at least one unmasked byte")
+            weights = emitted_byte_mask.unsqueeze(-1)
+            byte_summary = (embedded_bytes * weights).sum(dim=1) / weights.sum(dim=1)
         layer_ids = torch.arange(self.layers, device=state.device)
         layer_context = self.layer_embedding(layer_ids).unsqueeze(0).expand(batch, -1, -1)
         event_context = event_features.unsqueeze(1).expand(-1, self.layers, -1)

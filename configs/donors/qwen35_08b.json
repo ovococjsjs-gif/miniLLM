@@ -60,7 +60,10 @@
     "state_elements_per_recurrent_layer": 262144,
     "full_logits": true,
     "real_state_extraction_verified": true,
-    "real_state_patcher_trained": false
+    "projected_state_pairs": 48,
+    "projected_validation_mse_ratio": 0.7420594692230225,
+    "projected_state_patcher_trained": true,
+    "injectible_full_state_patcher_trained": false
   },
   "acceptance": {
     "artifact_budget_bytes": 1000000000,
