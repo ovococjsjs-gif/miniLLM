@@ -30,10 +30,10 @@
 - Projected state patcher доказал только learnability и заменён full-state направлением.
 - Первый 5.65M-parameter Gated Delta updater обучен на реальных состояниях за 300 шагов.
 - Held-out full-state MSE снизился до `0.8428×` copy baseline.
-- После train-only calibration state-only injection снизила held-out mean future KL `0.005605 → 0.003898`.
+- Stage-1 state-only injection снижала KL, но на 16 переходах state-only mean gate не удержался (`1.0277×` copy).
 - Новый 2.42M-parameter convolution-row updater получил held-out MSE ratio `0.5581`.
-- Без oracle convolution строгий full-cache replay снизил mean KL `0.040465 → 0.028344`, сохранив oracle argmax на 4/4 prompts.
-- Один из четырёх prompts всё ещё ухудшился; free-generation и speed gates не пройдены.
+- Без oracle convolution строгий 16-transition full-cache replay снизил mean KL `0.021935 → 0.015856` (`0.7229×`) и сохранил oracle argmax 16/16.
+- KL улучшился только на 10/16 переходах; free-generation и speed gates не пройдены.
 - **Recurrent skipping и production neural acceleration остаются выключены.**
 
 AIra One сохранён как controller для tools, memory, documents и запуска donor. Из него удалены stored-answer Babysit routes. Feedback записывается только как будущий training material.

@@ -195,6 +195,7 @@ static std::vector<tensor_segment> recurrent_tensor_segments(
 struct learned_state_patch {
     uint32_t heads;
     uint32_t width;
+    uint32_t stage;
     std::vector<int32_t> layers;
     std::vector<std::vector<float>> states;
     std::vector<std::vector<float>> conv_states;
@@ -212,12 +213,12 @@ static learned_state_patch read_learned_patch(const fs::path & path) {
     }
     uint32_t count = 0;
     learned_state_patch patch;
-    uint32_t stage = 0;
     input.read(reinterpret_cast<char *>(&count), sizeof(count));
     input.read(reinterpret_cast<char *>(&patch.heads), sizeof(patch.heads));
     input.read(reinterpret_cast<char *>(&patch.width), sizeof(patch.width));
-    input.read(reinterpret_cast<char *>(&stage), sizeof(stage));
-    if (!input || count == 0 || patch.heads != 16 || patch.width != 128 || stage != 1) {
+    input.read(reinterpret_cast<char *>(&patch.stage), sizeof(patch.stage));
+    if (!input || count == 0 || patch.heads != 16 || patch.width != 128 ||
+        patch.stage < 1 || patch.stage > 32) {
         throw std::runtime_error("unexpected learned state patch dimensions");
     }
     const size_t values = static_cast<size_t>(patch.heads) * patch.width * patch.width;
@@ -469,6 +470,11 @@ int main(int argc, char ** argv) {
     if (llama_decode(context, prompt_batch) != 0) {
         throw std::runtime_error("prompt decode failed");
     }
+    for (uint32_t stage = 1; stage < learned_patch.stage; ++stage) {
+        const llama_token prefix_token = greedy_token(
+            current_logits(context, vocabulary));
+        decode_one(context, prefix_token);
+    }
     const std::vector<uint8_t> partial_before = save_sequence(
         context, LLAMA_STATE_SEQ_FLAGS_PARTIAL_ONLY);
     const llama_token first_token = greedy_token(current_logits(context, vocabulary));
@@ -571,6 +577,7 @@ int main(int argc, char ** argv) {
     std::ofstream metrics(output_dir / "metrics.tsv");
     metrics << std::setprecision(17);
     metrics << "prompt_tokens\t" << prompt_tokens.size() << '\n';
+    metrics << "patch_stage\t" << learned_patch.stage << '\n';
     metrics << "vocabulary\t" << vocabulary << '\n';
     metrics << "first_token\t" << first_token << '\n';
     metrics << "first_piece_hex\t" << hex_encode(token_piece(vocab, first_token)) << '\n';

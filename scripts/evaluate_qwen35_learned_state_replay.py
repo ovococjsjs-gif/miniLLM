@@ -47,6 +47,7 @@ def main() -> None:
         default=0.01,
         help="Train-calibrated fraction of the learned state delta to inject.",
     )
+    parser.add_argument("--stages", default="1,2,3,4")
     parser.add_argument(
         "--binary",
         default=".cache/qwen35-transition-probe/qwen35-learned-state-replay",
@@ -69,69 +70,80 @@ def main() -> None:
         raise ValueError("learned replay binary differs from build provenance")
     experiment = json.loads(Path(args.experiment_config).read_text(encoding="utf-8"))
     prompts = [item for item in experiment["prompts"] if item["split"] == "validation"]
+    stages = [int(value) for value in args.stages.split(",")]
+    if not stages or any(
+        stage < 1 or stage > experiment["continuation_tokens"] for stage in stages
+    ):
+        raise ValueError("replay stages are outside the captured continuation")
     work = Path(args.work_dir)
     shutil.rmtree(work, ignore_errors=True)
     work.mkdir(parents=True)
     records = []
     started = time.perf_counter()
     for prompt in prompts:
-        root = work / prompt["id"]
-        root.mkdir()
-        patch = root / "patch.bin"
-        export = subprocess.run(
-            [
-                sys.executable,
-                "scripts/export_qwen35_learned_state_patch.py",
-                "--checkpoint",
-                args.checkpoint,
-                "--prompt-id",
-                prompt["id"],
-                "--stage",
-                "1",
-                "--alpha",
-                str(args.alpha),
-                "--output",
-                str(patch),
-            ],
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        if export.returncode:
-            raise RuntimeError(export.stdout + export.stderr)
-        replay_dir = root / "replay"
-        replay = subprocess.run(
-            [args.binary, args.model, str(replay_dir), prompt["text"], str(patch)],
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        if replay.returncode:
-            raise RuntimeError(replay.stdout + replay.stderr)
-        patch_metadata = json.loads(
-            patch.with_suffix(".json").read_text(encoding="utf-8")
-        )
-        metrics = read_metrics(replay_dir / "metrics.tsv")
-        records.append(
-            {
-                "prompt_id": prompt["id"],
-                "prompt_sha256": hashlib.sha256(prompt["text"].encode()).hexdigest(),
-                "state_mse_ratio": patch_metadata["state_mse_ratio"],
-                "conv_new_row_mse_ratio": patch_metadata["conv_new_row_mse_ratio"],
-                "candidate_copy_kl": metrics["candidate_copy_kl"],
-                "learned_kl": metrics["learned_kl"],
-                "learned_kl_improvement": metrics["learned_kl_improvement"],
-                "oracle_argmax": metrics["oracle_argmax"],
-                "candidate_copy_argmax": metrics["candidate_copy_argmax"],
-                "learned_argmax": metrics["learned_argmax"],
-                "candidate_full_copy_kl": metrics["candidate_full_copy_kl"],
-                "learned_full_kl": metrics["learned_full_kl"],
-                "learned_full_kl_improvement": metrics["learned_full_kl_improvement"],
-                "candidate_full_copy_argmax": metrics["candidate_full_copy_argmax"],
-                "learned_full_argmax": metrics["learned_full_argmax"],
-                "serialization_control_exact": bool(metrics["control_exact"]),
-            }
-        )
+        for stage in stages:
+            root = work / prompt["id"] / f"stage-{stage}"
+            root.mkdir(parents=True)
+            patch = root / "patch.bin"
+            export = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/export_qwen35_learned_state_patch.py",
+                    "--checkpoint",
+                    args.checkpoint,
+                    "--prompt-id",
+                    prompt["id"],
+                    "--stage",
+                    str(stage),
+                    "--alpha",
+                    str(args.alpha),
+                    "--output",
+                    str(patch),
+                ],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            if export.returncode:
+                raise RuntimeError(export.stdout + export.stderr)
+            replay_dir = root / "replay"
+            replay = subprocess.run(
+                [args.binary, args.model, str(replay_dir), prompt["text"], str(patch)],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            if replay.returncode:
+                raise RuntimeError(replay.stdout + replay.stderr)
+            patch_metadata = json.loads(
+                patch.with_suffix(".json").read_text(encoding="utf-8")
+            )
+            metrics = read_metrics(replay_dir / "metrics.tsv")
+            records.append(
+                {
+                    "prompt_id": prompt["id"],
+                    "stage": stage,
+                    "prompt_sha256": hashlib.sha256(
+                        prompt["text"].encode()
+                    ).hexdigest(),
+                    "state_mse_ratio": patch_metadata["state_mse_ratio"],
+                    "conv_new_row_mse_ratio": patch_metadata["conv_new_row_mse_ratio"],
+                    "candidate_copy_kl": metrics["candidate_copy_kl"],
+                    "learned_kl": metrics["learned_kl"],
+                    "learned_kl_improvement": metrics["learned_kl_improvement"],
+                    "oracle_argmax": metrics["oracle_argmax"],
+                    "candidate_copy_argmax": metrics["candidate_copy_argmax"],
+                    "learned_argmax": metrics["learned_argmax"],
+                    "candidate_full_copy_kl": metrics["candidate_full_copy_kl"],
+                    "learned_full_kl": metrics["learned_full_kl"],
+                    "learned_full_kl_improvement": metrics[
+                        "learned_full_kl_improvement"
+                    ],
+                    "candidate_full_copy_argmax": metrics["candidate_full_copy_argmax"],
+                    "learned_full_argmax": metrics["learned_full_argmax"],
+                    "serialization_control_exact": bool(metrics["control_exact"]),
+                }
+            )
     mean_copy = sum(item["candidate_copy_kl"] for item in records) / len(records)
     mean_learned = sum(item["learned_kl"] for item in records) / len(records)
     mean_full_copy = sum(item["candidate_full_copy_kl"] for item in records) / len(
@@ -145,8 +157,11 @@ def main() -> None:
         "checkpoint_sha256": sha256(Path(args.checkpoint)),
         "binary_build": args.binary_build,
         "binary_sha256": build["binary_sha256"],
-        "prompts": len(records),
+        "prompt_groups": len(prompts),
+        "stages": stages,
+        "transitions": len(records),
         "train_calibrated_alpha": args.alpha,
+        "alpha_calibration_scope": "train prompts, stage 1 only",
         "mean_candidate_copy_kl": mean_copy,
         "mean_learned_kl": mean_learned,
         "learned_over_copy_kl_ratio": mean_learned / mean_copy,

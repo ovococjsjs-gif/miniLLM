@@ -5,7 +5,7 @@ Predicts the only non-deterministic newest row of the three-row convolution cach
 - parameters: 2,422,001;
 - optimizer steps: 300;
 - held-out newest-row MSE ratio vs repeating the previous newest row: 0.558072;
-- combined with the recurrent-state updater, strict full-cache injected KL improves from 0.040465 to 0.028344 on four held-out prompts;
-- full learned patch preserves oracle argmax on 4/4 prompts and improves KL on 3/4.
+- combined with the recurrent-state updater, strict full-cache injected KL improves from 0.021935 to 0.015856 over 16 held-out transitions;
+- full learned patch preserves oracle argmax on 16/16 transitions and improves KL on 10/16.
 
-One prompt still regresses and free-generation/speed gates remain closed.
+Six transitions still regress and free-generation/speed gates remain closed.

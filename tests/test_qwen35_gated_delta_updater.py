@@ -48,18 +48,19 @@ def test_native_learned_state_injection_improves_mean_future_kl() -> None:
         )
     )
 
-    assert replay["prompts"] == 4
+    assert replay["prompt_groups"] == 4
+    assert replay["transitions"] == 16
     assert replay["train_calibrated_alpha"] == 0.01
-    assert replay["learned_over_copy_kl_ratio"] < 0.70
-    assert replay["learned_improvements"] == 3
-    assert replay["argmax_preserved"] == 4
+    assert replay["learned_over_copy_kl_ratio"] > 1.0
+    assert replay["learned_improvements"] == 9
+    assert replay["argmax_preserved"] == 16
     assert replay["acceptance"]["all_serialization_controls_exact"]
-    assert replay["acceptance"]["learned_mean_kl_below_candidate_copy"]
+    assert not replay["acceptance"]["learned_mean_kl_below_candidate_copy"]
     assert not replay["acceptance"]["learned_improves_every_prompt"]
     assert replay["acceptance"]["oracle_convolution_removed"]
-    assert replay["learned_full_over_copy_kl_ratio"] < 0.71
-    assert replay["learned_full_improvements"] == 3
-    assert replay["learned_full_argmax_preserved"] == 4
+    assert replay["learned_full_over_copy_kl_ratio"] < 0.73
+    assert replay["learned_full_improvements"] == 10
+    assert replay["learned_full_argmax_preserved"] == 16
     assert replay["acceptance"]["learned_full_mean_kl_below_full_copy"]
     assert not replay["acceptance"]["deployment_allowed"]
 

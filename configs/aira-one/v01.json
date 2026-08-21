@@ -43,7 +43,8 @@
   "experimental_acceleration": {
     "projected_state_patcher_available": true,
     "injectible_full_state_updater_trained": true,
-    "mean_injected_future_kl_gate_passed": true,
+    "multistage_state_only_mean_kl_gate_passed": false,
+    "multistage_full_cache_mean_kl_gate_passed": true,
     "convolution_new_row_updater_trained": true,
     "full_cache_oracle_convolution_used": false,
     "every_prompt_injected_kl_gate_passed": false,
