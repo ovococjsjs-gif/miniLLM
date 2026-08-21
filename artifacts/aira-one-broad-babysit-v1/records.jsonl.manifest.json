@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "records": 24,
+  "sha256": "5704c6ec5ae6c2b4187daa29ca0f5e6c471920511508a90dff60426dd2a6acac",
+  "student_checkpoints": [
+    "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517"
+  ],
+  "teacher_ids": [
+    "arena-agent-teacher-v1"
+  ],
+  "verdicts": {
+    "correct": 1,
+    "incorrect": 23
+  },
+  "metadata": {
+    "curriculum": "configs/aira-one/broad_curriculum_v1.json",
+    "curriculum_sha256": "a1067e2e457acfcf6492d86e9d24086b0247518a02926a40f1a54942a8ff2756",
+    "cycles": 3,
+    "on_policy": true,
+    "teacher": "Arena.ai assistant under user direction",
+    "hidden_reasoning_stored": false,
+    "protected_evaluation_used": false
+  }
+}

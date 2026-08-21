@@ -67,7 +67,8 @@
 - автономный stress test полки с oracle fallback, отдельно от teacher-forced coverage;
 - generated и real-text proxy experiments;
 - тесты causal-инвариантности, памяти, tools, distillation, QAT и учёта параметров;
-- **AIra One v0.1**: запускаемый RU/EN чат и API, exact event routes, persistent memory, three modes и on-policy Babysit skills.
+- **AIra One v0.1**: запускаемый RU/EN чат и API, exact event routes, persistent memory, three modes и on-policy Babysit skills;
+- три широких AI Babysit цикла и manual-remediation на 24 темах: строго проверенные independent routes 2/24→24/24, вызовы Qwen 24→0 после 24 reviewed corrections.
 
 Референсный PyTorch-код нужен для проверки идей. Он **не является мобильным
 runtime**: для реального устройства понадобятся llama.cpp/ExecuTorch/MLX и fused
@@ -84,6 +85,11 @@ python scripts/run_aira_one.py
 
 # Только точные offline-маршруты, без запуска Qwen
 python scripts/run_aira_one.py --offline --prompt "Вычисли: 12 * (7 + 3)"
+
+# Воспроизвести три широких Babysit цикла с реальным Qwen residual
+python scripts/run_aira_one_broad_babysit.py
+# Применить зафиксированный ручной аудит и отдельный remediation holdout
+python scripts/apply_aira_one_broad_review.py
 
 # OpenAI-compatible API на порту 8000
 python scripts/serve_aira_one.py --host 0.0.0.0 --port 8000

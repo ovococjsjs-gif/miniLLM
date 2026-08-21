@@ -5,8 +5,8 @@
   "files": [
     {
       "path": "configs/aira-one/v01.json",
-      "bytes": 2033,
-      "sha256": "84b6680c725f8d5e2378b19d785cc0b1dad85d095cdce98c62578218fd2567f0"
+      "bytes": 2361,
+      "sha256": "f99230792e9b5221a7c6872eb1ac82b1ad711ec03e8b9cde63713035991c0b38"
     },
     {
       "path": "configs/donors/qwen35_08b.json",
@@ -15,13 +15,13 @@
     },
     {
       "path": "docs/aira-one-v01.md",
-      "bytes": 7292,
-      "sha256": "495f3fd57c5da9aa025a7e8235b50c07eb15bddcd2bdf1c4cc3294140b3b3456"
+      "bytes": 11056,
+      "sha256": "58fe0849863fbf51eaa28b079872c31c2524c4c7349cf059b4fbf90d871807b1"
     },
     {
       "path": "src/minillm/aira/one.py",
-      "bytes": 41030,
-      "sha256": "8dbdd29c95ec4470bda3bd710e085df135d416c99617e082e5259036e906ebe7"
+      "bytes": 43708,
+      "sha256": "3301f9a4ab4c3f8a23c7b85d7b7e17fd9ceba879e008ccfdd6c232394c4a8b1a"
     },
     {
       "path": "src/minillm/aira/local_runtime.py",
@@ -55,8 +55,28 @@
     },
     {
       "path": "scripts/package_aira_one_v01.py",
-      "bytes": 3420,
-      "sha256": "1f3f800c9e41837191c87eab07bb555fb2b226d8e1f4e94014b4dfcf830946dc"
+      "bytes": 4601,
+      "sha256": "a2a004c26aef78c17552d0dcff591e0bd954347defab76c04eab42bd963e14ae"
+    },
+    {
+      "path": "configs/aira-one/broad_curriculum_v1.json",
+      "bytes": 32610,
+      "sha256": "a1067e2e457acfcf6492d86e9d24086b0247518a02926a40f1a54942a8ff2756"
+    },
+    {
+      "path": "configs/aira-one/broad_manual_review_v1.json",
+      "bytes": 3789,
+      "sha256": "9b82c07c96d27b81afa9d908e9535957687e0bb456b3757ddc3e2feb0b68fdda"
+    },
+    {
+      "path": "scripts/run_aira_one_broad_babysit.py",
+      "bytes": 13417,
+      "sha256": "c8c71be38e657f9a091c9f2d313444a2d49a76fd17bfef084b93157cb1274328"
+    },
+    {
+      "path": "scripts/apply_aira_one_broad_review.py",
+      "bytes": 15184,
+      "sha256": "27bfb211e82d894c817f0f67844ec8f35eb6860bd3a45cd3092382012ac2bfbc"
     },
     {
       "path": "artifacts/aira-one-babysit-v01/records.jsonl",
@@ -87,9 +107,64 @@
       "path": "results/aira_one_v01_runtime_smoke.json",
       "bytes": 5432,
       "sha256": "7d5fa06e62537399aedd78a72206a15bb5389cfe13c0ff4afc83bdeaa48d0fff"
+    },
+    {
+      "path": "artifacts/aira-one-broad-babysit-v1/README.md",
+      "bytes": 1695,
+      "sha256": "a4c2d6061e9a4e29f8e837f3c85e98551549a0d52b7c1da18e1e888b08dfcf2e"
+    },
+    {
+      "path": "artifacts/aira-one-broad-babysit-v1/records.jsonl",
+      "bytes": 64322,
+      "sha256": "5704c6ec5ae6c2b4187daa29ca0f5e6c471920511508a90dff60426dd2a6acac"
+    },
+    {
+      "path": "artifacts/aira-one-broad-babysit-v1/records.jsonl.manifest.json",
+      "bytes": 690,
+      "sha256": "3e17f2d5159304aabfa5134e2a4b771dd8c47c8e00217954f260f508575c37e3"
+    },
+    {
+      "path": "artifacts/aira-one-broad-babysit-v1/records_audited.jsonl",
+      "bytes": 67428,
+      "sha256": "b320df13287ef0f763a9817d24e582d926447ce3ad2e7ae5b82fb21060413f80"
+    },
+    {
+      "path": "artifacts/aira-one-broad-babysit-v1/records_audited.jsonl.manifest.json",
+      "bytes": 855,
+      "sha256": "73a266b82ad5d08c08683e23a7f9e2ac258acc204b5e22d81550acf4c92ccde9"
+    },
+    {
+      "path": "artifacts/aira-one-broad-babysit-v1/skills_pre_review.json",
+      "bytes": 27845,
+      "sha256": "1aaaf54cac360b59cdb318dd70125fed4239ca1c28b420a52df048c2d24ab7d7"
+    },
+    {
+      "path": "artifacts/aira-one-broad-babysit-v1/skills.json",
+      "bytes": 29033,
+      "sha256": "39a563fed35e83051008bc596d1f3f18fb3eb082d08873b4c6bada974490543d"
+    },
+    {
+      "path": "artifacts/aira-one-broad-babysit-v1/report.json",
+      "bytes": 881,
+      "sha256": "50d2758d1831f2894c13b7c9c49d3d5f6bb2635fa92a2b65bee53584db8bd979"
+    },
+    {
+      "path": "artifacts/aira-one-broad-babysit-v1/audited_report.json",
+      "bytes": 6223,
+      "sha256": "6e8c8ae8f2f5103ead218090a136240bc1b1d09b8c82e119307256b2f5c78c6b"
+    },
+    {
+      "path": "results/aira_one_broad_babysit_v1.json",
+      "bytes": 122124,
+      "sha256": "02b24d973861b86fc98f815a60bc6619325d3b193fd59200c9e05c3fdfc0c09d"
+    },
+    {
+      "path": "results/aira_one_broad_babysit_v1_audited.json",
+      "bytes": 25095,
+      "sha256": "9560e73ba4829c8b3a206cfdf664680e1980055b5b147f8c4681e9189ec35800"
     }
   ],
-  "package_source_bytes": 291430,
+  "package_source_bytes": 710572,
   "external_runtime_artifact": {
     "path": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf",
     "bytes": 532517120,
@@ -100,6 +175,8 @@
   "entry_points": {
     "chat": "python scripts/run_aira_one.py",
     "api": "python scripts/serve_aira_one.py --host 0.0.0.0 --port 8000",
+    "broad_babysit": "python scripts/run_aira_one_broad_babysit.py",
+    "broad_manual_review": "python scripts/apply_aira_one_broad_review.py",
     "offline_exact": "python scripts/run_aira_one.py --offline --prompt \"\u0412\u044b\u0447\u0438\u0441\u043b\u0438: 12 * (7 + 3)\""
   },
   "experimental_recurrent_bypass_enabled": false

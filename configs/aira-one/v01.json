@@ -37,7 +37,9 @@
     "exact_student_attempts": true,
     "human_corrections": true,
     "hidden_reasoning_stored": false,
-    "installed_patch_artifact": "artifacts/aira-one-babysit-v01"
+    "installed_patch_artifact": "artifacts/aira-one-babysit-v01",
+    "broad_skill_artifact": "artifacts/aira-one-broad-babysit-v1",
+    "broad_skills_installed": 24
   },
   "experimental_acceleration": {
     "projected_state_patcher_available": true,
@@ -50,6 +52,11 @@
     "mixed_smoke_bypass_after_babysit": "4/5",
     "mixed_smoke_neural_calls_before_after": "4 -> 1",
     "mixed_smoke_request_latency_seconds_before_after": "32.37 -> 2.71",
+    "broad_automated_cycles": 3,
+    "broad_manual_remediation_cycles": 1,
+    "broad_tasks": 24,
+    "broad_manual_validation_passes_before_after": "2/24 -> 24/24",
+    "broad_validation_neural_calls_before_after": "24 -> 0",
     "child_maxrss_kib": 881884
   },
   "limitations": [

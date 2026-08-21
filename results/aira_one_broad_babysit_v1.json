@@ -1,0 +1,1687 @@
+{
+  "schema_version": 1,
+  "model": "aira-one-v0.1",
+  "experiment": "three-broad-on-policy-babysit-cycles-v1",
+  "curriculum": "configs/aira-one/broad_curriculum_v1.json",
+  "curriculum_sha256": "a1067e2e457acfcf6492d86e9d24086b0247518a02926a40f1a54942a8ff2756",
+  "cycles": 3,
+  "tasks": 24,
+  "train_attempts": 24,
+  "verdicts": {
+    "correct": 1,
+    "incorrect": 23
+  },
+  "skills_installed": 23,
+  "validation_passes_before": 4,
+  "validation_passes_after": 24,
+  "validation_neural_calls_before": 24,
+  "validation_neural_calls_after": 1,
+  "elapsed_seconds": 505.05220735900014,
+  "records_manifest": "artifacts/aira-one-broad-babysit-v1/records.jsonl.manifest.json",
+  "skills": "artifacts/aira-one-broad-babysit-v1/skills.json",
+  "cycle_reports": [
+    {
+      "cycle": "science",
+      "tasks": 8,
+      "train_passes": 1,
+      "validation_passes_before": 3,
+      "validation_passes_after": 8,
+      "skills_installed": 7,
+      "neural_calls_before": 16,
+      "validation_neural_calls_after": 1,
+      "train_attempts": [
+        {
+          "task_id": "seasons-axis-tilt",
+          "prompt": "Почему на Земле сменяются времена года? Ответь простыми словами.",
+          "prompt_sha256": "f6ba050d595eaf24bac9ee736587c3fa900156cb7c34018f44fcba77933f527d",
+          "answer": "Время года меняется, потому что Земля вращается вокруг своей оси. Когда она проходит от одной стороны к другой, свет солнца падает на её сторону, создавая разные сезоны.",
+          "answer_sha256": "340abcae90348aa9b92e74f9a582da5f2cd2b652a35c4dd07f218ba1ac5f2efb",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 3.2907720140000265,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "наклон"
+              ],
+              [
+                "солнеч"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "antibiotics-viruses",
+          "prompt": "Do antibiotics cure viral infections such as influenza? Explain briefly.",
+          "prompt_sha256": "7229f89e93155fd053652d3c2a6935131b069b361772171f59bc074c4c5661cc",
+          "answer": "No, antibiotics do not cure viral infections such as influenza. Antibiotics are designed to treat bacterial infections, which are caused by bacteria, not viruses.\n\nInfluenza is a virus that infects the respiratory and immune systems. While antibiotics may help reduce bacterial infections, they have no effect on viruses. The body's natural immune system is the primary defense against viral infections.\n\nIf you suspect a viral infection, the recommended course of action is to rest, stay hydrated, and follow up with a healthcare provider for a proper diagnosis and treatment plan.",
+          "answer_sha256": "1a7e5d1fd0be387351efc864a6e49dcfd42aa72af9dd943d3503adfcabcea680",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 6.417022222000014,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "resistance"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "boiling-pressure",
+          "prompt": "Почему вода в горах кипит при более низкой температуре?",
+          "prompt_sha256": "a20a8c92bde63ef57cfd9076ad6a307963d1907f9eb0dccb5132bd34b687c96f",
+          "answer": "Вода в горах кипит при более низкой температуре, так как атмосферное давление в горных районах значительно ниже, чем в пригородах.\n\nПри кипении вода переходит из состояния жидкости в пар. Пар образует давление, которое зависит от высоты: чем выше точка кипения, тем выше давление, и тем выше температура кипения. В горах, где давление атмосферное ниже, точка кипения воды снижается, что позволяет воде кипеть при температурах ниже, чем в пригородах.",
+          "answer_sha256": "af25fd5237d7a174055dac501ccb9c884869aded1dd5a924d322e1de7e4d62d0",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 6.239780970999959,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "photosynthesis-input-output",
+          "prompt": "What does photosynthesis use and produce? Give a concise answer.",
+          "prompt_sha256": "79a91b4a6289c014a5ec1f513910d2b69a06a2ed2721ec17addf9f3ab4b536ff",
+          "answer": "Photosynthesis uses **light energy** (sunlight) and **carbon dioxide** from the air to produce **oxygen** and **glucose** (sugar).\n\n**Key Points:**\n*   **Inputs:** Light energy + Carbon dioxide (CO₂)\n*   **Outputs:** Oxygen (O₂) + Glucose (sugar)",
+          "answer_sha256": "f00f206a70022a661924a38b4b0e30b8f175146840dbd63fdd96dc3a00b92fb9",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 4.5709589139999025,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "water"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "thunder-after-lightning",
+          "prompt": "Почему гром слышен после того, как мы видим молнию?",
+          "prompt_sha256": "10ff61bec3b22d74035f231a95983fab534781846ab7f051c8ff5272aacb6278",
+          "answer": "Громкость молнии возникает из-за того, что молния — это мощное электрическое разряд, которое генерирует огромную энергию, которая мгновенно нагревает воздух вокруг молнии, создавая мощный удар по воздуху. Этот удар вызывает сильное давление, которое ощущается как гром.\n\nВот ключевые моменты:\n1.  **Электрический разряд**: Молния — это вспышка электрического тока, которая выделяет огромное количество энергии.\n2.  **Тепло и давление**: При разряде воздух нагревается до очень высоких температур, что вызывает сильное расширение и давление.\n3.  **Ощущение гром**: Это давление, вызванное этим расширением и нагреванием, ощущается как гром.\n\nТаким образом, молния «громит» не сама по себе, а создает эффект громом, вызванным мощным электрическим разрядом и последующим нагреванием воздуха.",
+          "answer_sha256": "666a3e39e26a75e4589e17ea966cc328975dab565515aacd3243afe9c85bdd82",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 10.722895099000084,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "свет"
+              ],
+              [
+                "быстр"
+              ],
+              [
+                "звук"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "vaccines-immune-memory",
+          "prompt": "How do vaccines help the immune system?",
+          "prompt_sha256": "3dd2b4da2366839b16591d46643f788880c2dacbca5df13f62a9b1a4995379da",
+          "answer": "Vaccines help the immune system by introducing harmless, harmless antigens (like bacteria, viruses, or toxins) into the body. The immune system recognizes these as foreign invaders and mounts a response to eliminate them.\n\n**Key mechanisms include:**\n\n1.  **Antigen Presentation:** Vaccines present specific proteins (antigens) on the surface of pathogens. The immune system recognizes these proteins as foreign.\n2.  **Antibody Production:** Upon encountering these antigens, the immune system produces specific antibodies (immunoglobulins) that bind to the antigens.\n3.  **Neutralization:** These antibodies neutralize the pathogens, preventing them from entering the body and causing disease.\n4.  **Memory Formation:** The immune system also creates \"memory cells\" (B cells and T cells) that recognize the antigens more quickly and effectively upon re-exposure to the same pathogen.\n\n**Conclusion:** Vaccines are a safe, effective way to train the immune system to recognize and fight off pathogens without causing illness.",
+          "answer_sha256": "7b6c8f90915a1d9930691aca2a1e135de7fe8987995ae6a2acbd3cb05c8c29cf",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 11.29984106300003,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "faster"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "moon-phases-geometry",
+          "prompt": "Почему меняются фазы Луны? Это тень Земли?",
+          "prompt_sha256": "ae73e8a6220ec3367c1c785f0ee03481715ec13b9c1c4cd453732f7454c44bab",
+          "answer": "Фазы Луны (полнолуние, первая и четвертая) возникают из-за отражения света от Земли, а не от её тени. Тень Земли (тень Луны) не существует, так как Луна находится вдали от Земли, и её тень никогда не может быть видна.\n\nФазы Луны объясняются геометрией отражения света от Земли:\n*   **Полнолуние:** Луна находится под прямым углом к Земле, и её световое отражение полностью освещает Землю.\n*   **Первая четверть:** Луна находится под углом, и её световое отражение освещает только часть Земли.\n*   **Четвертая четверть:** Луна находится под углом, и её световое отражение освещает только другую часть Земли.\n\nТаким образом, фазы Луны — это результат видимого света от Земли, а не тени.",
+          "answer_sha256": "bd854667d2d86e505fbd2ccef325a32d50fad46d568aeee6e28c660a56656a21",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 11.139724241000067,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "солн"
+              ],
+              [
+                "затмен"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "greenhouse-infrared",
+          "prompt": "What is the greenhouse effect in one short explanation?",
+          "prompt_sha256": "c4caca1df8517f0bcfce5376b5276c5a5691fe77d4051b360954ff95cfb5b036",
+          "answer": "The greenhouse effect is the process by which heat from the sun warms the Earth's surface, causing the atmosphere to trap some of that heat. This trapped heat warms the planet's surface and creates a stable climate.",
+          "answer_sha256": "3756b69028cac20095913b408891cffd2f708b5e6ca2792ff635a6ae7cf6bd01",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 3.4465895200000887,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "infrared"
+              ],
+              [
+                "absorb"
+              ],
+              [
+                "re-emit",
+                "emit"
+              ],
+              [
+                "space"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        }
+      ],
+      "validation_before": [
+        {
+          "task_id": "seasons-axis-tilt",
+          "prompt": "Из-за чего возникают лето и зима на Земле?",
+          "prompt_sha256": "8123ff39f9749f43902e146c7dba87431d49646740f4fb5835e809f7e826f2b1",
+          "answer": "Лето и зима на Земле возникают из-за **свободного вращения Земли вокруг своей оси**.\n\nЭтот процесс, известный как **звездное движение**, приводит к тому, что разные стороны Земли находятся в разных уголках света. В это время Солнце находится на одной из сторон Земли, создавая для одной стороны света яркое, теплое и солнечное лето, а для другой — тусклое, холодное и зимнее.\n\nТаким образом, сезонные смены климата обусловлены тем, как Солнце проходит по поверхности Земли.",
+          "answer_sha256": "fc237fc85624ebda7669ab1150510f4cd2c2a5bc6f02fbb212ca756c935c3513",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 6.887309152999933,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "наклон"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "antibiotics-viruses",
+          "prompt": "Why should antibiotics not be used to treat a cold caused by a virus?",
+          "prompt_sha256": "191ba242462e7f8c79f9fd4a55038394cf7a4c09c107ebb394bbf51e2c703d05",
+          "answer": "Antibiotics are ineffective against viral infections because viruses lack the specific enzymes (proteases and nucleases) required to break down the bacterial cell walls and proteins that antibiotics target.\n\nWhile antibiotics can kill bacteria, they cannot replicate inside a virus. Therefore, they do not work against colds caused by viruses. The primary reason is that viruses are not considered living organisms in the same way bacteria are; they are non-living particles that replicate using their own genetic material.\n\n**Key Takeaway:** Antibiotics treat bacteria, not viruses. Treat the cold with rest, hydration, and symptom relief (like acetaminophen or ibuprofen), as antiviral medications are not effective for viral illnesses.",
+          "answer_sha256": "231f431089ee804c32f570b0fb2427bde4c0fe80d70c7c5b43f65a00855ad61d",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 8.018618342000082,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "resistance"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "boiling-pressure",
+          "prompt": "Как атмосферное давление влияет на температуру кипения воды?",
+          "prompt_sha256": "e4e196d186836586b713053a8ec8daca05647848eeb80b72508b8becb1e752ef",
+          "answer": "Атмосферное давление напрямую влияет на температуру кипения воды: чем выше давление, тем выше температура, при которой вода начинает кипеть. Это фундаментальное правило физики, описываемое уравнением Клапейрона-Клаузиуса.\n\nВот ключевые факты:\n*   **Сниженное давление:** При низком атмосферном давлении (например, на высоте 3000 метров) вода кипит при температуре около **100°C**.\n*   **Увеличение давления:** При повышении давления (например, на высоте 1000 метров) температура кипения воды увеличивается на **0,5°C**.\n*   **Максимальное значение:** При атмосферном давлении (101,325 кПа) вода кипит при **100°C**.\n\nЭтот процесс объясняется тем, что при низком давлении молекулы воды имеют больше свободного пространства для движения, что позволяет им выливать энергию (тепло) быстрее, достигая состояния кипения.",
+          "answer_sha256": "0bfb76234e5f452a5e1442d769389b562100df7a5c4ad0c99cefc3cf7514a354",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 11.66988333300003,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "photosynthesis-input-output",
+          "prompt": "In simple terms, what goes into photosynthesis and what comes out?",
+          "prompt_sha256": "39e00e7c831f51860ac26b050385f345aec601e0463f520182b457e0f9c39b26",
+          "answer": "Photosynthesis is the process by which plants convert sunlight into energy.\n\n**What goes in:**\n*   **Sunlight** (photons)\n*   **Water** (H₂O)\n*   **Carbon Dioxide** (CO₂)\n\n**What comes out:**\n*   **Oxygen** (O₂)\n*   **Sugar** (Glucose)",
+          "answer_sha256": "16e2a231968e9494f29dc703cf0e59fe385f73caa63dc31cf61344c5f290df01",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 5.027119421000066,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "thunder-after-lightning",
+          "prompt": "Почему вспышка молнии приходит раньше звука грома?",
+          "prompt_sha256": "58f9fda80ccd1794b54cb58091d1f155ea7a3b90ac627d57a169d89c9b39cb3e",
+          "answer": "Вспышка молнии (электрический разряд) происходит быстрее звука, потому что электрический заряд в воздухе движется медленнее, чем воздух, который передает звук.\n\nВот основные причины:\n1.  **Мощность разряда**: Электрический разряд генерируется мгновенно, создавая мощный импульс, который мгновенно распространяется.\n2.  **Скорость распространения**: Электрический импульс распространяется в воздухе примерно за 300–500 микросекунд, тогда как звук распространяется за 3–5 секунд.\n3.  **Связь с физикой**: Электрический заряд в воздухе движется медленнее, чем воздух, который передает звук.\n\nТаким образом, вспышка молнии «затухает» раньше, чем слышно, так как электрический импульс проходит быстрее.",
+          "answer_sha256": "13b3bd9e334fb4d22115bcb6e6c192c2b931626323fbfa5331372b50a7efeca4",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 10.19673522000005,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "свет"
+              ],
+              [
+                "нагрев",
+                "расшир"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "vaccines-immune-memory",
+          "prompt": "What does a vaccine teach the body to do?",
+          "prompt_sha256": "518d95852c679c8a979d1dcb7affd10d16ff8579ac5387c2edeaa6ed45862618",
+          "answer": "A vaccine teaches the body to **recognize and neutralize a pathogen** (such as bacteria, virus, or parasite) before it causes disease.\n\nHere is the breakdown of what happens:\n1.  **Immune Recognition**: The body's immune system detects the pathogen's genetic material (antigen) upon exposure.\n2.  **Antigen Presentation**: The vaccine introduces a harmless version of the pathogen (a \"mock\" or \"mock virus\") that mimics the real pathogen's structure.\n3.  **Activation**: This \"mock\" triggers the body's immune system to produce specific antibodies and T-cells.\n4.  **Neutralization**: Once activated, the body's immune system can immediately destroy the actual pathogen in the body, preventing it from replicating and causing illness.\n\n**Key Takeaway**: The vaccine does not make the body \"stronger\" or \"faster\"; it provides a temporary shield that allows the body to fight off the actual pathogen once it is introduced.",
+          "answer_sha256": "2b08dc5fe15cd062c1c85f69af3485297d427e6b1738aa9efc39e38e084c8761",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 11.512034260000064,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "memory"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "moon-phases-geometry",
+          "prompt": "Откуда берутся полумесяц и полная Луна?",
+          "prompt_sha256": "02de9b38eb650185c8451f5be60027549a335a7cc98d47779b65c3633cc3956f",
+          "answer": "Полумесяц и полная Луна — это астрофизические явления, которые происходят в разных системах:\n\n1.  **Полумесяц** — это видимый планетарный объект, состоящий из нескольких планет, которые находятся в орбите вокруг Земли. Он был обнаружен в 1999 году, когда он был виден из космоса.\n2.  **Полная Луна** — это астрофизическая фаза, когда Луна находится в полной орбите вокруг Земли. Она была обнаружена в 1969 году.\n\nЭти объекты являются частью нашей солнечной системы и не являются частью других известных планет.",
+          "answer_sha256": "9acf7d5d494536b1ef180f6e46760c6c1ce9ae74b195bd0b78d03b298cedbdb0",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 8.351047904000097,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "освещ"
+              ],
+              [
+                "тень"
+              ],
+              [
+                "затмен"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "greenhouse-infrared",
+          "prompt": "How do greenhouse gases warm the lower atmosphere?",
+          "prompt_sha256": "bade734d8051d4b2e44a161461fca8be84a5e08a3335350e3d6701bb3ef2d245",
+          "answer": "Greenhouse gases (such as carbon dioxide, methane, and water vapor) trap heat in the lower atmosphere through **radiative equilibrium**.\n\nWhen the Earth's surface absorbs solar radiation, it heats up and emits infrared (heat) radiation back toward space. Greenhouse gases are transparent to visible light but absorb and re-emit infrared radiation. This process creates a \"greenhouse effect\":\n\n1.  **Absorption**: Greenhouse gases absorb infrared radiation emitted by the Earth's surface and the atmosphere itself.\n2.  **Re-emission**: They re-emit this absorbed energy as infrared radiation back toward the surface.\n3.  **Trapping**: Because the atmosphere is opaque to visible light, the trapped infrared radiation cannot escape, causing the surface to heat up.\n\nThis warming is crucial for life, as it allows the Earth to maintain a stable temperature suitable for liquid water and biological processes. However, the accumulation of these gases is primarily driven by the greenhouse effect, not by the greenhouse effect itself.",
+          "answer_sha256": "bb35081bd3065cb92d6435c5cd2da43c54dccb260af1382088b6f6e7972b7dac",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 10.765381637000019,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        }
+      ],
+      "validation_after": [
+        {
+          "task_id": "seasons-axis-tilt",
+          "prompt": "Из-за чего возникают лето и зима на Земле?",
+          "prompt_sha256": "8123ff39f9749f43902e146c7dba87431d49646740f4fb5835e809f7e826f2b1",
+          "answer": "Времена года возникают главным образом из-за наклона земной оси. В течение года разные полушария получают разный угол солнечного света и разную продолжительность дня; расстояние до Солнца не является основной причиной.",
+          "answer_sha256": "6edaf29d385fd18aec3182a48ad3eeb336babc63101350cb0f161feba3b79f9c",
+          "route": "babysit.broad.science.seasons-axis-tilt",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 7.582100010949944e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "antibiotics-viruses",
+          "prompt": "Why should antibiotics not be used to treat a cold caused by a virus?",
+          "prompt_sha256": "191ba242462e7f8c79f9fd4a55038394cf7a4c09c107ebb394bbf51e2c703d05",
+          "answer": "Antibiotics target bacteria, not viruses, so they do not cure viral influenza or a viral cold. They should be used for a confirmed or likely bacterial infection under medical guidance; unnecessary use promotes antibiotic resistance.",
+          "answer_sha256": "9af8a3071ce6082f8c7f0f2a4d8d0f5870a321cf2cfe6a3d473158a0735d68fe",
+          "route": "babysit.broad.science.antibiotics-viruses",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 5.890699981137004e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "boiling-pressure",
+          "prompt": "Как атмосферное давление влияет на температуру кипения воды?",
+          "prompt_sha256": "e4e196d186836586b713053a8ec8daca05647848eeb80b72508b8becb1e752ef",
+          "answer": "Атмосферное давление напрямую влияет на температуру кипения воды: чем выше давление, тем выше температура, при которой вода начинает кипеть. Это фундаментальное правило физики, описываемое уравнением Клапейрона-Клаузиуса.\n\nВот ключевые факты:\n*   **Сниженное давление:** При низком атмосферном давлении (например, на высоте 3000 метров) вода кипит при температуре около **100°C**.\n*   **Увеличение давления:** При повышении давления (например, на высоте 1000 метров) температура кипения воды увеличивается на **0,5°C**.\n*   **Максимальное значение:** При атмосферном давлении (101,325 кПа) вода кипит при **100°C**.\n\nЭтот процесс объясняется тем, что при низком давлении молекулы воды имеют больше свободного пространства для движения, что позволяет им выливать энергию (тепло) быстрее, достигая состояния кипения.",
+          "answer_sha256": "0bfb76234e5f452a5e1442d769389b562100df7a5c4ad0c99cefc3cf7514a354",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 11.382746541000188,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "photosynthesis-input-output",
+          "prompt": "In simple terms, what goes into photosynthesis and what comes out?",
+          "prompt_sha256": "39e00e7c831f51860ac26b050385f345aec601e0463f520182b457e0f9c39b26",
+          "answer": "Photosynthesis uses light energy, water, and carbon dioxide to make energy-rich glucose. Oxygen is released as a by-product.",
+          "answer_sha256": "9a36c6612dc0ed20d57545ef44b2e1017fd8f8b1aded399353e0f62ed551d565",
+          "route": "babysit.broad.science.photosynthesis-input-output",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 8.419100004175561e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "thunder-after-lightning",
+          "prompt": "Почему вспышка молнии приходит раньше звука грома?",
+          "prompt_sha256": "58f9fda80ccd1794b54cb58091d1f155ea7a3b90ac627d57a169d89c9b39cb3e",
+          "answer": "Свет распространяется намного быстрее звука, поэтому вспышку мы видим почти сразу, а гром приходит позже. Сам гром возникает из-за резкого нагрева и расширения воздуха вокруг канала молнии.",
+          "answer_sha256": "39bfb852db0848a6043de7c066849af0c237c4b1de7ce73976497f5dc7317eb7",
+          "route": "babysit.broad.science.thunder-after-lightning",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 4.039300006297708e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "vaccines-immune-memory",
+          "prompt": "What does a vaccine teach the body to do?",
+          "prompt_sha256": "518d95852c679c8a979d1dcb7affd10d16ff8579ac5387c2edeaa6ed45862618",
+          "answer": "A vaccine safely exposes the immune system to an antigen or instructions for making one. This builds immune memory, allowing a faster response when the real pathogen appears.",
+          "answer_sha256": "29f511fc1b04809def8cb97ac2a094a243d02bd1f16eba818d5c556162ef6670",
+          "route": "babysit.broad.science.vaccines-immune-memory",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 3.4392000088701025e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "moon-phases-geometry",
+          "prompt": "Откуда берутся полумесяц и полная Луна?",
+          "prompt_sha256": "02de9b38eb650185c8451f5be60027549a335a7cc98d47779b65c3633cc3956f",
+          "answer": "Фазы Луны меняются из-за взаимного положения Солнца, Земли и Луны: мы видим разную долю освещённой Солнцем половины Луны. Тень Земли вызывает лунное затмение, а не обычные фазы.",
+          "answer_sha256": "b4ddac024747181833a374b0e570bfbf23552ae8cead7f756fa4e30358d5878b",
+          "route": "babysit.broad.science.moon-phases-geometry",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 3.428700006224972e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "greenhouse-infrared",
+          "prompt": "How do greenhouse gases warm the lower atmosphere?",
+          "prompt_sha256": "bade734d8051d4b2e44a161461fca8be84a5e08a3335350e3d6701bb3ef2d245",
+          "answer": "Earth's surface emits infrared heat. Greenhouse gases absorb and re-emit some of that radiation, slowing energy loss to space and warming the surface and lower atmosphere.",
+          "answer_sha256": "200a66be01cbba683f6c3963a1f3cb5948b33469704dd1a4fae3d27afb90d0fb",
+          "route": "babysit.broad.science.greenhouse-infrared",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 3.835799998341827e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        }
+      ]
+    },
+    {
+      "cycle": "practical-safety",
+      "tasks": 8,
+      "train_passes": 0,
+      "validation_passes_before": 0,
+      "validation_passes_after": 8,
+      "skills_installed": 8,
+      "neural_calls_before": 16,
+      "validation_neural_calls_after": 0,
+      "train_attempts": [
+        {
+          "task_id": "phishing-signs",
+          "prompt": "Назови три признака фишингового письма и что делать получателю.",
+          "prompt_sha256": "6129112b5896f3353d34480472ca1ef16f5872346ea7e3d3a958b8c0b7018f17",
+          "answer": "Вот три основных признака фишингового письма и инструкция, как реагировать:\n\n### Три признака фишингового письма\n1.  **Ссылка на неизвестный сайт**: В письме часто появляется ссылка на сайт, который не связан с вашим именем или адресом (например, `www.yourcompany.com` вместо `www.yourcompany.ru`).\n2.  **Слово \"Спасибо\"**: В письме часто встречается фраза \"Спасибо за ваш интерес\" или \"Спасибо за ваш звонок\", что является маркером мошенничества.\n3.  **Сложные формулы или \"молчаливые\" сообщения**: В письме могут быть сложные формулы, которые не имеют смысла, или сообщения, которые звучат как \"молчаливые\" (например, \"Я не знаю, что вы хотите сделать\" или \"Я не знаю, что вы хотите сделать\").\n\n### Что делать получателю\n1.  **Не открывать ссылку**: Отказаться от попыток открыть ссылку, если она не подтверждена.\n2.  **Открыть письмо только на своем устройстве**: Открывать письмо только на своем смартфоне или компьютере, чтобы",
+          "answer_sha256": "94319c3446894a1fedd39d999da8b927dbc91b3d9392955d82f9e72e19ff79c1",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 13.325904988000048,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "сроч",
+                "угроз"
+              ],
+              [
+                "парол",
+                "код"
+              ],
+              [
+                "официальн"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "password-manager",
+          "prompt": "Why is a password manager useful, and what should protect it?",
+          "prompt_sha256": "29ad5fdbedac90035608311a08a461079275230d3c7cb9cc9e00e8be973450ce",
+          "answer": "A password manager is useful because it automates the creation, storage, and retrieval of secure passwords, ensuring that your credentials are protected against human error and weak encryption. It acts as a centralized vault for your digital secrets, allowing you to manage multiple accounts (email, social media, banking) in one place.\n\nTo protect your password manager, you should:\n1.  **Use strong, unique passwords** for each account, as the same password works for all.\n2.  **Enable two-factor authentication (2FA)** to add an extra layer of security.\n3.  **Keep the software updated** to patch vulnerabilities.\n4.  **Use a reputable provider** that offers strong encryption and secure storage.",
+          "answer_sha256": "8f1229e6341b3340c9aaa220d427979a96f14d41cfc697057b84474366d305a0",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 8.343205316999956,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "master"
+              ],
+              [
+                "recovery"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "backup-321",
+          "prompt": "Объясни правило резервного копирования 3-2-1.",
+          "prompt_sha256": "4a99e94140b2ce49c31dd45e86917ce3c149ded0cc7b464aae34cd01c28c0d2b",
+          "answer": "Правило **3-2-1** (три копии, две копии на диск, одна на резервный диск) — это фундаментальная стратегия защиты данных, разработанная для обеспечения **безопасности** и **устойчивости** в случае потери данных.\n\nВот как это работает:\n\n1.  **3 копии**: Данные должны храниться на **трех разных физических носителях** (например, 3 диска, 3 устройства или 3 разных облачных хранилищах). Это гарантирует, что даже если один диск утерян или поврежден, остальные сохранят информацию.\n2.  **2 копии на диск**: Данные должны быть на **два разных диска** (например, 2 диска на одном сервере или 2 устройствах). Это создает дополнительный уровень защиты: если один из двух дисков поврежден, второй остается доступным.\n3.  **Одна на резервный диск**: Данные должны храниться на **одном отдельном резервном диске** (например, отдельном HDD, SSD или облачном хранилище). Это критически важно, так как резервный диск может быть удален, поврежден или потерян, тогда как основной диск останется.\n\n**Пример",
+          "answer_sha256": "d0f9d5491e2438384e56ab62d6bc37e63d7c7f748c4ca551f07e298f2df5dfd4",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 13.57380110300005,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "восстанов"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "suspicious-link",
+          "prompt": "What should I do before opening a suspicious link sent by a colleague?",
+          "prompt_sha256": "85f4035b1e78b010bb61c91b10aa651b433488ec3ee80ede01002fc7b84d6631",
+          "answer": "To protect yourself and your colleagues, you should **never** open suspicious links sent by colleagues.\n\nHere is the critical reason: **Suspicious links often contain malicious code or malware designed to steal your credentials, access your private data, or spread viruses.**\n\n*   **Do not click** on any link that looks like a generic email attachment, a forum post, or a social media post.\n*   **Do not** click on links that ask for sensitive information (passwords, credit card numbers) or ask you to \"verify\" your identity.\n*   **Do not** click on links that appear to be from known phishing sites or malicious domains.\n\nIf you suspect a link is suspicious, **copy and paste the URL** into a text editor (like Notepad) and **copy the entire text** of the link. This creates a \"safe\" link that you can share with others to verify the source before deciding to click.\n\n**Conclusion:** The safest action is to **ignore** the suspicious link entirely.",
+          "answer_sha256": "32bf7bea4bc69060d749cccee1b1fa1d48bdf3404d7de325c83d92b94209a7af",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 11.119487949000131,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "do not open",
+                "don't open"
+              ],
+              [
+                "separate",
+                "another channel"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "severe-bleeding-first-aid",
+          "prompt": "Что делать при сильном наружном кровотечении до приезда скорой?",
+          "prompt_sha256": "97ac45da390ec15ea7d93087547014d0f13ff4c54929ceb052f17ade1a97fbd0",
+          "answer": "При сильном наружном кровотечении (например, от удара по голове или травмы головы) **не нужно пытаться самостоятельно сжимать или сдавливать сосуды**, так как это может привести к остановке сердца.\n\n**Что делать:**\n1.  **Остановите кровотечение:** Не пытайтесь сжимать сосуды.\n2.  **Освободите одежду:** Снимите все одежду, надетую на голову, чтобы не мешать дыханию.\n3.  **Освободите голову:** Вытяните голову из головы, чтобы не мешать дыханию.\n4.  **Освободите руки:** Откройте руки, чтобы не мешать дыханию.\n5.  **Освободите ноги:** Откройте ноги, чтобы не мешать дыханию.\n6.  **Освободите живот:** Откройте живот, чтобы не мешать дыханию.\n7.  **Освободите лицо:** Откройте лицо, чтобы не мешать дыханию.\n8.  **Освободите руки и ноги:** Откройте руки и ноги, чтобы не мешать дыханию.\n9",
+          "answer_sha256": "286d1d487711db44a86eefd2af5ad95c7c66c7234619878f599fb9488bf11326",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 13.39175105199979,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "экстрен",
+                "скор"
+              ],
+              [
+                "давлен",
+                "приж"
+              ],
+              [
+                "не вытаск"
+              ],
+              [
+                "турникет"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "carbon-monoxide",
+          "prompt": "What should someone do if a carbon monoxide alarm sounds at home?",
+          "prompt_sha256": "99d6a5e3c9c27d634eafff365ecc0bf3e593fd1420c44ce0efd4be597fe4170f",
+          "answer": "If a carbon monoxide (CO) alarm sounds at home, **do not enter the house immediately**.\n\nCO is odorless and tasteless, so you cannot smell it. The safest action is to:\n1.  **Stay indoors** and keep the door closed.\n2.  **Turn off the main power** to the home (if you have a fuse box) to prevent the gas from leaking into the house.\n3.  **Call emergency services (911) or your local fire department** immediately.\n\nDo not attempt to open the door or use a fan to \"smell\" the gas. If you suspect a leak, turn off the gas supply and call for help.",
+          "answer_sha256": "1bd16254bf34875a7c882e021531fc774513ff57d203075b974a079c2d5ef24e",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 8.222426280000036,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "outside",
+                "fresh air"
+              ],
+              [
+                "re-enter",
+                "return"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "software-updates",
+          "prompt": "Почему важно регулярно обновлять операционную систему и программы?",
+          "prompt_sha256": "1a3c2bba80f6b3e389b960e86a9a168d5badcfbe9400ef67c2a85c6852030fb1",
+          "answer": "Регулярное обновление операционной системы и программ критически важно для обеспечения безопасности, функциональности и поддержки.\n\n**Безопасность:** Обновления часто содержат исправления уязвимостей, которые могут быть использованы для атак. Регулярое обновление защищает ваши данные и устройства от новых вредоносных программ.\n\n**Функциональность:** Новые версии могут исправлять баги, улучшить производительность или добавить новые возможности, которые раньше отсутствовали.\n\n**Поддержка:** Обновления часто включают новые функции, улучшения интерфейса и новые стандарты, что помогает поддерживать работу системы и приложений.\n\n**Итог:** Регулярое обновление гарантирует, что ваш компьютер будет работать стабильно, безопасно и с новыми возможностями.",
+          "answer_sha256": "fcd18c613f9f54675bb55029af9538eba1c0f3d160e9c7faacbf69d1a9e320a6",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 8.667091948999996,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "ошиб"
+              ],
+              [
+                "официальн"
+              ],
+              [
+                "резерв"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "public-wifi",
+          "prompt": "How can I reduce risk when using public Wi-Fi?",
+          "prompt_sha256": "d2e69fbe5aaccfb696021b4263e80aa25a8dc0ffed8783200ec57358d3d80aa0",
+          "answer": "To reduce risk when using public Wi-Fi, you should:\n\n1. **Use a trusted network**: Connect to a local Wi-Fi network that is known to be secure.\n2. **Avoid public networks**: Do not use public Wi-Fi networks (e.g., 802.11b/g/n) as they are often insecure.\n3. **Use a VPN**: Use a reputable Virtual Private Network (VPN) to encrypt your data and protect against eavesdropping.\n4. **Keep your device updated**: Ensure your device is up to date with the latest security patches.\n5. **Use a secure browser**: Use a browser with a strong password and a secure connection (HTTPS).\n6. **Avoid public Wi-Fi**: Avoid using public Wi-Fi networks to avoid potential data interception.\n7. **Use a trusted network**: Connect to a local Wi-Fi network that is known to be secure.\n8. **Avoid public networks**: Do not use public Wi-Fi networks (e.g., 802.11b/g/n) as they are often insecure.\n9. **Use a VPN**: Use a reputable Virtual Private Network (VPN) to encrypt your data and protect against eavesdropping.\n1",
+          "answer_sha256": "1e87bc74e6c17bcc251061f8376e4364fb5f132113c773f42165b6adbdf9edf6",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 14.302248955999858,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "sharing"
+              ],
+              [
+                "multi-factor",
+                "mfa"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        }
+      ],
+      "validation_before": [
+        {
+          "task_id": "phishing-signs",
+          "prompt": "Как распознать подозрительное письмо, которое пытается украсть пароль?",
+          "prompt_sha256": "e219752a5d02f004f9626d6c144ae31070d1817e7c67d01b00a518a2ffb89a6c",
+          "answer": "Письмо, которое пытается украсть пароль, обычно содержит следующие признаки:\n\n1.  **Слово «пароль»**: Часто встречается в заголовке или начале текста.\n2.  **Слово «защита»**: Часто встречается в заголовке или начале текста.\n3.  **Слово «связь»**: Часто встречается в заголовке или начале текста.\n4.  **Слово «связь»**: Часто встречается в заголовке или начале текста.\n5.  **Слово «связь»**: Часто встречается в заголовке или начале текста.\n6.  **Слово «связь»**: Часто встречается в заголовке или начале текста.\n7.  **Слово «связь»**: Часто встречается в заголовке или начале текста.\n8.  **Слово «связь»**: Часто встречается в заголовке или начале текста.\n9.  **Слово «связь»**: Часто встречается в заголовке или начале текста.\n10. **Слово «связь»**: Часто встречается в заголовке или начале текста.\n1",
+          "answer_sha256": "8432e653ef412077d37ba98802e9110733c4e4d8c90bfe59ce404f0b7b7309f4",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 13.592381484000043,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "сроч",
+                "угроз"
+              ],
+              [
+                "адрес",
+                "домен"
+              ],
+              [
+                "официальн"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "password-manager",
+          "prompt": "What problem does a password manager solve and how should its vault be secured?",
+          "prompt_sha256": "6cbada64daa369e7c73dca42df1f09234ab6ff7d5ad982a375833c57aad14fb6",
+          "answer": "A password manager solves the problem of **password storage and retrieval**, ensuring that sensitive credentials (like passwords, tokens, and session tokens) are securely stored and easily accessible without exposing them to human error or unauthorized access.\n\nRegarding vault security, the most critical aspect is **encryption at rest**. The vault should be encrypted using strong algorithms (such as AES-256) to prevent data from being read by attackers. Additionally, the vault should be protected from **online threats** like phishing, malware, and ransomware, and should ideally be stored in a secure, isolated environment (like a hardware key or a dedicated cloud service with strict access controls) rather than on a standard personal device.",
+          "answer_sha256": "f20e87193aa1d869e5db1f004178d04c37f3f92a75ad72af60a3bce2182f564e",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 7.992245841000113,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "unique"
+              ],
+              [
+                "master"
+              ],
+              [
+                "multi-factor",
+                "mfa",
+                "two-factor"
+              ],
+              [
+                "recovery"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "backup-321",
+          "prompt": "Что означает схема 3-2-1 для бэкапов?",
+          "prompt_sha256": "4475b7630fd2dac4bef8c2d2618e9e757ff09c69c6efac6cdc9138bffab5e06b",
+          "answer": "Схема 3-2-1 (три резервные копии, две копии на каждый из трех резервных копий) — это стандартная практика для защиты данных, которая гарантирует, что в случае потери одного резервного копирования, остальные две будут использоваться для восстановления.\n\n**Принцип действия:**\n1.  **Три копии:** Данные хранятся на трех независимых физических носителях (например, HDD, SSD, облако или внешняя карта).\n2.  **Две копии на каждый:** На каждом из трех носителей создается две копии данных.\n3.  **Резерв:** Если один из носителей поврежден или утерян, система автоматически использует вторую копию на том же носителе или другую копию на другом носителе для восстановления данных.\n\n**Пример:**\nЕсли вы храните 100 файлов на 3 HDD:\n*   HDD 1: 50 файлов (копию 1)\n*   HDD 2: 50 файлов (копию 2)\n*   HDD 3: 50 файлов (копию 3)\n\nЕсли HDD 1 поврежден, система автоматически использует HDD 2 (",
+          "answer_sha256": "1f22873f6a4051469eab63ad70da328165cb501c6d3fbb3f04c05b7dcfb27bad",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 13.500553139999965,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "два"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "suspicious-link",
+          "prompt": "A coworker sent an unexpected URL. What is the safe way to handle it?",
+          "prompt_sha256": "69735aade5eaae46c587462f3bc7d244abf445c10375cfd2973d83bfa501d35e",
+          "answer": "The safest way to handle an unexpected URL from a coworker is to **do not open it immediately**.\n\nHere is the reasoning:\n1.  **Security Risk**: Opening a URL without verifying its origin can lead to phishing attacks, malware, or malicious scripts.\n2.  **Verification**: You should check the URL against known trusted domains (e.g., `www`, `mail`, `github`, `google.com`) or use a URL checker to confirm it's legitimate.\n3.  **Action**: If the URL appears to be malicious, **do not click it**. Instead, copy the link, copy the domain name, and send it to a trusted contact (like a colleague or IT support) for further investigation.\n\n**Note**: This advice assumes the URL is not already known to you as a trusted source. If the URL is genuinely from a trusted source, you can open it, but you should still verify the content.",
+          "answer_sha256": "f98fd0f36e30a226d0e4a53711ff5c9d361fe972f154a4afca7bf0fe6fa0bd88",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 10.366385244000185,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "separate",
+                "another channel"
+              ],
+              [
+                "credentials"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "severe-bleeding-first-aid",
+          "prompt": "Какая первая помощь нужна человеку с опасным кровотечением?",
+          "prompt_sha256": "135ce0ab4dc4c14835f60ba7a33fe7586dbf09416faf1071f033f1eecf621849",
+          "answer": "Первая помощь при опасном кровотечении (например, из-за травмы, ожога или травмы крови) должна быть направлена на **обезвоживание** и **обезболивание**.\n\n1.  **Обезвоживание**:\n    *   **Освободите воздух**: Снимите одежду, которая закрывает кровоточащий участок, и положите пострадавшего на бок, чтобы воздух мог входить в его легкие.\n    *   **Освободите воздух из тела**: Если кровотечение не останавливается, немедленно откажитесь от еды, воды и напитков, чтобы снизить объем крови.\n    *   **Освободите воздух из кожи**: Если есть открытые ранки, используйте стерильные салфетки или влажную ткань, чтобы удалить кровь и предотвратить застой крови.\n\n2.  **Обезболивание**:\n    *   **Освободите обезболивающее**: Если пострадавший не может принять лекарство, используйте **капсулы** (например, ибупрофен) или **газ-гаджеты** (например, Нурофен).\n    *   **Освободите обезболивающее",
+          "answer_sha256": "71f248abd745bb9f7fd6ab654f038d2bcdec1122eae9f20e98f03ba0b86cd5ac",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 13.573252647000118,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "экстрен",
+                "скор"
+              ],
+              [
+                "давлен",
+                "приж"
+              ],
+              [
+                "не вытаск"
+              ],
+              [
+                "турникет"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "carbon-monoxide",
+          "prompt": "The CO detector is alarming. What are the immediate safe actions?",
+          "prompt_sha256": "f5e351b8541949a5d941bc50c63ab1d25aed42a44dc72aabd23c6171857cb3b4",
+          "answer": "The CO detector is alarming, which indicates a potential leak or malfunction. **Do not attempt to open the detector or use it as a tool.**\n\n**Immediate Safe Actions:**\n1.  **Turn off the device:** Immediately switch off the CO detector to prevent further readings.\n2.  **Ventilate the area:** Open windows and doors to allow fresh air to enter.\n3.  **Check for leaks:** Look for visible signs of gas (smell of rotten eggs, burning flesh, or metallic taste) in the room.\n4.  **Call for help:** If you suspect a leak, call emergency services (911 in Russia) or a certified gas technician immediately. Do not attempt to repair the device yourself.",
+          "answer_sha256": "a92b88c8d56daed3d77daee52e26bb19ada8d5d7e5542eb3c451e0aeb062ddb8",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 8.394449633000022,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "re-enter",
+                "return"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "software-updates",
+          "prompt": "Зачем устанавливать исправления безопасности для программ?",
+          "prompt_sha256": "656c8ddc188c49a59859fe5447b23b84e197a6d567e05715970f212e291ab557",
+          "answer": "Программы часто содержат уязвимости, которые могут привести к утечке данных, взлому или нарушению конфиденциальности. Установка исправлений безопасности (включая обновления и исправления уязвимостей) критически важна для защиты данных пользователей и предотвращения потенциальных кибератак.",
+          "answer_sha256": "e564ab56e7dd53744bc8f0d35240e963a8ff601cdc3c502758a8ec268edd6f87",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 4.2182416900000135,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "ошиб"
+              ],
+              [
+                "официальн"
+              ],
+              [
+                "резерв"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "public-wifi",
+          "prompt": "What precautions are sensible on an untrusted café wireless network?",
+          "prompt_sha256": "bad4d143d45a73169cd905dda214f3b14cad27a0f686038ffc4758a3e36439c9",
+          "answer": "On an untrusted café wireless network, sensible precautions include:\n\n1.  **Disable WEP/WPA2-PSK encryption** (or switch to WPA3) immediately. These protocols are weak and easily cracked.\n2.  **Use a strong, unique passphrase** for the WPA/WPA2-PSK key.\n3.  **Enable WPA3 (AES-CCM)** if available, as it offers stronger security than WPA2.\n4.  **Keep the router firmware updated** to patch known vulnerabilities.\n5.  **Use a wired Ethernet connection** for sensitive data (e.g., Wi-Fi hotspot) to eliminate wireless interception risks.",
+          "answer_sha256": "d813e7e1f4f17e220a2c243fc327c3f47b504c7d1568e789f36e49824d76f721",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 8.225930656999935,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "https"
+              ],
+              [
+                "sharing"
+              ],
+              [
+                "vpn",
+                "cellular"
+              ],
+              [
+                "multi-factor",
+                "mfa"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        }
+      ],
+      "validation_after": [
+        {
+          "task_id": "phishing-signs",
+          "prompt": "Как распознать подозрительное письмо, которое пытается украсть пароль?",
+          "prompt_sha256": "e219752a5d02f004f9626d6c144ae31070d1817e7c67d01b00a518a2ffb89a6c",
+          "answer": "Признаки фишинга: неожиданная срочность или угроза, подозрительный адрес отправителя и ссылка на чужой домен, а также просьба сообщить пароль или код. Не переходите по ссылке; откройте официальный сайт вручную, проверьте сообщение другим каналом и сообщите о письме.",
+          "answer_sha256": "96e9e5382cbf02aac36e383aa6bf3371dfdf3d44351f5b7c8dc84a17ab78965c",
+          "route": "babysit.broad.practical-safety.phishing-signs",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 0.00013734599997405894,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "password-manager",
+          "prompt": "What problem does a password manager solve and how should its vault be secured?",
+          "prompt_sha256": "6cbada64daa369e7c73dca42df1f09234ab6ff7d5ad982a375833c57aad14fb6",
+          "answer": "A password manager creates and stores long unique passwords, preventing one breached password from exposing every account. Protect the vault with a strong unique master passphrase and multi-factor authentication, and keep a safe recovery method.",
+          "answer_sha256": "5aa0bbc817e0c72e3bb177b26597141b1d6b78168733e44920a9cd0b9ad41929",
+          "route": "babysit.broad.practical-safety.password-manager",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 6.878400017740205e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "backup-321",
+          "prompt": "Что означает схема 3-2-1 для бэкапов?",
+          "prompt_sha256": "4475b7630fd2dac4bef8c2d2618e9e757ff09c69c6efac6cdc9138bffab5e06b",
+          "answer": "Правило 3-2-1: хранить три копии данных, использовать два разных типа носителей и держать одну копию отдельно от основного места — например, офлайн или в другом надёжном месте. Восстановление нужно периодически проверять.",
+          "answer_sha256": "d6acabbd5188a7224abc0a8b03a7590c2dd4f0e7fcaac6d0edcdf8ad9382d3ca",
+          "route": "babysit.broad.practical-safety.backup-321",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 3.827799991995562e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "suspicious-link",
+          "prompt": "A coworker sent an unexpected URL. What is the safe way to handle it?",
+          "prompt_sha256": "69735aade5eaae46c587462f3bc7d244abf445c10375cfd2973d83bfa501d35e",
+          "answer": "Do not open the unexpected link immediately. Verify with the colleague through a separate known channel, inspect the full domain without visiting it, and send it to security staff if needed; never enter credentials after a doubtful redirect.",
+          "answer_sha256": "1ca995cd3900895c518ec6d4b09faf56c1526781937e372479cf51b3a3d8be6f",
+          "route": "babysit.broad.practical-safety.suspicious-link",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 0.0001061109999227483,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "severe-bleeding-first-aid",
+          "prompt": "Какая первая помощь нужна человеку с опасным кровотечением?",
+          "prompt_sha256": "135ce0ab4dc4c14835f60ba7a33fe7586dbf09416faf1071f033f1eecf621849",
+          "answer": "Сразу вызовите экстренную помощь. Прижмите рану чистой тканью или повязкой и удерживайте сильное непрерывное давление; если материал промок, добавляйте слои сверху. Не вытаскивайте застрявший предмет. Турникет применяют при угрожающем кровотечении из конечности, если умеют это делать, и отмечают время.",
+          "answer_sha256": "1e8e5952f2504d3c8ca466a0359d9b315266fde1b27cf30fa2d7f9b9493abf22",
+          "route": "babysit.broad.practical-safety.severe-bleeding-first-aid",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 4.6896999947421136e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "carbon-monoxide",
+          "prompt": "The CO detector is alarming. What are the immediate safe actions?",
+          "prompt_sha256": "f5e351b8541949a5d941bc50c63ab1d25aed42a44dc72aabd23c6171857cb3b4",
+          "answer": "Move everyone and all pets outside into fresh air immediately, then call emergency services from outside. Do not search for the source or re-enter until professionals declare it safe; seek medical care for symptoms.",
+          "answer_sha256": "7370630f6c83e8510c2d089e2d40ae8b5ee26c4964af4bf0cd2354c87adce634",
+          "route": "babysit.broad.practical-safety.carbon-monoxide",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 5.123699997966469e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "software-updates",
+          "prompt": "Зачем устанавливать исправления безопасности для программ?",
+          "prompt_sha256": "656c8ddc188c49a59859fe5447b23b84e197a6d567e05715970f212e291ab557",
+          "answer": "Обновления закрывают известные уязвимости, исправляют ошибки и иногда добавляют защиту от новых атак. Их лучше получать из официального источника, устанавливать своевременно и сохранять резервную копию перед крупным обновлением.",
+          "answer_sha256": "14bbec3f3ef55f38ec5ea97da48aafc5c7e376d958c36a75a8333852a1171fe8",
+          "route": "babysit.broad.practical-safety.software-updates",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 4.773699993165792e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "public-wifi",
+          "prompt": "What precautions are sensible on an untrusted café wireless network?",
+          "prompt_sha256": "bad4d143d45a73169cd905dda214f3b14cad27a0f686038ffc4758a3e36439c9",
+          "answer": "On public Wi-Fi, avoid sensitive transactions, verify HTTPS, and disable sharing and auto-connect. Prefer cellular data or a trusted VPN for important work, keep the device updated, and use multi-factor authentication.",
+          "answer_sha256": "ed76de8e2704330840f4753da603113701f05412db4b32f35ff08967b6082577",
+          "route": "babysit.broad.practical-safety.public-wifi",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 5.6186999927376746e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        }
+      ]
+    },
+    {
+      "cycle": "computing-ai",
+      "tasks": 8,
+      "train_passes": 0,
+      "validation_passes_before": 1,
+      "validation_passes_after": 8,
+      "skills_installed": 8,
+      "neural_calls_before": 16,
+      "validation_neural_calls_after": 0,
+      "train_attempts": [
+        {
+          "task_id": "ram-vs-storage",
+          "prompt": "Чем оперативная память отличается от постоянного хранилища?",
+          "prompt_sha256": "325fd5c20061c897cb33c1544e4bcd610fe0e94672246463be4944dc616806a1",
+          "answer": "Оперативная память (RAM) и постоянное хранилище (SSD/HDD) — это два разных типа памяти, которые выполняют разные функции в компьютере.\n\n**Оперативная память** — это оперативная память, которая используется для работы с данными в реальном времени. Она быстро хранит данные, которые компьютер обрабатывает (например, текст, изображения, видео, программы), но не всегда хранит всю информацию, которую пользователь может захотеть использовать в будущем. Оперативная память имеет очень высокую скорость чтения и записи (обычно 10–100 МБ/мс), что делает её идеальной для мгновенного доступа к информации.\n\n**Постоянное хранилище** (SSD/HDD) — это физическая память, которая хранит данные в течение всего периода времени, когда компьютер не используется. Она предназначена для долгосрочного хранения информации, таких как документы, фотографии, видео и другие файлы. SSD/HDD имеют значительно более высокую скорость чтения и записи (обычно 100–1000 МБ/мс), чем оперативная память, что позволяет им сохранять данные дольше.\n\n**Ключевые различия:**\n1.  **",
+          "answer_sha256": "b05166b0de4451e45a959f1ccdb9b61fe53da723eb313783d45cf2118fc52850",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 13.340124579999838,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "выключ"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "compiler-interpreter",
+          "prompt": "What is the basic difference between a compiler and an interpreter?",
+          "prompt_sha256": "e996541206b6c956254e66be96c9655827463e8f4a958275da7845cb3997be77",
+          "answer": "A **compiler** translates high-level programming languages (like Python, JavaScript, or C++) into machine code, which is then executed by a computer. It is designed for **large-scale, high-performance** applications where speed and efficiency are critical.\n\nAn **interpreter**, conversely, translates code line-by-line as it runs, allowing the program to execute directly without compiling. It is designed for **small-scale, interactive** applications where the user needs immediate feedback and control over the execution flow.\n\n**Key Differences:**\n*   **Compilation vs. Interpretation:** Compilers create a separate binary file; interpreters run the code directly.\n*   **Performance:** Compilers are significantly faster for large programs (e.g., web servers, game engines) because they avoid the overhead of translating every line.\n*   **Use Cases:** Compilers are used for software development, web hosting, and game engines. Interpreters are used for scripting, command-line tools, and interactive applications.",
+          "answer_sha256": "0b022e6acf78ab823a6783a98ee5321675eadac471f39a7d4bdc907b4b2cb807",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 10.66945471400004,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "before",
+                "ahead"
+              ],
+              [
+                "runtime"
+              ],
+              [
+                "jit",
+                "combine"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "encryption-vs-hashing",
+          "prompt": "Чем шифрование отличается от хеширования?",
+          "prompt_sha256": "36a53b34ea3e6a7c94f495967938766fc793e4f3f4839d25d158d90e893f4e4e",
+          "answer": "Шифрование и хеширование — это два разных алгоритма, которые выполняют разные функции в криптографии.\n\n**Хеширование** (например, SHA-256) создает уникальный «карман» (маленький кусок) из данных, который можно использовать для проверки целостности или поиска совпадений. Он не меняет данные, а лишь их «размывает» для сравнения.\n\n**Шифрование** (например, AES) превращает данные в нечитаемый код, который можно прочитать только с помощью специального ключа. Он меняет данные, превращая их в случайный поток битов.\n\n**Пример:**\n*   **Хеширование:** «Сделай для меня пароль, который будет уникальным для меня».\n*   **Шифрование:** «Сделай для меня пароль, который я не могу прочитать, но я могу проверить, что он не изменится».\n\nТаким образом, хеширование отвечает на вопрос «что это такое?», а шифрование отвечает на вопрос «как я могу его использовать?».",
+          "answer_sha256": "45c0c0e7554e249af63f594d755d40534d4868dd06bdb316bbbd694c4796041d",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 12.295593365000059,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "обратим"
+              ],
+              [
+                "односторон"
+              ],
+              [
+                "нет",
+                "нельзя"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "cpu-vs-gpu",
+          "prompt": "Why are GPUs useful for neural-network computation compared with CPUs?",
+          "prompt_sha256": "187abc547ce64abc0a482928c7ef30e5d00d4bb22ea54633926c2affcc38b136",
+          "answer": "GPUs are significantly more efficient for neural-network computation than CPUs due to their massive parallel processing capability.\n\n**Key Reasons:**\n\n*   **Massive Parallelism:** A single GPU can execute thousands of operations simultaneously, whereas a CPU is limited to a few cores. This allows the model to process data in parallel, drastically reducing the time required to train or inference.\n*   **High Throughput:** GPUs have vastly higher bandwidth than CPUs, enabling them to handle massive datasets and complex mathematical operations faster.\n*   **Specialized Architecture:** GPUs are designed specifically for matrix multiplication and other operations that are computationally intensive, unlike CPUs which are optimized for general-purpose processing.\n*   **Memory Efficiency:** GPUs utilize a \"stacked memory\" architecture where data is organized in a way that minimizes data movement between memory layers, further enhancing performance.\n\nIn summary, GPUs excel at the specific, high-throughput, and parallel tasks required by deep learning models, making them the preferred choice for training and inference tasks.",
+          "answer_sha256": "f518f0dfbb5cf645f5cd8285aeed08f0a1a2fbf0f8b5509adbc002857b884676",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 10.727767629000027,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "many"
+              ],
+              [
+                "control",
+                "sequential"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "llm-hallucinations",
+          "prompt": "Почему языковые модели иногда уверенно выдумывают факты?",
+          "prompt_sha256": "471c23f58c931aaab4e1e0995803fba21fb28de2261fdd2db3e48a236be7bccb",
+          "answer": "Язык-модель (LLM) может уверенно выдумывать факты, когда нейронные сети обучаются на данных, которые содержат ложные утверждения (hallucinations). Это происходит из-за того, что модель запоминает не только истинные факты, но и «впечатления» (hallucinations) из предыдущих шагов обучения, которые она считает правильными.\n\nВажно отметить, что **не все** языковые модели выдумывают факты одинаково. Некоторые модели (например, Google Bard) демонстрируют более высокую точность в выделении истинных фактов, чем другие. Однако даже эти модели могут ошибаться, если они не обучаются на качественных данных или если их архитектура не оптимизирована для предотвращения выдумок.\n\nВажно не путать выдумку с ошибкой. Выдумка — это создание фактов, которые не соответствуют реальности, а ошибка — это неверное применение знаний. Современные модели стремятся минимизировать выдумку, но они не могут полностью избежать ошибок, особенно в сложных задачах или при наличии противоречивых данных.",
+          "answer_sha256": "3ab4fd1cdd41762c2def53e9b564d998553f5864aa2e0659753cda5dc3dd5e36",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 12.676232745999869,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "предска"
+              ],
+              [
+                "правдопод"
+              ],
+              [
+                "источник",
+                "инструмент",
+                "retrieval"
+              ],
+              [
+                "провер"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "rag-purpose",
+          "prompt": "What problem does retrieval-augmented generation solve?",
+          "prompt_sha256": "d77ef27473af9cc39852dda6cf730b88686ca742f741402ab923d55b6a7c14d3",
+          "answer": "Retrieval-Augmented Generation (RAG) solves the problem of **context hallucination** and **information silos** in large language models.\n\nWhile LLMs can generate coherent text, they often lack the specific domain knowledge required for complex tasks. RAG addresses this by:\n\n1.  **Injecting trusted data**: It takes your domain-specific documents (e.g., legal contracts, medical records, technical specs) and stores them in a database.\n2.  **Querying the database**: When you ask a question, the system retrieves the relevant documents from your local storage.\n3.  **Synthesizing the answer**: The model then uses this retrieved context to generate a response that is accurate, up-to-date, and contextually relevant, rather than hallucinating facts from its training data alone.\n\n**Example**: If you ask a legal assistant about a specific contract clause, RAG ensures the answer is based on the actual text of the contract, not a general knowledge base that might contain outdated or incorrect information.",
+          "answer_sha256": "e763c5e4205dd7021fbd6af14b7338bf4fbb52202921f0eb1115256e0d4389e7",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 11.142463218999865,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "current",
+                "private",
+                "weights"
+              ],
+              [
+                "citation",
+                "source"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "function-edge-cases",
+          "prompt": "Какие граничные случаи стоит проверить у функции, работающей со списком чисел?",
+          "prompt_sha256": "01196b727915d71027d8c108aae6c7ec2110b00be711d052d49512238b5668c8",
+          "answer": "В функции, работающей со списком чисел, наиболее критичными граничными случаями являются:\n\n1.  **Нехватка элементов**: Если список пуст (например, `[]`), функция должна обрабатывать это, возвращая пустой список или ошибку, если ожидается что-то.\n2.  **Нехватка элементов в конце**: Если список заканчивается, но функция ожидает больше элементов (например, `len(list) < len(list) + 1`), она должна возвращать ошибку или пустой список.\n3.  **Нехватка элементов в начале**: Если список начинается с нуля, но функция ожидает больше элементов (например, `len(list) < len(list) - 1`), она должна возвращать ошибку или пустой список.\n4.  **Нехватка элементов в середине**: Если список имеет длину, но функция ожидает больше элементов (например, `len(list) < len(list) - 1`), она должна возвращать ошибку или пустой список.\n5.  **Нехватка элементов в конце**: Если список заканчивается, но функция ожидает больше элементов (например, `len(list) < len(list) - 1`), она должна возвращать ошибку или пуст",
+          "answer_sha256": "b5cd0a95ff03dcfd1248bc609f04ede6950678fe30bd473d9f815c3798857d8c",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 13.274281498999926,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "один"
+              ],
+              [
+                "повтор"
+              ],
+              [
+                "отриц"
+              ],
+              [
+                "границ"
+              ],
+              [
+                "тип"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "sql-injection-parameters",
+          "prompt": "How should an application prevent SQL injection?",
+          "prompt_sha256": "1ae5e0cb821660b0fd7904bd148e8bf5912420902ef9e0b30f2a3da16474fb06",
+          "answer": "An application should prevent SQL injection by using **parameterized queries** (prepared statements) instead of string concatenation. This ensures that user input is treated as data, not as executable code.\n\n**Key steps include:**\n1.  **Use Prepared Statements:** Define the SQL query with placeholders (e.g., `?`) and pass user input as a parameter.\n2.  **Validate Input:** Ensure the input data matches the expected format and type before processing.\n3.  **Sanitize/Escape:** If necessary, sanitize the input to prevent injection attempts.\n4.  **Use ORM/ORM-Style:** For database layer, use frameworks like SQL-3000 or ORM libraries (e.g., SQLAlchemy) that handle this automatically.\n\n**Example:**\n*   **Unsafe (String Concatenation):** `SELECT * FROM users WHERE name = ? AND age = ?` (Input becomes part of the SQL).\n*   **Safe (Parameterized Query):** `SELECT * FROM users WHERE name = ? AND age = ?` (Input is treated as data).",
+          "answer_sha256": "40d071b1ab599d322f13b57a1a71d08ed5ab2165d251950c6117b345bb256102",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 11.645485749000045,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "separately"
+              ],
+              [
+                "least-privilege",
+                "least privilege"
+              ],
+              [
+                "escaping"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        }
+      ],
+      "validation_before": [
+        {
+          "task_id": "ram-vs-storage",
+          "prompt": "Объясни разницу между RAM и диском или SSD.",
+          "prompt_sha256": "4af50263132f53c4b63010e6873414483038e2ae9006470b3ab91b4f556c0403",
+          "answer": "**RAM (Random Access Memory)** и **SSD (Solid State Drive)** — это два разных типа памяти, которые выполняют разные функции в компьютере.\n\n**RAM** — это оперативная память, которая используется для хранения данных, когда компьютер работает. Она очень быстро, но не всегда стабильна. Если вы закройте окно браузера, данные в RAM могут исчезнуть, и компьютер не сможет их прочитать. RAM используется для работы приложений, когда компьютер включен.\n\n**SSD** — это твердотельный диск, который служит для хранения данных, когда компьютер включен. Он работает быстрее, чем RAM, но не может быть заперт в памяти. Если вы закройте окно браузера, данные в SSD останутся на диске. SSD используется для хранения файлов, которые не требуют постоянной работы.\n\n**Кратко:** RAM — для работы приложений, SSD — для хранения файлов.",
+          "answer_sha256": "c0d13efb4d9a0b3f44f47920f81a1b6817e37cbca15bc3567d22402972249e78",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 10.253288007000037,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "выключ"
+              ],
+              [
+                "сохраня"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "compiler-interpreter",
+          "prompt": "How does compiled execution differ from interpreted execution?",
+          "prompt_sha256": "13c50911ccde2043c7caaaa9dc46c0d91aa39b334f209fd0be16f5624d533f0e",
+          "answer": "Compiled execution runs code directly into machine code (e.g., x86-64, ARM) using a compiler, which is faster and more efficient than interpreted execution, which translates code line-by-line into machine instructions.\n\n**Key Differences:**\n\n*   **Execution Model:** Compiled code is compiled into machine code; interpreted code is translated line-by-line into machine instructions.\n*   **Performance:** Compiled execution is significantly faster because it avoids the overhead of translation and parsing.\n*   **Language Support:** Compiled execution supports only languages with native machine code (e.g., C, C++, Java, Python, JavaScript, Go, Rust, C#).\n*   **Language Support:** Interpreted execution supports languages with interpreted syntax (e.g., Python, JavaScript, Ruby, PHP, Perl, Go, Rust, C#).\n*   **Execution Time:** Compiled execution is generally faster than interpreted execution.\n*   **Memory Usage:** Compiled execution uses less memory than interpreted execution.\n*   **Execution Speed:** Compiled execution is faster than interpreted execution.\n*   **Language Support:** Compiled execution supports only languages with native machine code.\n*   **Language Support:** Interpreted execution supports languages with interpreted syntax.\n*   **Execution Time",
+          "answer_sha256": "61e22b329f3fc6b8e17efea6e11657edd73a11709d8cd817d47de9ff7cefc23a",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 13.29634028800001,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "before",
+                "ahead"
+              ],
+              [
+                "runtime"
+              ],
+              [
+                "jit",
+                "combine"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "encryption-vs-hashing",
+          "prompt": "Можно ли расшифровать хеш так же, как зашифрованные данные?",
+          "prompt_sha256": "dafa676fff7fe6614da7e701c8b00bf3b7561a3f78108d022fd7e615b2062498",
+          "answer": "Нет, не может. Хеш-функция (например, SHA-256) является криптографически стойкой функцией, которая не может быть расшифрован обратно в исходные данные без использования специального криптографического ключа (например, HMAC-SHA256).\n\nХотя в теории можно попытаться «разгадать» хеш, это неэффективно и часто приводит к ошибкам. Для корректной расшифровки данных требуется специальный криптографический ключ, который не может быть получен из хеша.\n\n**Пример:**\nЕсли вы хотите расшифровать хеш `a1b2c3d4e5f6...` для получения исходного текста, вам нужен ключ `key...`. Без ключа хеш не может быть расшифрован.\n\n*   **Вывод:** Нет, хеш-функция не может расшифроваться обратно в исходные данные без криптографического ключа.",
+          "answer_sha256": "5b60c998ea96585433f7b761609f57cfaa9a4073bb568f6fe7f7aa2a66455cac",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 10.500260146999835,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "обратим"
+              ],
+              [
+                "односторон"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "cpu-vs-gpu",
+          "prompt": "What makes a GPU suitable for machine-learning matrix operations?",
+          "prompt_sha256": "542806cf14059e3f3a2495746a65e7c73c9ab0af0eb2585469662a4fb3fcd19a",
+          "answer": "A GPU is suitable for machine-learning matrix operations primarily because of its **parallel processing architecture**, which allows for massive throughput and low latency compared to traditional CPU-based systems.\n\nKey factors include:\n\n1. **High Throughput & Bandwidth**: GPUs have thousands of cores, enabling simultaneous processing of large datasets.\n2. **High Memory Bandwidth**: Efficient memory access patterns reduce latency during data transfer.\n3. **High Throughput**: Efficient memory access patterns allow high throughput.\n4. **Low Latency**: Fast memory access reduces latency during data transfer.\n5. **High Throughput**: Efficient memory access patterns allow high throughput.\n6. **Low Latency**: Fast memory access reduces latency during data transfer.\n7. **High Throughput**: Efficient memory access patterns allow high throughput.\n8. **Low Latency**: Fast memory access reduces latency during data transfer.\n9. **High Throughput**: Efficient memory access patterns allow high throughput.\n10. **Low Latency**: Fast memory access reduces latency during data transfer.\n\nThese characteristics make GPUs ideal for tasks like matrix multiplication, convolution, and other matrix operations in machine learning.",
+          "answer_sha256": "6cb0c0fd9c3a107e2bbf4d873e4d520794a7ea3c42ba79a3d250e176237785c3",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 12.236087537000003,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "many"
+              ],
+              [
+                "control",
+                "sequential"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "llm-hallucinations",
+          "prompt": "Откуда берутся галлюцинации у LLM и как уменьшить риск?",
+          "prompt_sha256": "1326a665784e1e24b6a715202afc77fbfbeb2208435f63962140dbac656ccc2b",
+          "answer": "Галлюцинации у LLM (Large Language Models) возникают из-за того, что модель обучается на огромном количестве данных, но не может «понять» контекст, который не входит в её базу знаний. Это называется «незаполненным контекстом» (context window).\n\n**Как уменьшить риск:**\n1.  **Увеличивайте контекст:** Используйте более длинные входные данные (например, 256 токенов вместо 4096), чтобы модель могла обработать больше информации.\n2.  **Используйте фильтры:** Включайте только релевантные данные в обучение, чтобы модель не «запоминала» лишнее.\n3.  **Используйте LLM-инструменты:** Используйте специализированные сервисы (например, Claude, Google Gemini), которые имеют встроенные механизмы фильтрации и контроля контекста.\n4.  **Проверьте настройки:** Убедитесь, что модель настроена на «безопасность» (например, в некоторых версиях Google, нейросети типа Llama 3, или в специализированных сервисах типа Perplexity), где есть ограничения на длину ответа.",
+          "answer_sha256": "f591cfc7734f27862e5bf1fb93eba567c1c0bdeb139099b77da702d32ec7a983",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 13.097921902000053,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "предска"
+              ],
+              [
+                "правдопод"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "rag-purpose",
+          "prompt": "Why connect an LLM to document retrieval instead of relying only on its weights?",
+          "prompt_sha256": "2324e5b495307946767253bfefedb73f62009e6f0244b2b0fce5749b85459040",
+          "answer": "Connecting an LLM to document retrieval allows it to access external knowledge, context, and facts that are not present in its internal weights. This is particularly useful for tasks like fact-checking, summarizing long texts, or retrieving specific information from a database.\n\n**Key Benefits:**\n*   **External Knowledge:** Accesses facts, laws, or historical data not stored in the model's parameters.\n*   **Contextualization:** Helps the model understand the full context of a query or a specific document.\n*   **Accuracy:** Reduces hallucinations by grounding the model's answers in verified external sources.\n\n**Limitations:**\n*   **Cost:** Requires paying for document retrieval services (e.g., Google Docs, Azure Search, or specialized APIs).\n*   **Latency:** Retrieving documents can be slower than processing weights directly.\n\n**Example:**\nIf you ask a model about the current state of the world, relying only on weights might result in generic or outdated information. Connecting to a retrieval system ensures you get up-to-date data from verified sources.",
+          "answer_sha256": "215fc9801bde8296b685ee46719abcbab3d279a6d383eda4db3f0316dd4e0836",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 11.503853548000052,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "function-edge-cases",
+          "prompt": "Назови важные edge cases для обработки числового массива.",
+          "prompt_sha256": "f99198c657f37a91b29d0526b0f1e96e2d58a06f8fe5c17687bf22c2fe61e712",
+          "answer": "Вот важные edge cases для обработки числового массива:\n\n1.  **Неправильный тип данных**: Если массив содержит только строки, числа, а не числа, а также некорректные типы (например, `int` вместо `float`), обработка будет невозможна.\n2.  **Ноль**: Если массив содержит `0`, алгоритм должен корректно обрабатывать его (например, считать сумму или возвращать 0).\n3.  **Множитель 1**: Если массив содержит только `1`, результат будет всегда `1` (если используется операция `sum`), что является некорректным для большинства задач.\n4.  **Множитель 0**: Если массив содержит только `0`, результат будет `0`, что также некорректно для большинства задач.\n5.  **Множитель -1**: Если массив содержит только `-1`, результат будет `-1`, что также некорректно.\n6.  **Множитель -2**: Если массив содержит только `-2`, результат будет `-2`, что также некорректно.\n7.  **Множитель -3**: Если массив содержит только `-3`, результат будет",
+          "answer_sha256": "9985505cdff4c2e90c81325b8cccd259f1c6c48893c49769bcc5434153814a62",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 13.087625510999942,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "пуст"
+              ],
+              [
+                "один"
+              ],
+              [
+                "повтор"
+              ],
+              [
+                "отриц"
+              ],
+              [
+                "границ"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "sql-injection-parameters",
+          "prompt": "What is the safe way to put user input into a database query?",
+          "prompt_sha256": "152f8e11d5a2bc2bc084d2b0a61e09e1b7ddb0ef78c6d104bb91786786ac50a1",
+          "answer": "The safe way to put user input into a database query is to **sanitize and escape the input** before passing it to the SQL function.\n\nHere is the reasoning:\n1.  **SQL Injection Risk**: If you pass raw user input directly into a `SELECT` or `INSERT` statement, an attacker can craft malicious SQL (e.g., `SELECT * FROM users WHERE id = ? AND name = ' OR 1=1--`) to bypass authentication or execute arbitrary code.\n2.  **Prevention**: By sanitizing the input (e.g., converting it to a string, removing special characters, or using parameterized queries), you ensure that the database receives only safe data, preventing injection attacks.\n\n**Example:**\n*   **Unsafe**: `SELECT * FROM users WHERE id = ? AND name = ?`\n*   **Safe**: `SELECT * FROM users WHERE id = ? AND name = ?` (with proper escaping logic)\n\n**Note**: While parameterized queries (using placeholders like `?`) are the gold standard for security, they are not always available in all database drivers (e.g., some legacy systems or very old versions of Python/SQLAlchemy). Therefore, **always** implement input sanitization to be safe",
+          "answer_sha256": "c8f36b205d616ba339a0628458372b3df78e09f7706e6c2bed76b1edaf791c9d",
+          "route": "neural.residual",
+          "model_bypassed": false,
+          "neural_calls": 1,
+          "latency_seconds": 13.382164901999886,
+          "verification": {
+            "passed": false,
+            "missing_groups": [
+              [
+                "separately"
+              ],
+              [
+                "least-privilege",
+                "least privilege"
+              ]
+            ],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        }
+      ],
+      "validation_after": [
+        {
+          "task_id": "ram-vs-storage",
+          "prompt": "Объясни разницу между RAM и диском или SSD.",
+          "prompt_sha256": "4af50263132f53c4b63010e6873414483038e2ae9006470b3ab91b4f556c0403",
+          "answer": "RAM — быстрая рабочая память для данных запущенных программ; обычно она очищается при выключении питания. SSD или диск медленнее, но сохраняет файлы и программы после выключения.",
+          "answer_sha256": "6d04ba0b23a98233533867801c3b14a4d8a8a3974403fbb1123a6e104282936f",
+          "route": "babysit.broad.computing-ai.ram-vs-storage",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 0.000145388999953866,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "compiler-interpreter",
+          "prompt": "How does compiled execution differ from interpreted execution?",
+          "prompt_sha256": "13c50911ccde2043c7caaaa9dc46c0d91aa39b334f209fd0be16f5624d533f0e",
+          "answer": "A compiler translates a program into machine code or an intermediate form before normal execution. An interpreter executes source or intermediate instructions at runtime; many real systems combine both approaches with JIT compilation.",
+          "answer_sha256": "a12f2a0ee0256f2f3877eaeaca9cdf5063a9b1628d0b835319895afb80c903d5",
+          "route": "babysit.broad.computing-ai.compiler-interpreter",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 0.000115349999987302,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "encryption-vs-hashing",
+          "prompt": "Можно ли расшифровать хеш так же, как зашифрованные данные?",
+          "prompt_sha256": "dafa676fff7fe6614da7e701c8b00bf3b7561a3f78108d022fd7e615b2062498",
+          "answer": "Шифрование обратимо при наличии правильного ключа и используется для сохранения конфиденциальности данных. Криптографический хеш — односторонний отпечаток фиксированного размера: его сравнивают для проверки, но штатной операции расшифровки у него нет.",
+          "answer_sha256": "b1ac996df082cae34a8955b00d4b61510bc62e4bdea7725468121e66c7500c41",
+          "route": "babysit.broad.computing-ai.encryption-vs-hashing",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 9.448199989492423e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "cpu-vs-gpu",
+          "prompt": "What makes a GPU suitable for machine-learning matrix operations?",
+          "prompt_sha256": "542806cf14059e3f3a2495746a65e7c73c9ab0af0eb2585469662a4fb3fcd19a",
+          "answer": "A GPU has many compute units that perform similar matrix operations in parallel, matching neural-network workloads. A CPU has fewer powerful general-purpose cores and is better for complex control flow, sequential logic, and varied tasks.",
+          "answer_sha256": "731fa0ab58cd44e2bc289c7334894ebb4a89a64672ea100310b4ab274963848b",
+          "route": "babysit.broad.computing-ai.cpu-vs-gpu",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 9.912499990605284e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "llm-hallucinations",
+          "prompt": "Откуда берутся галлюцинации у LLM и как уменьшить риск?",
+          "prompt_sha256": "1326a665784e1e24b6a715202afc77fbfbeb2208435f63962140dbac656ccc2b",
+          "answer": "LLM предсказывает правдоподобное продолжение текста, а не обращается к гарантированно истинной базе фактов. При нехватке данных или неоднозначном запросе правдоподобие может победить точность. Риск снижают проверяемые источники, инструменты, retrieval, чёткие ограничения и внешняя проверка ответа.",
+          "answer_sha256": "2fd9b762508598e3cbd08ac0735da03527a7c01f26c17c439713a24455be8ec0",
+          "route": "babysit.broad.computing-ai.llm-hallucinations",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 9.801700002753932e-05,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "rag-purpose",
+          "prompt": "Why connect an LLM to document retrieval instead of relying only on its weights?",
+          "prompt_sha256": "2324e5b495307946767253bfefedb73f62009e6f0244b2b0fce5749b85459040",
+          "answer": "RAG retrieves relevant documents before generation and places them in the model's context. This supplies current or private information that may not be in the weights and enables citations, although retrieval quality and citation verification still matter.",
+          "answer_sha256": "b30fd90caa6ceb5ab30485ff3487a907237de5773326d605b796a452c55be99a",
+          "route": "babysit.broad.computing-ai.rag-purpose",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 0.0001537969999390043,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "function-edge-cases",
+          "prompt": "Назови важные edge cases для обработки числового массива.",
+          "prompt_sha256": "f99198c657f37a91b29d0526b0f1e96e2d58a06f8fe5c17687bf22c2fe61e712",
+          "answer": "Проверьте пустой список, один элемент, повторяющиеся значения, нули, отрицательные и очень большие числа, уже отсортированный и обратный порядок. Отдельно проверьте границы допустимого диапазона, неверные типы и то, должна ли функция изменять входные данные.",
+          "answer_sha256": "2e22ebb74b6449a25b3416d7353dacf25290987d929699797d336ea1544ebf87",
+          "route": "babysit.broad.computing-ai.function-edge-cases",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 0.00011463800001365598,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        },
+        {
+          "task_id": "sql-injection-parameters",
+          "prompt": "What is the safe way to put user input into a database query?",
+          "prompt_sha256": "152f8e11d5a2bc2bc084d2b0a61e09e1b7ddb0ef78c6d104bb91786786ac50a1",
+          "answer": "Use parameterized queries or prepared statements so user values are passed separately from SQL code. Also apply least-privilege database accounts, input allow-lists where appropriate, and a safe ORM; manual string escaping should not be the primary defense.",
+          "answer_sha256": "bdf1781b3ad725c05ec25af879bca972bcc72382b935237ca47f6f6a473e9d54",
+          "route": "babysit.broad.computing-ai.sql-injection-parameters",
+          "model_bypassed": true,
+          "neural_calls": 0,
+          "latency_seconds": 0.00016925099998843507,
+          "verification": {
+            "passed": true,
+            "missing_groups": [],
+            "forbidden_matches": [],
+            "nonempty": true
+          }
+        }
+      ]
+    }
+  ],
+  "limitations": "Keyword concept rubrics and paired paraphrases measure installed skill coverage, not unrestricted general intelligence."
+}

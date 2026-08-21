@@ -52,7 +52,9 @@ def test_exact_routes_pass_fresh_mentor_families_without_neural_model() -> None:
             system_text=record.messages[0].content,
         )
         if not verify_synthetic_generation(record, response.answer):
-            failures.append((record.category, record.identifier, response.route, response.answer))
+            failures.append(
+                (record.category, record.identifier, response.route, response.answer)
+            )
         assert response.model_bypassed
         assert response.neural_calls == 0
 
@@ -90,7 +92,10 @@ def test_external_babysit_skill_shelf_requires_all_topic_groups(tmp_path: Path) 
                             "ru": [["небо"], ["голуб"]],
                             "en": [["sky"], ["blue"]],
                         },
-                        "answers": {"ru": "Проверенный ответ.", "en": "Verified answer."},
+                        "answers": {
+                            "ru": "Проверенный ответ.",
+                            "en": "Verified answer.",
+                        },
                         "provenance": "test",
                     }
                 ]
@@ -129,7 +134,10 @@ def test_confirmed_memory_and_babysit_feedback_are_persistent(tmp_path: Path) ->
     assert "Запомнил" in written.answer
     assert recalled.route == "memory.read"
     assert "синий" in recalled.answer
-    lines = [json.loads(line) for line in journal_path.read_text(encoding="utf-8").splitlines()]
+    lines = [
+        json.loads(line)
+        for line in journal_path.read_text(encoding="utf-8").splitlines()
+    ]
     assert [line["kind"] for line in lines] == [
         "interaction",
         "interaction",
@@ -159,9 +167,7 @@ def test_aira_one_evidence_records_scope_and_babysit_gain() -> None:
         )
     )
     after = json.loads(
-        (root / "results/aira_one_v01_runtime_smoke.json").read_text(
-            encoding="utf-8"
-        )
+        (root / "results/aira_one_v01_runtime_smoke.json").read_text(encoding="utf-8")
     )
     babysit = read_babysit_dataset(
         root / "artifacts/aira-one-babysit-v01/records.jsonl"
@@ -179,6 +185,69 @@ def test_aira_one_evidence_records_scope_and_babysit_gain() -> None:
     assert all(record.verdict == "incorrect" for record in babysit)
 
 
+def test_broad_babysit_evidence_and_deployed_shelf_agree() -> None:
+    root = Path(__file__).resolve().parents[1]
+    result = json.loads(
+        (root / "results/aira_one_broad_babysit_v1.json").read_text(encoding="utf-8")
+    )
+    artifact = root / "artifacts/aira-one-broad-babysit-v1"
+    pre_review_skills = json.loads(
+        (artifact / "skills_pre_review.json").read_text(encoding="utf-8")
+    )
+    skills = json.loads((artifact / "skills.json").read_text(encoding="utf-8"))
+    audited = json.loads(
+        (root / "results/aira_one_broad_babysit_v1_audited.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    records = (artifact / "records.jsonl").read_text(encoding="utf-8").splitlines()
+    audited_records = (
+        (artifact / "records_audited.jsonl").read_text(encoding="utf-8").splitlines()
+    )
+
+    assert result["tasks"] == 24
+    assert result["verdicts"] == {"correct": 1, "incorrect": 23}
+    assert result["validation_passes_before"] == 4
+    assert result["validation_passes_after"] == 24
+    assert result["validation_neural_calls_before"] == 24
+    assert result["validation_neural_calls_after"] == 1
+    assert len(pre_review_skills["skills"]) == result["skills_installed"] == 23
+    assert len(skills["skills"]) == 24
+    assert len(records) == len(read_babysit_dataset(artifact / "records.jsonl")) == 24
+    assert (
+        len(audited_records)
+        == len(read_babysit_dataset(artifact / "records_audited.jsonl"))
+        == 25
+    )
+    audited_manifest = json.loads(
+        (artifact / "records_audited.jsonl.manifest.json").read_text(encoding="utf-8")
+    )
+    assert (
+        audited_manifest["sha256"]
+        == hashlib.sha256((artifact / "records_audited.jsonl").read_bytes()).hexdigest()
+    )
+    assert skills["source_records_sha256"] == audited_manifest["sha256"]
+    assert [cycle["validation_passes_after"] for cycle in result["cycle_reports"]] == [
+        8,
+        8,
+        8,
+    ]
+    assert audited["manual_three_cycle"]["validation_passes_before"] == 2
+    assert audited["manual_three_cycle"]["validation_passes_after_three_cycles"] == 23
+    assert audited["final_independent_regression"]["passes"] == 24
+    assert audited["final_independent_regression"]["neural_calls"] == 0
+    assert audited["final_independent_regression"]["skills_installed"] == 24
+
+    assistant = AIraOne(None)
+    boiling = assistant.answer(
+        "Если внешнее давление уменьшить, как изменится температура кипения жидкости?"
+    )
+    assert boiling.route == "babysit.broad.science.boiling-pressure"
+    assert boiling.model_bypassed
+    assert boiling.neural_calls == 0
+    assert "более низкой температуре" in boiling.answer
+
+
 def test_aira_one_package_manifest_hashes_every_source_file() -> None:
     root = Path(__file__).resolve().parents[1]
     manifest = json.loads(
@@ -187,7 +256,7 @@ def test_aira_one_package_manifest_hashes_every_source_file() -> None:
 
     assert manifest["name"] == "AIra One v0.1"
     assert manifest["experimental_recurrent_bypass_enabled"] is False
-    assert len(manifest["files"]) == 17
+    assert len(manifest["files"]) == 32
     for item in manifest["files"]:
         path = root / item["path"]
         assert path.stat().st_size == item["bytes"]
