@@ -2,6 +2,7 @@
   "schema_version": 1,
   "name": "aira-qwen-active-v1",
   "role": "single source of truth for the active in-model acceleration pipeline",
+  "scorecard": "configs/experiments/aira_qwen_scorecard_v1.json",
   "donor_config": "configs/donors/qwen35_08b.json",
   "model_path": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf",
   "llama_source": ".cache/llama.cpp",
@@ -39,7 +40,9 @@
     "split": "validation-only",
     "prompt_groups": 4,
     "stages_per_prompt": 4,
-    "transitions": 16
+    "transitions": 16,
+    "state_delta_alpha": 0.01,
+    "alpha_policy": "frozen before strict full-cache validation from train-only state calibration"
   },
   "combined_checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
   "status_report": "results/aira_qwen_active_v1.json",

@@ -224,3 +224,9 @@ accuracy с 23.12% до 23.88% без дополнительных optimizer ste
 **Решение:** `aira_qwen_active_v1.json` становится единственным operational contract. `run_aira_qwen_active.py` проверяет donor/runtime, build provenance, raw tensor inventory, exact split и normalization, затем запускает два bounded 300-step trainer, объединяет checkpoints, калибрует только на train и выполняет 16-transition validation replay. Combined checkpoint хранит component/config/source/normalization hashes и используется одним exporter path.
 
 **Причина:** ручная последовательность команд допускала preprocessing drift и устаревшие cache artifacts. Tiny-corpus feature z-scoring был проверен и отклонён: он ухудшал held-out recurrent state; accepted normalization — internal per-sample LayerNorm, а train-only corpus statistics остаются audit-only hashes. Combined exporter дал byte-exact тот же `AIRASTP2`, что два принятых component checkpoints. После этой нормализации подготовка/сборка больше не является исследовательской переменной; остаются обучение, calibration и обязательные quality/speed gates.
+
+## D-031 — Fixed scorecard prevents moving-target progress claims
+
+**Решение:** headline фиксируется `aira_qwen_scorecard_v1`: те же 16 validation transitions, layers `4/8/12/16/20`, strict stale recurrent+conv baseline и alpha `0.01`. Train full-cache diagnostic optimum `0.05` сохраняется как диагностика, но не заменяет intervention без новой версии scorecard.
+
+**Причина:** combined checkpoint был byte-identical компонентам, однако смена alpha `0.01→0.05` ухудшила held-out KL ratio `0.722852→0.829463`. Это была регрессия policy, а не модели, и прежняя подача смешивала разные test scopes. Теперь stage-1, train, projected и oracle-conv метрики не могут становиться headline. Все пять fixed metrics проходят текущие regression limits; новые модели сравниваются только с ними.

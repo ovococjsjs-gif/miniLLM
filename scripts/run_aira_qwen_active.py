@@ -90,6 +90,15 @@ def main() -> None:
 
     config_path = Path(args.config)
     config = json.loads(config_path.read_text(encoding="utf-8"))
+    scorecard_path = Path(config["scorecard"])
+    scorecard = json.loads(scorecard_path.read_text(encoding="utf-8"))
+    if (
+        config["evaluation"]["transitions"]
+        != scorecard["data"]["validation_transitions"]
+        or config["evaluation"]["state_delta_alpha"]
+        != scorecard["intervention"]["state_delta_alpha"]
+    ):
+        raise ValueError("active evaluation differs from the fixed scorecard")
     donor_path = Path(config["donor_config"])
     donor = json.loads(donor_path.read_text(encoding="utf-8"))
     model_path = Path(config["model_path"])
@@ -169,6 +178,8 @@ def main() -> None:
         ],
     )
     prepared = {
+        "scorecard": str(scorecard_path),
+        "scorecard_sha256": sha256(scorecard_path),
         "model_sha256": sha256(model_path),
         "llama_cpp_revision": revision,
         "source_manifest_sha256": sha256(corpus.manifest_path),
@@ -280,7 +291,7 @@ def main() -> None:
                     "--combined-checkpoint",
                     str(combined_checkpoint),
                     "--alpha",
-                    str(calibration["selected_alpha"]),
+                    str(config["evaluation"]["state_delta_alpha"]),
                     "--work-dir",
                     ".cache/aira-qwen-active-replay",
                     "--output",
@@ -290,6 +301,34 @@ def main() -> None:
         }
     )
     replay = json.loads(replay_path.read_text(encoding="utf-8"))
+    actual_scorecard = {
+        "full_state_mse_ratio": training_report["state"]["validation"][
+            "state_mse_ratio"
+        ],
+        "conv_new_row_mse_ratio": training_report["convolution"]["validation"][
+            "new_row_mse_ratio"
+        ],
+        "full_cache_true_vocabulary_kl_ratio": replay[
+            "learned_full_over_copy_kl_ratio"
+        ],
+        "full_cache_improved_transitions": replay["learned_full_improvements"],
+        "full_cache_oracle_argmax_preserved": replay["learned_full_argmax_preserved"],
+    }
+    scorecard_result = {}
+    for name, specification in scorecard["headline_metrics"].items():
+        actual = actual_scorecard[name]
+        limit = specification["regression_limit"]
+        passed = (
+            actual <= limit
+            if specification["direction"] == "lower"
+            else actual >= limit
+        )
+        scorecard_result[name] = {
+            "actual": actual,
+            "reference": specification["reference"],
+            "regression_limit": limit,
+            "passed": passed,
+        }
     report = {
         "schema_version": 1,
         "experiment": config["name"],
@@ -300,9 +339,23 @@ def main() -> None:
         "combined_checkpoint_sha256": sha256(combined_checkpoint),
         "training": training_report,
         "calibration": calibration,
+        "applied_intervention": {
+            "state_delta_alpha": config["evaluation"]["state_delta_alpha"],
+            "policy": config["evaluation"]["alpha_policy"],
+            "diagnostic_full_cache_train_optimum": calibration["selected_alpha"],
+        },
+        "fixed_scorecard": {
+            "path": str(scorecard_path),
+            "sha256": sha256(scorecard_path),
+            "metrics": scorecard_result,
+            "all_passed": all(item["passed"] for item in scorecard_result.values()),
+        },
         "replay": {key: value for key, value in replay.items() if key != "records"},
         "gates": {
             "normalization_contract_hash_bound": True,
+            "fixed_scorecard_all_passed": all(
+                item["passed"] for item in scorecard_result.values()
+            ),
             "combined_checkpoint": True,
             "full_cache_mean_kl": replay["acceptance"][
                 "learned_full_mean_kl_below_full_copy"

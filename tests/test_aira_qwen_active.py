@@ -24,6 +24,10 @@ def test_active_config_leaves_only_bounded_training_and_gates() -> None:
     assert config["normalization"]["mode"] == "per-sample-layer-norm"
     assert config["normalization"]["corpus_statistics"] == "audit-only"
     assert config["evaluation"]["transitions"] == 16
+    assert config["evaluation"]["state_delta_alpha"] == 0.01
+    scorecard = json.loads((ROOT / config["scorecard"]).read_text(encoding="utf-8"))
+    assert scorecard["data"]["validation_transitions"] == 16
+    assert scorecard["intervention"]["state_delta_alpha"] == 0.01
     assert config["deployment_allowed"] is False
 
 
@@ -79,10 +83,14 @@ def test_active_pipeline_runs_through_strict_full_cache_replay() -> None:
     assert report["calibration"]["split"] == "train-only"
     assert report["calibration"]["metric"] == "full-cache"
     assert report["calibration"]["validation_prompts_used"] == 0
+    assert report["applied_intervention"]["state_delta_alpha"] == 0.01
+    assert report["applied_intervention"]["diagnostic_full_cache_train_optimum"] == 0.05
     assert report["replay"]["transitions"] == 16
-    assert report["replay"]["learned_full_over_copy_kl_ratio"] < 0.84
+    assert report["replay"]["learned_full_over_copy_kl_ratio"] < 0.73
     assert report["replay"]["learned_full_argmax_preserved"] == 16
+    assert report["fixed_scorecard"]["all_passed"]
     assert report["gates"]["normalization_contract_hash_bound"]
+    assert report["gates"]["fixed_scorecard_all_passed"]
     assert report["gates"]["combined_checkpoint"]
     assert report["gates"]["full_cache_mean_kl"]
     assert not report["gates"]["every_transition_kl"]

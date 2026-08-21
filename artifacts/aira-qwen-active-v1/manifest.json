@@ -4,35 +4,39 @@
   "files": [
     {
       "path": "README.md",
-      "bytes": 887,
-      "sha256": "a26d24ef418e4131e350df0a38c769356b4fc79f3ce27d3e9a302d755913fc0b"
+      "bytes": 991,
+      "sha256": "06db1b3bacf057151e5cfaaea0374eb962fcdcaed5b2e4369589a0f8434b6f41"
     },
     {
       "path": "cache-updater.pt",
-      "bytes": 32306970,
-      "sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f"
+      "bytes": 32307162,
+      "sha256": "546c3e69d50f3b518858df93b447383b6138fa373ec69b39cc0a0cf128635eb6"
     }
   ],
   "evidence": [
     {
       "path": "configs/experiments/aira_qwen_active_v1.json",
-      "sha256": "f6309551dafd3b0f87f7c1576f906776587ad50dc75e22c03477d6f261440836"
+      "sha256": "324ad5155b272e489de35f46a1427a8aaf9522758a60946ede09429eec20bc65"
+    },
+    {
+      "path": "configs/experiments/aira_qwen_scorecard_v1.json",
+      "sha256": "e576302dbb31d59714b060a488b5d4087a3ab2eac05a37c2a2a6dc5b1c0c29b2"
     },
     {
       "path": "results/aira_qwen_combined_checkpoint_v1.json",
-      "sha256": "5196a3221673955b608dc7263884e18c3ffdb97b9e650bcce0faec80b2361638"
+      "sha256": "311eec25eaac7bccc88003121181129a8ead09e4832f2ff7bcb4425354dfea7d"
     },
     {
       "path": "results/aira_qwen_active_alpha_calibration_v1.json",
-      "sha256": "89b3fc3be58fc5259b36c42e0ab8258623d10086174ef550fc3ef6f3801c225a"
+      "sha256": "84777d8c0db7c7880ad47c5c793cd465c29f27cf5669053b86563de97d1bf340"
     },
     {
       "path": "results/aira_qwen_active_replay_v1.json",
-      "sha256": "44e9c8f01532f48698f527dcf1804b3aee9d1ee7b18900a901aec1387c67dc3f"
+      "sha256": "ac9fcf39be62bfd01094913987e5b44b7d00bb0a5896f51428f705392943e772"
     },
     {
       "path": "results/aira_qwen_active_v1.json",
-      "sha256": "f9beb05a17c2f6876dd2ccdc748ed5e5ea916dd2083ef6e5fd49b54792e08ed8"
+      "sha256": "bf4adb4910f8a13057fcea11f33677f03fdbed773c6968a72856dbb5823866a4"
     }
   ],
   "training_ready": true,

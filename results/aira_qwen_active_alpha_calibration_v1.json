@@ -2,7 +2,7 @@
   "schema_version": 1,
   "experiment": "qwen35-learned-state-alpha-calibration-v1",
   "checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
-  "checkpoint_sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f",
+  "checkpoint_sha256": "546c3e69d50f3b518858df93b447383b6138fa373ec69b39cc0a0cf128635eb6",
   "split": "train-only",
   "metric": "full-cache",
   "validation_prompts_used": 0,

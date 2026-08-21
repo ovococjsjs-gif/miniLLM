@@ -2,8 +2,10 @@
   "schema_version": 1,
   "experiment": "aira-qwen-active-v1",
   "mode": "trained-and-replayed",
-  "config_sha256": "f6309551dafd3b0f87f7c1576f906776587ad50dc75e22c03477d6f261440836",
+  "config_sha256": "324ad5155b272e489de35f46a1427a8aaf9522758a60946ede09429eec20bc65",
   "prepared": {
+    "scorecard": "configs/experiments/aira_qwen_scorecard_v1.json",
+    "scorecard_sha256": "e576302dbb31d59714b060a488b5d4087a3ab2eac05a37c2a2a6dc5b1c0c29b2",
     "model_sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
     "llama_cpp_revision": "9a532ae4bab1b164052ce60a738f78538b421c66",
     "source_manifest_sha256": "93ec537ac4d2732068c6fe0359abceb6346f11b950c1ac971afe983462432fde",
@@ -23,7 +25,7 @@
     "ready_for_training": true
   },
   "combined_checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
-  "combined_checkpoint_sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f",
+  "combined_checkpoint_sha256": "546c3e69d50f3b518858df93b447383b6138fa373ec69b39cc0a0cf128635eb6",
   "training": {
     "state": {
       "schema_version": 1,
@@ -244,7 +246,7 @@
     "combined": {
       "schema_version": 1,
       "checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
-      "checkpoint_sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f",
+      "checkpoint_sha256": "546c3e69d50f3b518858df93b447383b6138fa373ec69b39cc0a0cf128635eb6",
       "parameters": 8069185,
       "state_checkpoint": "artifacts/qwen35-gated-delta-updater-v1/model.pt",
       "state_checkpoint_sha256": "eccf3060467ed1edaf907319ba397d04a053a31ea66b01806f7c280a2b3bb7ae",
@@ -267,7 +269,7 @@
     "schema_version": 1,
     "experiment": "qwen35-learned-state-alpha-calibration-v1",
     "checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
-    "checkpoint_sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f",
+    "checkpoint_sha256": "546c3e69d50f3b518858df93b447383b6138fa373ec69b39cc0a0cf128635eb6",
     "split": "train-only",
     "metric": "full-cache",
     "validation_prompts_used": 0,
@@ -801,11 +803,53 @@
     "selected_copy_mean_kl": 0.019133274494789264,
     "selected_ratio": 0.24368076249631626
   },
+  "applied_intervention": {
+    "state_delta_alpha": 0.01,
+    "policy": "frozen before strict full-cache validation from train-only state calibration",
+    "diagnostic_full_cache_train_optimum": 0.05
+  },
+  "fixed_scorecard": {
+    "path": "configs/experiments/aira_qwen_scorecard_v1.json",
+    "sha256": "e576302dbb31d59714b060a488b5d4087a3ab2eac05a37c2a2a6dc5b1c0c29b2",
+    "metrics": {
+      "full_state_mse_ratio": {
+        "actual": 0.842776943507935,
+        "reference": 0.842776943507935,
+        "regression_limit": 0.85,
+        "passed": true
+      },
+      "conv_new_row_mse_ratio": {
+        "actual": 0.5580722942896837,
+        "reference": 0.5580722942896837,
+        "regression_limit": 0.56,
+        "passed": true
+      },
+      "full_cache_true_vocabulary_kl_ratio": {
+        "actual": 0.7228519694219351,
+        "reference": 0.7228519694219351,
+        "regression_limit": 0.73,
+        "passed": true
+      },
+      "full_cache_improved_transitions": {
+        "actual": 10,
+        "reference": 10,
+        "regression_limit": 10,
+        "passed": true
+      },
+      "full_cache_oracle_argmax_preserved": {
+        "actual": 16,
+        "reference": 16,
+        "regression_limit": 16,
+        "passed": true
+      }
+    },
+    "all_passed": true
+  },
   "replay": {
     "schema_version": 1,
     "experiment": "qwen35-learned-state-replay-v1",
     "role": "native injection gate for learned full recurrent states",
-    "checkpoint_sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f",
+    "checkpoint_sha256": "546c3e69d50f3b518858df93b447383b6138fa373ec69b39cc0a0cf128635eb6",
     "combined_checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
     "binary_build": "results/qwen35_learned_state_replay_build.json",
     "binary_sha256": "73eecd698d9ade26b0db3f5d385f47ea4f7086f5e1c9e308f2c04cbda11091f9",
@@ -817,19 +861,19 @@
       4
     ],
     "transitions": 16,
-    "train_calibrated_alpha": 0.05,
+    "train_calibrated_alpha": 0.01,
     "alpha_calibration_scope": "train prompts, stage 1 only",
     "mean_candidate_copy_kl": 0.0049066179122691485,
-    "mean_learned_kl": 0.005023933158027673,
-    "learned_over_copy_kl_ratio": 1.0239095947261705,
-    "learned_improvements": 10,
-    "argmax_preserved": 15,
+    "mean_learned_kl": 0.0050425743244083485,
+    "learned_over_copy_kl_ratio": 1.0277087832331995,
+    "learned_improvements": 9,
+    "argmax_preserved": 16,
     "mean_candidate_full_copy_kl": 0.021935155087099346,
-    "mean_learned_full_kl": 0.018194402726117033,
-    "learned_full_over_copy_kl_ratio": 0.8294631450687873,
-    "learned_full_improvements": 11,
+    "mean_learned_full_kl": 0.01585587005428534,
+    "learned_full_over_copy_kl_ratio": 0.7228519694219351,
+    "learned_full_improvements": 10,
     "learned_full_argmax_preserved": 16,
-    "elapsed_seconds": 64.0411087829998,
+    "elapsed_seconds": 58.85951508300013,
     "acceptance": {
       "all_serialization_controls_exact": true,
       "learned_mean_kl_below_candidate_copy": false,
@@ -845,6 +889,7 @@
   },
   "gates": {
     "normalization_contract_hash_bound": true,
+    "fixed_scorecard_all_passed": true,
     "combined_checkpoint": true,
     "full_cache_mean_kl": true,
     "every_transition_kl": false,
@@ -873,8 +918,8 @@
           "--config",
           "configs/experiments/aira_qwen_active_v1.json"
         ],
-        "seconds": 2.0536014320000504,
-        "stdout_sha256": "5196a3221673955b608dc7263884e18c3ffdb97b9e650bcce0faec80b2361638"
+        "seconds": 1.7436715819999336,
+        "stdout_sha256": "311eec25eaac7bccc88003121181129a8ead09e4832f2ff7bcb4425354dfea7d"
       }
     },
     {
@@ -894,8 +939,8 @@
           "results/aira_qwen_active_alpha_calibration_v1.json",
           "--reuse-existing"
         ],
-        "seconds": 0.10618904299963106,
-        "stdout_sha256": "89b3fc3be58fc5259b36c42e0ab8258623d10086174ef550fc3ef6f3801c225a"
+        "seconds": 0.0777104810003948,
+        "stdout_sha256": "84777d8c0db7c7880ad47c5c793cd465c29f27cf5669053b86563de97d1bf340"
       }
     },
     {
@@ -906,14 +951,14 @@
           "--combined-checkpoint",
           "artifacts/aira-qwen-active-v1/cache-updater.pt",
           "--alpha",
-          "0.05",
+          "0.01",
           "--work-dir",
           ".cache/aira-qwen-active-replay",
           "--output",
           "results/aira_qwen_active_replay_v1.json"
         ],
-        "seconds": 64.1271929569998,
-        "stdout_sha256": "44e9c8f01532f48698f527dcf1804b3aee9d1ee7b18900a901aec1387c67dc3f"
+        "seconds": 58.93371282199996,
+        "stdout_sha256": "ac9fcf39be62bfd01094913987e5b44b7d00bb0a5896f51428f705392943e772"
       }
     }
   ]

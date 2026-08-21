@@ -67,12 +67,17 @@ To validate packaging/calibration/replay without retraining:
 python scripts/run_aira_qwen_active.py --reuse-checkpoints
 ```
 
+## Fixed scorecard
+
+`configs/experiments/aira_qwen_scorecard_v1.json` freezes the 16 transitions, five candidate layers, alpha `0.01`, strict stale recurrent+convolution baseline, and five headline metrics. Diagnostic stage-1, train, projected-state, and oracle-convolution numbers can no longer replace the headline without a scorecard version bump.
+
 ## Current normalized checkpoint result
 
-The combined checkpoint is behaviorally identical to the accepted separate components. Strict full-cache calibration selected alpha `0.05` on train prompts. On 16 validation transitions:
+The combined checkpoint is behaviorally identical to the accepted separate components. Strict full-cache train diagnostics prefer alpha `0.05`, but changing the applied intervention moved the held-out headline. The active scorecard therefore freezes the earlier validation-independent alpha `0.01`. On the fixed 16 validation transitions:
 
-- mean learned/full-copy KL ratio: `0.829463`;
+- mean learned/full-copy KL ratio: `0.722852`;
 - oracle argmax preserved: `16/16`;
+- transitions with lower KL: `10/16`;
 - mean full-cache gate: passed;
 - every-transition gate: failed;
 - autoregressive generation: not passed;

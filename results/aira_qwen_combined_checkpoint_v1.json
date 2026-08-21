@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "checkpoint": "artifacts/aira-qwen-active-v1/cache-updater.pt",
-  "checkpoint_sha256": "95e64cea9c55a095fa4c48ea30e319bf0322713ada0f4fb279c00b57dad7392f",
+  "checkpoint_sha256": "546c3e69d50f3b518858df93b447383b6138fa373ec69b39cc0a0cf128635eb6",
   "parameters": 8069185,
   "state_checkpoint": "artifacts/qwen35-gated-delta-updater-v1/model.pt",
   "state_checkpoint_sha256": "eccf3060467ed1edaf907319ba397d04a053a31ea66b01806f7c280a2b3bb7ae",

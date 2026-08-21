@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "name": "aira-qwen-fixed-scorecard-v1",
+  "policy": "Headline metrics may change only with a scorecard version bump; stage-1, train, oracle-convolution, and projected-state numbers are diagnostics only.",
+  "data": {
+    "source_pairs": "artifacts/qwen35-real-state-pairs-v1",
+    "validation_prompt_groups": 4,
+    "transitions_per_group": 4,
+    "validation_transitions": 16,
+    "candidate_layers": [4, 8, 12, 16, 20]
+  },
+  "intervention": {
+    "state_delta_alpha": 0.01,
+    "alpha_selected_from_validation": false,
+    "convolution_oracle_allowed": false,
+    "other_layers_and_attention_matched_control": true
+  },
+  "headline_metrics": {
+    "full_state_mse_ratio": {
+      "direction": "lower",
+      "reference": 0.842776943507935,
+      "regression_limit": 0.85
+    },
+    "conv_new_row_mse_ratio": {
+      "direction": "lower",
+      "reference": 0.5580722942896837,
+      "regression_limit": 0.56
+    },
+    "full_cache_true_vocabulary_kl_ratio": {
+      "direction": "lower",
+      "reference": 0.7228519694219351,
+      "regression_limit": 0.73
+    },
+    "full_cache_improved_transitions": {
+      "direction": "higher",
+      "reference": 10,
+      "regression_limit": 10
+    },
+    "full_cache_oracle_argmax_preserved": {
+      "direction": "higher",
+      "reference": 16,
+      "regression_limit": 16
+    }
+  },
+  "required_reporting": [
+    "same 16 validation transitions",
+    "fixed alpha 0.01",
+    "strict stale recurrent plus stale convolution baseline",
+    "mean KL ratio",
+    "per-transition improvement count",
+    "argmax preservation",
+    "generated quality when available",
+    "wall-clock speed when physical skip exists"
+  ]
+}
