@@ -164,7 +164,7 @@ Teacher-forced packing ratios and oracle copy spans are upper bounds, not speed 
 
 ## Remaining blockers outside dataset collection
 
-- obtain the pinned 579.6MB Qwen3.5 donor binary through a network path that does not terminate TLS/CAS downloads, then run the strict baseline;
+- obtain either pinned Qwen3.5 donor binary through a storage path that does not terminate TLS: the 532.5MB GitHub mirror pointer exactly matches Unsloth Q4_K_M, but this sandbox blocks its `github-cloud.githubusercontent.com` object redirect;
 - collect full-pass recurrent states/future logits and test the state patcher on real donor events;
 - implement a source-pointer head before training document-copy actions end to end;
 - choose/freeze the tokenizer after the new corpus mixture audit or prove a safe donor-token bridge/vocabulary reduction;

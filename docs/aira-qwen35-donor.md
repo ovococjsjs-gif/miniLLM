@@ -22,34 +22,61 @@ Canonical metadata is frozen in `configs/donors/qwen35_08b.json`:
 
 A CPU-only llama.cpp `b9222` build completed successfully in `.cache/llama.cpp`; its reported revision matches the frozen config. Build products and upstream weights are deliberately excluded from Git.
 
-The model download was attempted through curl, wget, Python urllib, Hugging Face CLI and Xet CAS. Metadata endpoints were readable through the research fetch channel, but binary endpoints repeatedly terminated TLS/CAS transfers. `results/qwen35_donor_bootstrap.json` therefore records:
+## GitHub mirror audit
+
+An exact GitHub Git LFS mirror of Unsloth's Q4_K_M was found and pinned:
+
+- repository: `leonardomathon/lepa`;
+- commit: `3d1afc7b8496435f4a751402bbff240103c30820`;
+- path: `models/llm/Qwen3.5-0.8B-Q4_K_M.gguf`;
+- size: 532,517,120 bytes;
+- Git LFS/file SHA-256: `bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517`.
+
+The hash exactly equals the Q4_K_M SHA-256 published by `unsloth/Qwen3.5-0.8B-GGUF`; it is not merely a similarly named file. Two independent GitHub repositories, `hrithiks2019/tmp_storage` and `charly-chrtx/maestro`, contain pointers to the same object and size. A different `bopalvelut-prog/qwen3.5-gguf` file was audited but not selected because it points to a different 529,297,312-byte `diodel` quant.
+
+The mirror repository does not expose a machine-readable license even though the upstream model and embedded GGUF metadata declare Apache-2.0. It is therefore accepted only as a hash-verified internal baseline source; public redistribution still uses the upstream license/provenance review.
+
+The bootstrap script resolves and validates the Git LFS pointer itself before accepting any downloaded bytes:
+
+```bash
+python scripts/bootstrap_qwen35_donor.py --source github --download
+```
+
+Direct GitHub file page: [Qwen3.5-0.8B-Q4_K_M.gguf](https://github.com/leonardomathon/lepa/blob/3d1afc7b8496435f4a751402bbff240103c30820/models/llm/Qwen3.5-0.8B-Q4_K_M.gguf).
+
+In this sandbox, `github.com`, its API and `codeload.github.com` are reachable, but Git LFS redirects the actual object to `github-cloud.githubusercontent.com`; TLS is terminated on that storage hostname. Hugging Face and Xet binary hosts fail in the same way. `results/qwen35_donor_bootstrap.json` therefore records:
 
 - runtime: verified;
-- model artifact: missing;
+- GitHub pointer/revision/hash: verified before transfer;
+- model artifact: still missing locally;
+- failing storage host: `github-cloud.githubusercontent.com`;
 - baseline evaluation: not run.
 
-This is an environment/network blocker, not a model-memory failure and not a benchmark result.
+This is an environment egress blocker, not a model-memory failure and not a benchmark result. The GitHub mirror should download normally outside this sandbox, and a manually downloaded file placed at the configured path is always re-hashed before use.
 
 ## Bootstrap and verification
 
-Build the pinned runtime and download when the binary path is reachable:
+Build the pinned runtime and prefer the GitHub mirror:
 
 ```bash
 .venv/bin/pip install -e '.[runtime]'
-python scripts/bootstrap_qwen35_donor.py --build-runtime --download
+python scripts/bootstrap_qwen35_donor.py \
+  --build-runtime --source github --download
 ```
 
-The script pins repository revisions, verifies byte size and computes the full file SHA-256 before permitting use. A manually transferred file may be placed at:
+The original Bartowski/Hugging Face candidate remains available with `--source huggingface`. Each source has its own frozen revision, byte size and SHA-256; the script never treats the two different quant files as interchangeable.
+
+A manually transferred GitHub mirror file must be placed at:
 
 ```text
-data/external/qwen3.5-0.8b/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf
+data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf
 ```
 
 Then run the local server with a bounded context:
 
 ```bash
 .cache/llama.cpp/build/bin/llama-server \
-  --model data/external/qwen3.5-0.8b/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf \
+  --model data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf \
   --alias qwen3.5-0.8b-q4-k-m \
   --ctx-size 2048 --threads 2 --batch-size 128 \
   --host 127.0.0.1 --port 8080

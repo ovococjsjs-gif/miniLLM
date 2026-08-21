@@ -4,15 +4,19 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import json
 import re
 import shutil
 import subprocess
+import urllib.parse
 from pathlib import Path
 from typing import Any
 
 _ANSI_ESCAPE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
+_LFS_OID = re.compile(r"^oid sha256:([0-9a-f]{64})$", flags=re.MULTILINE)
+_LFS_SIZE = re.compile(r"^size (\d+)$", flags=re.MULTILINE)
 
 
 def clean_error(value: str, *, limit: int) -> str:
@@ -183,26 +187,188 @@ def build_runtime(config: dict[str, Any]) -> dict[str, Any]:
         }
 
 
+def download_huggingface(artifact: dict[str, Any], hf_command: str) -> dict[str, Any] | None:
+    destination = Path(artifact["local_path"])
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        completed = subprocess.run(
+            [
+                hf_command,
+                "download",
+                artifact["repository"],
+                artifact["filename"],
+                "--revision",
+                artifact["revision"],
+                "--local-dir",
+                str(destination.parent),
+            ],
+            check=False,
+            text=True,
+            capture_output=True,
+            timeout=1800,
+        )
+        if completed.returncode:
+            return {
+                "type": "hf-cli-failure",
+                "returncode": completed.returncode,
+                "detail": clean_error(completed.stderr, limit=1000),
+            }
+    except (OSError, subprocess.SubprocessError) as error:
+        return {
+            "type": type(error).__name__,
+            "detail": clean_error(str(error), limit=500),
+        }
+    return None
+
+
+def _github_lfs_pointer(mirror: dict[str, Any]) -> str:
+    endpoint = (
+        f"repos/{mirror['repository']}/contents/{mirror['path']}"
+        f"?ref={mirror['revision']}"
+    )
+    completed = subprocess.run(
+        ["gh", "api", endpoint, "--jq", ".content"],
+        check=True,
+        text=True,
+        capture_output=True,
+        timeout=60,
+    )
+    return base64.b64decode(completed.stdout).decode("ascii")
+
+
+def download_github_lfs(mirror: dict[str, Any]) -> dict[str, Any] | None:
+    """Resolve a pinned public Git LFS pointer through GitHub, then fetch its object."""
+
+    destination = Path(mirror["local_path"])
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        pointer = _github_lfs_pointer(mirror)
+        oid_match = _LFS_OID.search(pointer)
+        size_match = _LFS_SIZE.search(pointer)
+        if oid_match is None or size_match is None:
+            raise ValueError("GitHub path is not a Git LFS pointer")
+        oid = oid_match.group(1)
+        size = int(size_match.group(1))
+        if oid != mirror["git_lfs_oid_sha256"] or size != mirror["size_bytes"]:
+            raise ValueError("Git LFS pointer differs from the pinned mirror metadata")
+
+        auth = subprocess.run(
+            ["gh", "auth", "token"],
+            check=True,
+            text=True,
+            capture_output=True,
+            timeout=30,
+        )
+        token = auth.stdout.strip()
+        body = json.dumps(
+            {
+                "operation": "download",
+                "transfers": ["basic"],
+                "objects": [{"oid": oid, "size": size}],
+            }
+        )
+        batch_endpoint = (
+            f"https://github.com/{mirror['repository']}.git/info/lfs/objects/batch"
+        )
+        batch = subprocess.run(
+            [
+                "curl",
+                "-fsS",
+                "--http1.1",
+                "-u",
+                f"x-access-token:{token}",
+                "-H",
+                "Accept: application/vnd.git-lfs+json",
+                "-H",
+                "Content-Type: application/vnd.git-lfs+json",
+                "--data-binary",
+                "@-",
+                batch_endpoint,
+            ],
+            input=body,
+            check=True,
+            text=True,
+            capture_output=True,
+            timeout=60,
+        )
+        response = json.loads(batch.stdout)
+        href = response["objects"][0]["actions"]["download"]["href"]
+        storage_host = urllib.parse.urlsplit(href).hostname
+        partial = destination.with_suffix(destination.suffix + ".part")
+        transfer = subprocess.run(
+            [
+                "curl",
+                "-4",
+                "-fL",
+                "--http1.1",
+                "--retry",
+                "5",
+                "--retry-delay",
+                "2",
+                "--continue-at",
+                "-",
+                "-o",
+                str(partial),
+                href,
+            ],
+            check=False,
+            text=True,
+            capture_output=True,
+            timeout=1800,
+        )
+        if transfer.returncode:
+            return {
+                "type": "github-lfs-transfer-failure",
+                "returncode": transfer.returncode,
+                "storage_host": storage_host,
+                "detail": clean_error(transfer.stderr, limit=1000),
+            }
+        partial.replace(destination)
+    except (OSError, KeyError, ValueError, json.JSONDecodeError, subprocess.SubprocessError) as error:
+        return {
+            "type": type(error).__name__,
+            "detail": clean_error(str(error), limit=500),
+        }
+    return None
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="configs/donors/qwen35_08b.json")
     parser.add_argument("--build-runtime", action="store_true")
     parser.add_argument("--download", action="store_true")
+    parser.add_argument(
+        "--source", choices=("huggingface", "github"), default="huggingface"
+    )
     parser.add_argument("--hf-command", default=".venv/bin/hf")
     parser.add_argument("--output", default="results/qwen35_donor_bootstrap.json")
     args = parser.parse_args()
     config_path = Path(args.config)
     config = json.loads(config_path.read_text(encoding="utf-8"))
-    gguf = config["gguf"]
-    destination = Path(gguf["local_path"])
+    primary = config["gguf"]
+    artifact = primary if args.source == "huggingface" else config["github_mirror"]
+    destination = Path(artifact["local_path"])
     report: dict[str, Any] = {
         "schema_version": 1,
         "config": str(config_path),
         "model_id": config["upstream"]["model_id"],
         "model_revision": config["upstream"]["revision"],
-        "gguf_repository": gguf["repository"],
-        "gguf_revision": gguf["revision"],
-        "filename": gguf["filename"],
+        "selected_source": args.source,
+        "artifact_source": (
+            {
+                "repository": artifact["repository"],
+                "revision": artifact["revision"],
+                "filename": artifact["filename"],
+            }
+            if args.source == "huggingface"
+            else {
+                "repository": artifact["repository"],
+                "revision": artifact["revision"],
+                "path": artifact["path"],
+                "declared_upstream": artifact["declared_upstream"],
+                "review_status": artifact["review_status"],
+            }
+        ),
         "runtime_build_attempted": False,
         "download_attempted": False,
     }
@@ -214,39 +380,16 @@ def main() -> None:
         runtime = runtime_status(config)
     report["runtime"] = runtime
 
-    checked = verify(destination, gguf["size_bytes"], gguf["sha256"])
+    checked = verify(destination, artifact["size_bytes"], artifact["sha256"])
     if checked["status"] == "missing" and args.download:
         report["download_attempted"] = True
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            completed = subprocess.run(
-                [
-                    args.hf_command,
-                    "download",
-                    gguf["repository"],
-                    gguf["filename"],
-                    "--revision",
-                    gguf["revision"],
-                    "--local-dir",
-                    str(destination.parent),
-                ],
-                check=False,
-                text=True,
-                capture_output=True,
-                timeout=1800,
-            )
-            if completed.returncode:
-                report["download_error"] = {
-                    "type": "hf-cli-failure",
-                    "returncode": completed.returncode,
-                    "detail": clean_error(completed.stderr, limit=1000),
-                }
-        except (OSError, subprocess.SubprocessError) as error:
-            report["download_error"] = {
-                "type": type(error).__name__,
-                "detail": clean_error(str(error), limit=500),
-            }
-        checked = verify(destination, gguf["size_bytes"], gguf["sha256"])
+        if args.source == "huggingface":
+            error = download_huggingface(artifact, args.hf_command)
+        else:
+            error = download_github_lfs(artifact)
+        if error is not None:
+            report["download_error"] = error
+        checked = verify(destination, artifact["size_bytes"], artifact["sha256"])
     report["artifact"] = checked
 
     output = Path(args.output)

@@ -3,23 +3,29 @@
   "config": "configs/donors/qwen35_08b.json",
   "model_id": "Qwen/Qwen3.5-0.8B",
   "model_revision": "2fc06364715b967f1860aea9cf38778875588b17",
-  "gguf_repository": "bartowski/Qwen_Qwen3.5-0.8B-GGUF",
-  "gguf_revision": "f36b1ea49a332ede8fe5f389bbf5b3575ef71f48",
-  "filename": "Qwen_Qwen3.5-0.8B-Q4_K_M.gguf",
+  "selected_source": "github",
+  "artifact_source": {
+    "repository": "leonardomathon/lepa",
+    "revision": "3d1afc7b8496435f4a751402bbff240103c30820",
+    "path": "models/llm/Qwen3.5-0.8B-Q4_K_M.gguf",
+    "declared_upstream": "unsloth/Qwen3.5-0.8B-GGUF",
+    "review_status": "exact Unsloth Q4_K_M hash mirror for internal baseline; model is Apache-2.0, mirror repository has no machine-readable license"
+  },
+  "runtime_build_attempted": false,
   "download_attempted": true,
-  "download_error": {
-    "type": "hf-cli-failure",
-    "returncode": 1,
-    "detail": "-GGUF/resolve/f36b1ea49a332ede8fe5f389bbf5b3575ef71f48/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf\nRetrying in 4s [Retry 3/5].\n'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/bartowski/Qwen_Qwen3.5-0.8B-GGUF/resolve/f36b1ea49a332ede8fe5f389bbf5b3575ef71f48/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf\nRetrying in 8s [Retry 4/5].\n'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/bartowski/Qwen_Qwen3.5-0.8B-GGUF/resolve/f36b1ea49a332ede8fe5f389bbf5b3575ef71f48/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf\nRetrying in 8s [Retry 5/5].\n'TLS/SSL connection has been closed (EOF) (_ssl.c:992)' thrown while requesting HEAD https://huggingface.co/bartowski/Qwen_Qwen3.5-0.8B-GGUF/resolve/f36b1ea49a332ede8fe5f389bbf5b3575ef71f48/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf\nError: Local entry not found. TLS/SSL connection has been closed (EOF) (_ssl.c:992)\nHint: set HF_DEBUG=1 as environment variable for full traceback.\n"
-  },
-  "artifact": {
-    "status": "missing",
-    "path": "data/external/qwen3.5-0.8b/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf"
-  },
   "runtime": {
     "status": "verified",
     "path": ".cache/llama.cpp/build/bin/llama-cli",
     "version": "version: 1 (9a532ae)\nbuilt with GNU 12.2.0 for Linux x86_64"
   },
-  "runtime_build_attempted": false
+  "download_error": {
+    "type": "github-lfs-transfer-failure",
+    "returncode": 35,
+    "storage_host": "github-cloud.githubusercontent.com",
+    "detail": "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\n  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0\ncurl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to github-cloud.githubusercontent.com:443 \n"
+  },
+  "artifact": {
+    "status": "missing",
+    "path": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf"
+  }
 }

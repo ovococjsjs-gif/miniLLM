@@ -23,6 +23,19 @@
     "sha256": "fb044e93939a70469c905781334f5de1e6c8b608ced6cbc8c9249bd4127d9526",
     "local_path": "data/external/qwen3.5-0.8b/Qwen_Qwen3.5-0.8B-Q4_K_M.gguf"
   },
+  "github_mirror": {
+    "repository": "leonardomathon/lepa",
+    "revision": "3d1afc7b8496435f4a751402bbff240103c30820",
+    "path": "models/llm/Qwen3.5-0.8B-Q4_K_M.gguf",
+    "git_lfs_oid_sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+    "size_bytes": 532517120,
+    "sha256": "bd258782e35f7f458f8aced1adc053e6e92e89bc735ba3be89d38a06121dc517",
+    "local_path": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf",
+    "declared_quantization": "Q4_K_M",
+    "declared_upstream": "unsloth/Qwen3.5-0.8B-GGUF",
+    "upstream_sha256_match": true,
+    "review_status": "exact Unsloth Q4_K_M hash mirror for internal baseline; model is Apache-2.0, mirror repository has no machine-readable license"
+  },
   "runtime": {
     "engine": "llama.cpp",
     "revision": "9a532ae4bab1b164052ce60a738f78538b421c66",
