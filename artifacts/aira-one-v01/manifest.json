@@ -5,8 +5,8 @@
   "files": [
     {
       "path": "configs/aira-one/v01.json",
-      "bytes": 2818,
-      "sha256": "80c0b88a3545b5d4cedd9882e6a4471f75121609d3bf8e13c668d0ca9013ee85"
+      "bytes": 2229,
+      "sha256": "cfdc9eebfc69cf43a381eeebfa2bbd4dbc70921c09aea4307a299b80ddd94850"
     },
     {
       "path": "configs/donors/qwen35_08b.json",
@@ -15,13 +15,13 @@
     },
     {
       "path": "docs/aira-one-v01.md",
-      "bytes": 11580,
-      "sha256": "ee45bb79706d4af2c92662772c2380d8a0c5abf3a458eed3fbfa3d0bdf1494cc"
+      "bytes": 3363,
+      "sha256": "b91b0ef7b2c3047f1f62720aaa98746b8620144b61437bdfc8b57aaacc724b91"
     },
     {
       "path": "src/minillm/aira/one.py",
-      "bytes": 43945,
-      "sha256": "f0ee8e4ef509016e877a947b360058856bec39160495ee62d3642c9cf210cf67"
+      "bytes": 38362,
+      "sha256": "69a51e44e01ab988e1cf4d1678a4a62e27566bd6c4bac1b0f92a97e721092cc4"
     },
     {
       "path": "src/minillm/aira/local_runtime.py",
@@ -49,44 +49,9 @@
       "sha256": "52cd8d835ec7c08d0b3b8d11da1b59a09568a957d955d9f8e937d7f8cf39ff5c"
     },
     {
-      "path": "scripts/build_aira_one_babysit_v01.py",
-      "bytes": 5152,
-      "sha256": "310e3e9d1c81ccc5a298d10272b39e301f611ca83b57dd3dd87b2a05653924a8"
-    },
-    {
       "path": "scripts/package_aira_one_v01.py",
-      "bytes": 6180,
-      "sha256": "5a3b2990ef7bcf2b9d49b7058f0526b46ab7f51dddc2f7b72d0320b371979677"
-    },
-    {
-      "path": "configs/aira-one/broad_curriculum_v1.json",
-      "bytes": 32610,
-      "sha256": "a1067e2e457acfcf6492d86e9d24086b0247518a02926a40f1a54942a8ff2756"
-    },
-    {
-      "path": "configs/aira-one/broad_manual_review_v1.json",
-      "bytes": 3789,
-      "sha256": "9b82c07c96d27b81afa9d908e9535957687e0bb456b3757ddc3e2feb0b68fdda"
-    },
-    {
-      "path": "scripts/run_aira_one_broad_babysit.py",
-      "bytes": 13417,
-      "sha256": "c8c71be38e657f9a091c9f2d313444a2d49a76fd17bfef084b93157cb1274328"
-    },
-    {
-      "path": "scripts/apply_aira_one_broad_review.py",
-      "bytes": 17249,
-      "sha256": "5a4c8ffced00ac0f549968b0e42361a109ff0d51eed9490298b54cbb734d1485"
-    },
-    {
-      "path": "artifacts/aira-one-babysit-v01/records.jsonl",
-      "bytes": 5457,
-      "sha256": "280fab98ab56bba4d7c687f69c86d881109f570f950e665862ba87ce4ca490c4"
-    },
-    {
-      "path": "artifacts/aira-one-babysit-v01/records.jsonl.manifest.json",
-      "bytes": 545,
-      "sha256": "a530ba97a537ea41ec6fcfe2fa8ba6dfd2b301a87713cc54dc993f2e3d6d72ae"
+      "bytes": 3257,
+      "sha256": "1177f7e4e86f749a168da96e5d3423214d326f6f1e6937b59b757a053bf7adfa"
     },
     {
       "path": "results/aira_one_v01_evaluation.json",
@@ -97,199 +62,9 @@
       "path": "results/aira_one_v01_fresh_evaluation.json",
       "bytes": 67130,
       "sha256": "6b9d14a7b3ed637330462ab2ff82f4cad902cdc0cc32f6a6e5c065f0c09c6c99"
-    },
-    {
-      "path": "results/aira_one_v01_prepatch_runtime_smoke.json",
-      "bytes": 6612,
-      "sha256": "58f8c949dfcdec8ab701bb557afce920262c0a3b3706e22a922e887ac0903cec"
-    },
-    {
-      "path": "results/aira_one_v01_runtime_smoke.json",
-      "bytes": 5432,
-      "sha256": "7d5fa06e62537399aedd78a72206a15bb5389cfe13c0ff4afc83bdeaa48d0fff"
-    },
-    {
-      "path": "artifacts/aira-one-broad-babysit-v1/README.md",
-      "bytes": 1780,
-      "sha256": "26bea72d4c0034a38927e7ac5aec83a0654c0ae05b8f887d4a108e8d21646e68"
-    },
-    {
-      "path": "artifacts/aira-one-broad-babysit-v1/records.jsonl",
-      "bytes": 64322,
-      "sha256": "5704c6ec5ae6c2b4187daa29ca0f5e6c471920511508a90dff60426dd2a6acac"
-    },
-    {
-      "path": "artifacts/aira-one-broad-babysit-v1/records.jsonl.manifest.json",
-      "bytes": 690,
-      "sha256": "3e17f2d5159304aabfa5134e2a4b771dd8c47c8e00217954f260f508575c37e3"
-    },
-    {
-      "path": "artifacts/aira-one-broad-babysit-v1/records_audited.jsonl",
-      "bytes": 67428,
-      "sha256": "b320df13287ef0f763a9817d24e582d926447ce3ad2e7ae5b82fb21060413f80"
-    },
-    {
-      "path": "artifacts/aira-one-broad-babysit-v1/records_audited.jsonl.manifest.json",
-      "bytes": 855,
-      "sha256": "73a266b82ad5d08c08683e23a7f9e2ac258acc204b5e22d81550acf4c92ccde9"
-    },
-    {
-      "path": "artifacts/aira-one-broad-babysit-v1/skills_pre_review.json",
-      "bytes": 27845,
-      "sha256": "1aaaf54cac360b59cdb318dd70125fed4239ca1c28b420a52df048c2d24ab7d7"
-    },
-    {
-      "path": "artifacts/aira-one-broad-babysit-v1/skills.json",
-      "bytes": 29033,
-      "sha256": "39a563fed35e83051008bc596d1f3f18fb3eb082d08873b4c6bada974490543d"
-    },
-    {
-      "path": "artifacts/aira-one-broad-babysit-v1/report.json",
-      "bytes": 881,
-      "sha256": "50d2758d1831f2894c13b7c9c49d3d5f6bb2635fa92a2b65bee53584db8bd979"
-    },
-    {
-      "path": "artifacts/aira-one-broad-babysit-v1/audited_report.json",
-      "bytes": 7256,
-      "sha256": "2ecc05193875eeab776ca49f38152564232712410eefee19ba8c313927c0fdef"
-    },
-    {
-      "path": "results/aira_one_broad_babysit_v1.json",
-      "bytes": 122124,
-      "sha256": "02b24d973861b86fc98f815a60bc6619325d3b193fd59200c9e05c3fdfc0c09d"
-    },
-    {
-      "path": "results/aira_one_broad_babysit_v1_audited.json",
-      "bytes": 27331,
-      "sha256": "76acfeb37973ab9961291fd664cb42716ea9b97091e32c30da31979c246ce898"
-    },
-    {
-      "path": "configs/aira-one/neural_babysit_v1.json",
-      "bytes": 4108,
-      "sha256": "d39ed6f27581a1b92c52a44d2dc81fe13aa26f26cfe3ea2f3e68979c0b6d6928"
-    },
-    {
-      "path": "configs/aira-one/neural_adapter_controls_v1.json",
-      "bytes": 2635,
-      "sha256": "7c37c7d78e670f92154c91c391d3862e8aa4fa33f3a46f0d4508a3595d42ca73"
-    },
-    {
-      "path": "configs/aira-one/neural_babysit_manual_review_v1.json",
-      "bytes": 1921,
-      "sha256": "9a7efeff34d55b239c25a4978ac446c83c9030b8c2184a3597d398f6de84d4fa"
-    },
-    {
-      "path": "docs/aira-neural-babysit-v1.md",
-      "bytes": 8295,
-      "sha256": "a46f2251821aa0cf8640c376ec40f64c884743a689669ca4775d1f532f31a476"
-    },
-    {
-      "path": "native/qwen35_output_adapter.cpp",
-      "bytes": 26592,
-      "sha256": "d4c26827814d88b9436705b907d722a66b2cc1d1eb27ba06f7d26bac807a1ec7"
-    },
-    {
-      "path": "scripts/build_qwen35_output_adapter.py",
-      "bytes": 3572,
-      "sha256": "4f478308014ca6efd49d7c7a9842900e451f0c05846bc7a80ce85b70e312682e"
-    },
-    {
-      "path": "scripts/run_aira_neural_babysit.py",
-      "bytes": 28883,
-      "sha256": "e0934a65c9cdae8d9ad7c2aaa3be21f8b706fb7e5642539fecb609e777af0f80"
-    },
-    {
-      "path": "scripts/audit_aira_neural_babysit.py",
-      "bytes": 5896,
-      "sha256": "ef80d1841c00f1b4580b747848f6377f232bd05940a4108674fdb12bcbd0cbba"
-    },
-    {
-      "path": "scripts/verify_aira_neural_adapter_independence.py",
-      "bytes": 3990,
-      "sha256": "6ceb81cc70facec17698da4d65aec76d8f8058528310607ba253c76c76b11e3b"
-    },
-    {
-      "path": "results/qwen35_output_adapter_build.json",
-      "bytes": 616,
-      "sha256": "aa4dea1753e379ed85a4a87b92790184bbfbd552439f752b9e79f3fc84ce8561"
-    },
-    {
-      "path": "results/aira_neural_babysit_v1.json",
-      "bytes": 64087,
-      "sha256": "dd0328200bbbc77d818434ba9667b12f3cf2152e0ea6218dd19b1c9401348689"
-    },
-    {
-      "path": "results/aira_neural_babysit_v1_audited.json",
-      "bytes": 3296,
-      "sha256": "b8e33df2423258f23ac26ec86b430eaf70863a92086d08844aa0a0223c485693"
-    },
-    {
-      "path": "results/aira_neural_adapter_independence_v1.json",
-      "bytes": 1812,
-      "sha256": "6a980bfc6543dea172e3ac4cadf3369f789797c7e16101f951e3ed8ed8f522fb"
-    },
-    {
-      "path": "artifacts/aira-neural-babysit-v1/README.md",
-      "bytes": 719,
-      "sha256": "513b4acafa04e6e262c1d3d783d5086df50d26f9a098e68b0c90f95e9b6c0e8b"
-    },
-    {
-      "path": "artifacts/aira-neural-babysit-v1/adapter.bin",
-      "bytes": 1067876,
-      "sha256": "179e38f0eb641fab30568c83133bc327f9702b041b806ffd18c2260fed9cfbbc"
-    },
-    {
-      "path": "artifacts/aira-neural-babysit-v1/audited_report.json",
-      "bytes": 3296,
-      "sha256": "b8e33df2423258f23ac26ec86b430eaf70863a92086d08844aa0a0223c485693"
-    },
-    {
-      "path": "artifacts/aira-neural-babysit-v1/control_generation.jsonl",
-      "bytes": 5846,
-      "sha256": "af0c978c0003448f053068442693a865f53fcb00e973c956eeeb8a7783de00ab"
-    },
-    {
-      "path": "artifacts/aira-neural-babysit-v1/controls.tsv",
-      "bytes": 2543,
-      "sha256": "bf594b0e38ce582217ae2e0df81fa0cee4d007a9c42f7942aab16104cdc4a403"
-    },
-    {
-      "path": "artifacts/aira-neural-babysit-v1/controls_validation.tsv",
-      "bytes": 839,
-      "sha256": "9650e6dd8e72d32511e22a3e637027ef40c07315220145fae6e67d07d7318f17"
-    },
-    {
-      "path": "artifacts/aira-neural-babysit-v1/manifest.json",
-      "bytes": 1958,
-      "sha256": "42672da886852beb0ea566b9e4a128a33bb02f6ca9f5076e1dbaa13e4e733884"
-    },
-    {
-      "path": "artifacts/aira-neural-babysit-v1/model.pt",
-      "bytes": 1071840,
-      "sha256": "18f28dc2e9ada890ad232929a1df22fc39fea5ea58a651b36dbd6caf15f82f8a"
-    },
-    {
-      "path": "artifacts/aira-neural-babysit-v1/train.tsv",
-      "bytes": 42072,
-      "sha256": "1656307c12fa20af6d1846f782677f3dfad064b7d914251ac6f0d00ca800a4e4"
-    },
-    {
-      "path": "artifacts/aira-neural-babysit-v1/validation.tsv",
-      "bytes": 20076,
-      "sha256": "a8129ee8c15a79dd9b6f509da3ff3bcaff29e234ae3cba9ce3294931091442aa"
-    },
-    {
-      "path": "artifacts/aira-neural-babysit-v1/validation_generation.jsonl",
-      "bytes": 37343,
-      "sha256": "c9a9ccfa34fd39b3704183fcff51ee0de2827720723cb0ca3e78c3221f96f453"
-    },
-    {
-      "path": "artifacts/aira-neural-babysit-v1/validation_inference.tsv",
-      "bytes": 4680,
-      "sha256": "56e69b6e991a6689ca8243f25c1c0b70a25d6a4cd9f71dcc5dab1af48d788aaf"
     }
   ],
-  "package_source_bytes": 3133579,
+  "package_source_bytes": 261668,
   "external_runtime_artifact": {
     "path": "data/external/qwen3.5-0.8b/Qwen3.5-0.8B-Q4_K_M-github.gguf",
     "bytes": 532517120,
@@ -300,10 +75,6 @@
   "entry_points": {
     "chat": "python scripts/run_aira_one.py",
     "api": "python scripts/serve_aira_one.py --host 0.0.0.0 --port 8000",
-    "broad_babysit": "python scripts/run_aira_one_broad_babysit.py",
-    "broad_manual_review": "python scripts/apply_aira_one_broad_review.py",
-    "neural_babysit": "python scripts/run_aira_neural_babysit.py",
-    "neural_babysit_audit": "python scripts/audit_aira_neural_babysit.py",
     "offline_exact": "python scripts/run_aira_one.py --offline --prompt \"\u0412\u044b\u0447\u0438\u0441\u043b\u0438: 12 * (7 + 3)\""
   },
   "experimental_recurrent_bypass_enabled": false

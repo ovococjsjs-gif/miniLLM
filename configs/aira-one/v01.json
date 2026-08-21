@@ -1,7 +1,7 @@
 {
-  "schema_version": 1,
-  "name": "AIra One v0.1",
-  "role": "first integrated local assistant",
+  "schema_version": 2,
+  "name": "AIra One v0.1 controller",
+  "role": "local tools/memory shell around the active neural donor; not the learned AIra model",
   "languages": ["ru", "en"],
   "donor": {
     "config": "configs/donors/qwen35_08b.json",
@@ -23,8 +23,7 @@
     "persistent_memory": true,
     "inline_documents": true,
     "document_injection_boundary": true,
-    "reviewed_answer_cache": true,
-    "answer_cache_is_parametric_learning": false,
+    "stored_answer_routes": false,
     "residual_neural_fallback": true
   },
   "memory": {
@@ -35,41 +34,28 @@
   },
   "babysit": {
     "journal": ".aira-one/babysit.jsonl",
-    "exact_student_attempts": true,
-    "human_corrections": true,
-    "hidden_reasoning_stored": false,
-    "installed_patch_artifact": "artifacts/aira-one-babysit-v01",
-    "broad_skill_artifact": "artifacts/aira-one-broad-babysit-v1",
-    "broad_skills_installed": 24
+    "collect_on_policy_attempts": true,
+    "collect_teacher_corrections": true,
+    "corrections_must_update_parameters": true,
+    "install_corrections_as_answer_routes": false,
+    "hidden_reasoning_stored": false
   },
   "experimental_acceleration": {
     "projected_state_patcher_available": true,
+    "injectible_full_state_updater_trained": false,
     "recurrent_layer_skipping_enabled": false,
-    "reason": "injectible learned full-state and generated-quality gates are not passed"
+    "reason": "full-state reconstruction, injected-logit, generated-quality, and speed gates are not passed"
   },
   "measured": {
-    "protected_mentor_contract_strict": "174/174",
-    "fresh_seed58_contract_strict": "100/100",
-    "mixed_smoke_bypass_after_babysit": "4/5",
-    "mixed_smoke_neural_calls_before_after": "4 -> 1",
-    "mixed_smoke_request_latency_seconds_before_after": "32.37 -> 2.71",
-    "broad_automated_cycles": 3,
-    "broad_manual_remediation_cycles": 1,
-    "broad_tasks": 24,
-    "broad_manual_validation_passes_before_after": "2/24 -> 24/24",
-    "broad_validation_neural_calls_before_after": "24 -> 0",
-    "broad_summed_request_latency_seconds_before_after": "249.65 -> 0.0057",
-    "neural_babysit_manual_quality_before_after": "1/24 -> 13/24",
-    "neural_babysit_parameters_changed": 264137,
-    "neural_babysit_deployed": false,
-    "child_maxrss_kib": 881884
+    "protected_exact_controller_contract": "174/174",
+    "fresh_exact_controller_contract": "100/100",
+    "scope": "supported deterministic tools and Mentor-family contracts only"
   },
   "limitations": [
-    "Mentor-family scores are not a general intelligence benchmark",
-    "reviewed SkillShelf entries are deterministic cache routes, not model learning",
-    "neural Babysit v1 is experimental and blocked by out-of-scope gate failures",
-    "unknown residual quality is limited by the 0.8B donor",
-    "deep review is not guaranteed to improve an answer",
-    "mobile packaging is not complete"
+    "AIra One is a controller, not the final learned AIra-Qwen model",
+    "exact-route scores are not a general intelligence benchmark",
+    "feedback is only collected until a real parameter-training cycle consumes it",
+    "unknown residual quality is limited by the frozen 0.8B donor",
+    "recurrent acceleration and mobile packaging are not complete"
   ]
 }

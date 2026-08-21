@@ -4,13 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from minillm.aira.babysit import read_babysit_dataset
-from minillm.aira.one import (
-    AIraBabysitJournal,
-    AIraMode,
-    AIraOne,
-    SkillShelf,
-)
+from minillm.aira.one import AIraBabysitJournal, AIraMode, AIraOne
 from minillm.aira.provider import ProviderResponse
 from minillm.aira.synthetic import generate_aira_mentor_records
 from minillm.aira.verification import verify_synthetic_generation
@@ -52,9 +46,7 @@ def test_exact_routes_pass_fresh_mentor_families_without_neural_model() -> None:
             system_text=record.messages[0].content,
         )
         if not verify_synthetic_generation(record, response.answer):
-            failures.append(
-                (record.category, record.identifier, response.route, response.answer)
-            )
+            failures.append((record.category, record.identifier, response.route, response.answer))
         assert response.model_bypassed
         assert response.neural_calls == 0
 
@@ -80,41 +72,6 @@ def test_neural_residual_and_deep_review_are_explicit() -> None:
     assert assistant.stats.neural_calls == 2
 
 
-def test_external_babysit_skill_shelf_requires_all_topic_groups(tmp_path: Path) -> None:
-    path = tmp_path / "skills.json"
-    path.write_text(
-        json.dumps(
-            {
-                "skills": [
-                    {
-                        "skill_id": "science.test",
-                        "required_groups": {
-                            "ru": [["небо"], ["голуб"]],
-                            "en": [["sky"], ["blue"]],
-                        },
-                        "answers": {
-                            "ru": "Проверенный ответ.",
-                            "en": "Verified answer.",
-                        },
-                        "provenance": "test",
-                    }
-                ]
-            }
-        ),
-        encoding="utf-8",
-    )
-    shelf = SkillShelf.load(path)
-    assistant = AIraOne(None, skill_shelf=shelf)
-
-    matched = assistant.answer("Почему небо голубое?")
-    unmatched = assistant.answer("Почему море голубое?")
-
-    assert matched.answer == "Проверенный ответ."
-    assert matched.route == "babysit.broad.science.test"
-    assert unmatched.route == "neural.residual"
-    assert unmatched.model_bypassed
-
-
 def test_confirmed_memory_and_babysit_feedback_are_persistent(tmp_path: Path) -> None:
     memory = EpisodicMemoryStore(tmp_path / "memory.sqlite")
     journal_path = tmp_path / "babysit.jsonl"
@@ -134,10 +91,7 @@ def test_confirmed_memory_and_babysit_feedback_are_persistent(tmp_path: Path) ->
     assert "Запомнил" in written.answer
     assert recalled.route == "memory.read"
     assert "синий" in recalled.answer
-    lines = [
-        json.loads(line)
-        for line in journal_path.read_text(encoding="utf-8").splitlines()
-    ]
+    lines = [json.loads(line) for line in journal_path.read_text(encoding="utf-8").splitlines()]
     assert [line["kind"] for line in lines] == [
         "interaction",
         "interaction",
@@ -151,7 +105,7 @@ def test_confirmed_memory_and_babysit_feedback_are_persistent(tmp_path: Path) ->
     )
 
 
-def test_aira_one_evidence_records_scope_and_babysit_gain() -> None:
+def test_aira_one_evidence_records_only_exact_controller_scope() -> None:
     root = Path(__file__).resolve().parents[1]
     protected = json.loads(
         (root / "results/aira_one_v01_evaluation.json").read_text(encoding="utf-8")
@@ -161,100 +115,30 @@ def test_aira_one_evidence_records_scope_and_babysit_gain() -> None:
             encoding="utf-8"
         )
     )
-    before = json.loads(
-        (root / "results/aira_one_v01_prepatch_runtime_smoke.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    after = json.loads(
-        (root / "results/aira_one_v01_runtime_smoke.json").read_text(encoding="utf-8")
-    )
-    babysit = read_babysit_dataset(
-        root / "artifacts/aira-one-babysit-v01/records.jsonl"
-    )
 
     assert protected["scope"].startswith("deterministic Mentor-family")
     assert protected["strict_passes"] == protected["records"] == 174
     assert protected["neural_calls"] == 0
     assert fresh["strict_passes"] == fresh["records"] == 100
-    assert before["neural_calls"] == 4
-    assert after["neural_calls"] == 1
-    assert before["bypassed_requests"] == 2
-    assert after["bypassed_requests"] == 4
-    assert len(babysit) == 2
-    assert all(record.verdict == "incorrect" for record in babysit)
 
 
-def test_broad_babysit_evidence_and_deployed_shelf_agree() -> None:
-    root = Path(__file__).resolve().parents[1]
-    result = json.loads(
-        (root / "results/aira_one_broad_babysit_v1.json").read_text(encoding="utf-8")
-    )
-    artifact = root / "artifacts/aira-one-broad-babysit-v1"
-    pre_review_skills = json.loads(
-        (artifact / "skills_pre_review.json").read_text(encoding="utf-8")
-    )
-    skills = json.loads((artifact / "skills.json").read_text(encoding="utf-8"))
-    audited = json.loads(
-        (root / "results/aira_one_broad_babysit_v1_audited.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    records = (artifact / "records.jsonl").read_text(encoding="utf-8").splitlines()
-    audited_records = (
-        (artifact / "records_audited.jsonl").read_text(encoding="utf-8").splitlines()
-    )
+def test_feedback_does_not_install_a_stored_answer_route(tmp_path: Path) -> None:
+    provider = FakeProvider(["A neural answer", "A second neural answer"])
+    journal = AIraBabysitJournal(tmp_path / "feedback.jsonl")
+    assistant = AIraOne(provider, journal=journal)
 
-    assert result["tasks"] == 24
-    assert result["verdicts"] == {"correct": 1, "incorrect": 23}
-    assert result["validation_passes_before"] == 4
-    assert result["validation_passes_after"] == 24
-    assert result["validation_neural_calls_before"] == 24
-    assert result["validation_neural_calls_after"] == 1
-    assert len(pre_review_skills["skills"]) == result["skills_installed"] == 23
-    assert len(skills["skills"]) == 24
-    assert len(records) == len(read_babysit_dataset(artifact / "records.jsonl")) == 24
-    assert (
-        len(audited_records)
-        == len(read_babysit_dataset(artifact / "records_audited.jsonl"))
-        == 25
+    first = assistant.answer("Почему небо голубое?")
+    journal.feedback(
+        first.interaction_id,
+        verdict="incorrect",
+        correction="Исправление для последующего обучения параметров.",
     )
-    audited_manifest = json.loads(
-        (artifact / "records_audited.jsonl.manifest.json").read_text(encoding="utf-8")
-    )
-    assert (
-        audited_manifest["sha256"]
-        == hashlib.sha256((artifact / "records_audited.jsonl").read_bytes()).hexdigest()
-    )
-    assert skills["source_records_sha256"] == audited_manifest["sha256"]
-    assert [cycle["validation_passes_after"] for cycle in result["cycle_reports"]] == [
-        8,
-        8,
-        8,
-    ]
-    assert audited["manual_three_cycle"]["validation_passes_before"] == 2
-    assert audited["manual_three_cycle"]["validation_passes_after_three_cycles"] == 23
-    assert audited["final_independent_regression"]["passes"] == 24
-    assert audited["final_independent_regression"]["neural_calls"] == 0
-    assert audited["final_independent_regression"]["skills_installed"] == 24
-    assert (
-        audited["final_independent_regression"][
-            "baseline_total_request_latency_seconds"
-        ]
-        > 249
-    )
-    assert (
-        audited["final_independent_regression"]["total_request_latency_seconds"] < 0.1
-    )
+    second = assistant.answer("Почему небо голубое?")
 
-    assistant = AIraOne(None)
-    boiling = assistant.answer(
-        "Если внешнее давление уменьшить, как изменится температура кипения жидкости?"
-    )
-    assert boiling.route == "babysit.broad.science.boiling-pressure"
-    assert boiling.model_bypassed
-    assert boiling.neural_calls == 0
-    assert "более низкой температуре" in boiling.answer
+    assert first.route == second.route == "neural.residual"
+    assert first.answer == "A neural answer"
+    assert second.answer == "A second neural answer"
+    assert first.neural_calls == second.neural_calls == 1
 
 
 def test_aira_one_package_manifest_hashes_every_source_file() -> None:
@@ -265,7 +149,7 @@ def test_aira_one_package_manifest_hashes_every_source_file() -> None:
 
     assert manifest["name"] == "AIra One v0.1"
     assert manifest["experimental_recurrent_bypass_enabled"] is False
-    assert len(manifest["files"]) == 57
+    assert len(manifest["files"]) == 12
     for item in manifest["files"]:
         path = root / item["path"]
         assert path.stat().st_size == item["bytes"]

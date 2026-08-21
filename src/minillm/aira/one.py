@@ -140,69 +140,8 @@ class AIraBabysitJournal:
         )
 
 
-@dataclass(frozen=True)
-class ShelfSkill:
-    skill_id: str
-    required_groups_ru: tuple[tuple[str, ...], ...]
-    required_groups_en: tuple[tuple[str, ...], ...]
-    answer_ru: str
-    answer_en: str
-    provenance: str
-
-
-class SkillShelf:
-    """Reviewed high-precision answer cache, not parametric model learning.
-
-    Entries are explicit prompt matchers plus stored answers. They are useful for
-    latency and safety, but are intentionally classified as deterministic cache
-    routes rather than evidence that AI Babysit changed neural behavior.
-    """
-
-    def __init__(self, skills: Sequence[ShelfSkill] = ()) -> None:
-        self.skills = tuple(skills)
-
-    @classmethod
-    def load(cls, path: str | Path) -> SkillShelf:
-        source = Path(path)
-        if not source.exists():
-            return cls()
-        payload = json.loads(source.read_text(encoding="utf-8"))
-        skills = []
-        for item in payload.get("skills", []):
-            match = item["required_groups"]
-            skill = ShelfSkill(
-                skill_id=str(item["skill_id"]),
-                required_groups_ru=tuple(
-                    tuple(str(value).casefold() for value in group)
-                    for group in match.get("ru", [])
-                ),
-                required_groups_en=tuple(
-                    tuple(str(value).casefold() for value in group)
-                    for group in match.get("en", [])
-                ),
-                answer_ru=str(item["answers"]["ru"]),
-                answer_en=str(item["answers"]["en"]),
-                provenance=str(item["provenance"]),
-            )
-            if not skill.skill_id or not skill.answer_ru or not skill.answer_en:
-                raise ValueError("skill shelf entries need identity and bilingual answers")
-            skills.append(skill)
-        return cls(skills)
-
-    def match(self, text: str, *, ru: bool) -> ShelfSkill | None:
-        folded = text.casefold()
-        for skill in self.skills:
-            groups = skill.required_groups_ru if ru else skill.required_groups_en
-            if groups and all(any(term in folded for term in group) for group in groups):
-                return skill
-        return None
-
-
 class ExactRouter:
     """High-precision event routes. Uncertain inputs deliberately return None."""
-
-    def __init__(self, skill_shelf: SkillShelf | None = None) -> None:
-        self.skill_shelf = skill_shelf or SkillShelf()
 
     _RAW_EXPRESSION = re.compile(r"^[\d\s+\-*/%().]+$")
     _EXPRESSION_REQUEST = re.compile(
@@ -270,7 +209,6 @@ class ExactRouter:
             self._solve_memory_context,
             self._solve_document,
             self._solve_critique,
-            self._solve_babysit_skill,
             self._solve_explicit_remember,
         ):
             decision = solver(text, system_text=system_text)
@@ -734,64 +672,6 @@ class ExactRouter:
             )
         return ExactDecision(answer, "exact.critique")
 
-    def _solve_babysit_skill(
-        self, text: str, *, system_text: str = ""
-    ) -> ExactDecision | None:
-        del system_text
-        ru = self._ru(text)
-        shelf_match = self.skill_shelf.match(text, ru=ru)
-        if shelf_match is not None:
-            return ExactDecision(
-                shelf_match.answer_ru if ru else shelf_match.answer_en,
-                f"babysit.broad.{shelf_match.skill_id}",
-                1.0,
-                metadata={"source": shelf_match.provenance},
-            )
-        folded = text.casefold()
-        if (
-            ("почему" in folded and "небо" in folded and "голуб" in folded)
-            or ("why" in folded and "sky" in folded and "blue" in folded)
-        ):
-            answer = (
-                "Небо кажется голубым из-за рэлеевского рассеяния: молекулы воздуха "
-                "сильнее рассеивают короткие синие волны солнечного света, поэтому со "
-                "всех направлений к нам приходит больше синего света."
-                if self._ru(text)
-                else "The sky looks blue because Rayleigh scattering makes air molecules "
-                "scatter short blue wavelengths of sunlight more strongly than longer "
-                "wavelengths, sending blue light toward us from across the sky."
-            )
-            return ExactDecision(
-                answer,
-                "babysit.skill.sky-scattering-v1",
-                1.0,
-                metadata={"source": "aira-one-babysit-v01"},
-            )
-        local_cloud = (
-            ("локальн" in folded and "облачн" in folded)
-            or ("local" in folded and "cloud" in folded)
-        )
-        if local_cloud and any(
-            marker in folded for marker in ("сравни", "плюс", "compare", "advantage")
-        ):
-            answer = (
-                "Локальная модель: 1) данные остаются на устройстве; 2) работает без "
-                "интернета и без платы за каждый запрос. Облачная модель: 1) обычно "
-                "доступно больше вычислительной мощности; 2) обновления и масштабирование "
-                "берёт на себя провайдер."
-                if self._ru(text)
-                else "Local model: 1) data stays on the device; 2) it works offline without "
-                "a per-request fee. Cloud model: 1) it usually offers more compute; 2) the "
-                "provider handles updates and scaling."
-            )
-            return ExactDecision(
-                answer,
-                "babysit.skill.local-cloud-v1",
-                1.0,
-                metadata={"source": "aira-one-babysit-v01"},
-            )
-        return None
-
     def _solve_explicit_remember(
         self, text: str, *, system_text: str = ""
     ) -> ExactDecision | None:
@@ -825,17 +705,12 @@ class AIraOne:
         memory: EpisodicMemoryStore | None = None,
         documents: DocumentStore | None = None,
         journal: AIraBabysitJournal | None = None,
-        skill_shelf: SkillShelf | None = None,
     ) -> None:
         self.provider = provider
         self.memory = memory
         self.documents = documents
         self.journal = journal
-        self.router = ExactRouter(
-            skill_shelf
-            if skill_shelf is not None
-            else SkillShelf.load("artifacts/aira-one-broad-babysit-v1/skills.json")
-        )
+        self.router = ExactRouter()
         self.stats = AIraOneStats()
         self._interaction_counter = 0
 

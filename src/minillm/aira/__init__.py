@@ -75,8 +75,6 @@ from .one import (
     AIraOneStats,
     ExactDecision,
     ExactRouter,
-    ShelfSkill,
-    SkillShelf,
 )
 from .pc_alm import (
     backprop_gradients,
@@ -165,9 +163,7 @@ __all__ = [
     "ShelfEvaluation",
     "ShelfPrediction",
     "ShelfRoutes",
-    "ShelfSkill",
     "SkillPatch",
-    "SkillShelf",
     "SourceCopyIndex",
     "StatePatchLoss",
     "StatePatchOutput",
